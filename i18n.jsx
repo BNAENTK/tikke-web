@@ -11,7 +11,7 @@ const I18N = {
     // Hero
     hero_pill: "TikTok LIVE 방송 툴킷",
     hero_h1: <>라이브 방송을<br /><span className="accent">한 단계 더</span> 영리하게.</>,
-    hero_sub: "Tikke는 TikTok LIVE에 바로 연결되는 데스크탑 방송 툴킷입니다. 채팅·선물·사운드·TTS·OBS 오버레이를 한 화면에서 — 더 풍성한 방송을 만들어보세요.",
+    hero_sub: "Tikke는 TikTok LIVE에 바로 연결되는 데스크탑 방송 툴킷입니다. 채팅·선물·사운드·TTS·TikTok LIVE Studio 오버레이를 한 화면에서 — 더 풍성한 방송을 만들어보세요.",
     hero_cta_download: "지금 다운로드",
     hero_cta_how: "사용법 보기",
     hero_stat1_v: "< 3분",
@@ -141,7 +141,7 @@ const I18N = {
       { q: "모바일에서도 사용할 수 있나요?", a: "현재 Tikke는 Windows와 macOS 데스크톱 앱으로만 제공됩니다. 휴대폰으로 라이브 방송 중이라면, 같은 네트워크의 데스크톱이나 노트북에서 Tikke를 실행해 채팅·번역·통계를 함께 관리하는 방식을 권장합니다. 모바일 전용 앱은 현재 로드맵에 포함되어 있지 않습니다." },
       { q: "지금 사용 가능한가요? 가격 정책은 어떻게 되나요?", a: "지금은 베타 기간으로, 다운로드 후 바로 사용할 수 있습니다. 향후 정식 출시 시점에는 사용 규모와 기능에 따라 무료 / 유료 플랜이 함께 제공될 예정입니다." },
       { q: "별도 앱 설치가 필요한가요?", a: "네, Tikke 데스크톱 앱을 설치해야 합니다. 설치 후 TikTok 계정으로 한 번 로그인하면 그 다음부터는 자동 연결됩니다." },
-      { q: "방송 중에 어떤 식으로 사용하나요?", a: "라이브를 켠 상태로 Tikke를 백그라운드에서 실행하세요. 채팅·선물·번역·통계가 별도 창으로 표시되고, 오버레이는 OBS에 브라우저 소스로 추가할 수 있습니다." },
+      { q: "방송 중에 어떤 식으로 사용하나요?", a: "라이브를 켠 상태로 Tikke를 백그라운드에서 실행하세요. 채팅·선물·번역·통계가 별도 창으로 표시되고, 오버레이는 TikTok LIVE Studio에 링크 소스로 추가할 수 있습니다." },
       { q: "내 채팅 데이터는 어디에 저장되나요?", a: "기본적으로 로컬에만 저장됩니다. 클라우드 동기화는 옵션이며, 언제든 데이터를 내보내거나 영구 삭제할 수 있습니다." },
     ],
 
@@ -188,7 +188,7 @@ const I18N = {
 
     hero_pill: "TikTok LIVE broadcast toolkit",
     hero_h1: <>Make every live<br /><span className="accent">a smarter one</span>.</>,
-    hero_sub: "Tikke is a desktop toolkit that plugs directly into TikTok LIVE. Chat · gifts · sounds · TTS · OBS overlays — all in one control room. Make every live richer.",
+    hero_sub: "Tikke is a desktop toolkit that plugs directly into TikTok LIVE. Chat · gifts · sounds · TTS · TikTok LIVE Studio overlays — all in one control room. Make every live richer.",
     hero_cta_download: "Download now",
     hero_cta_how: "See how it works",
     hero_stat1_v: "< 3 min",
@@ -322,7 +322,7 @@ const I18N = {
       { q: "Can I use Tikke on mobile?", a: "Tikke is currently desktop-only (Windows and macOS). If you're streaming from your phone, run Tikke on a nearby desktop or laptop on the same network to manage chat, translation, and analytics in parallel. A native mobile app isn't on the roadmap right now." },
       { q: "Is it usable today? What about pricing?", a: "Tikke is in beta — download and use it right away. At public launch we'll offer both free and paid plans depending on scale and features." },
       { q: "Do I need a separate app installed?", a: "Yes, you install the Tikke desktop app. After a one-time TikTok sign-in, future sessions auto-connect." },
-      { q: "How do I actually use it while streaming?", a: "Keep Tikke running in the background during your live. Chat, gifts, translation, and analytics show in dedicated windows; overlays can be added to OBS as a browser source." },
+      { q: "How do I actually use it while streaming?", a: "Keep Tikke running in the background during your live. Chat, gifts, translation, and analytics show in dedicated windows; overlays can be added to TikTok LIVE Studio as a link source." },
       { q: "Where is my chat data stored?", a: "Locally by default. Cloud sync is optional, and you can export or fully delete your data at any time." },
     ],
 
@@ -354,7 +354,7 @@ const I18N = {
 
     hero_pill: "TikTok LIVE 配信ツールキット",
     hero_h1: <>ライブ配信を<br /><span className="accent">もう一段</span> 賢く。</>,
-    hero_sub: "TikkeはTikTok LIVEに直接つながるデスクトップツールキット。チャット・ギフト・サウンド・TTS・OBSオーバーレイをひとつの画面で — より豊かな配信を。",
+    hero_sub: "TikkeはTikTok LIVEに直接つながるデスクトップツールキット。チャット・ギフト・サウンド・TTS・TikTok LIVE Studioオーバーレイをひとつの画面で — より豊かな配信を。",
     hero_cta_download: "今すぐダウンロード",
     hero_cta_how: "使い方を見る",
     hero_stat1_v: "< 3分",
@@ -488,7 +488,7 @@ const I18N = {
       { q: "モバイルでも使えますか?", a: "現在TikkeはWindowsとmacOSのデスクトップアプリのみ提供しています。スマホで配信中の場合は、同じネットワーク上のデスクトップやノートPCでTikkeを動かして、チャット・翻訳・統計を並行管理する運用がおすすめです。モバイル専用アプリは現時点ではロードマップに入っていません。" },
       { q: "今使えますか? 価格はどうなりますか?", a: "現在はベータ期間で、ダウンロード後すぐに使えます。正式リリース時には利用規模や機能に応じて無料/有料プランを提供する予定です。" },
       { q: "別途アプリのインストールは必要?", a: "はい、Tikkeデスクトップアプリのインストールが必要です。一度TikTokアカウントでサインインすれば、以降は自動接続します。" },
-      { q: "配信中はどう使いますか?", a: "ライブを開始した状態でTikkeをバックグラウンドで動かしてください。チャット・ギフト・翻訳・統計が個別ウィンドウに表示され、オーバーレイはOBSにブラウザソースとして追加できます。" },
+      { q: "配信中はどう使いますか?", a: "ライブを開始した状態でTikkeをバックグラウンドで動かしてください。チャット・ギフト・翻訳・統計が個別ウィンドウに表示され、オーバーレイはTikTok LIVE Studioにリンクソースとして追加できます。" },
       { q: "チャットデータはどこに保存されますか?", a: "デフォルトではローカルにのみ保存されます。クラウド同期は任意で、いつでもデータをエクスポート、または完全削除できます。" },
     ],
 
@@ -520,7 +520,7 @@ const I18N = {
 
     hero_pill: "TikTok LIVE 直播工具箱",
     hero_h1: <>让每一场直播<br /><span className="accent">更智能</span> 一步。</>,
-    hero_sub: "Tikke 是直接连接 TikTok LIVE 的桌面端直播工具箱。聊天·礼物·音效·TTS·OBS 叠加层 — 统一于同一个控制台,让每一场直播更充实。",
+    hero_sub: "Tikke 是直接连接 TikTok LIVE 的桌面端直播工具箱。聊天·礼物·音效·TTS·TikTok LIVE Studio 叠加层 — 统一于同一个控制台,让每一场直播更充实。",
     hero_cta_download: "立即下载",
     hero_cta_how: "查看使用方法",
     hero_stat1_v: "< 3 分钟",
@@ -654,7 +654,7 @@ const I18N = {
       { q: "可以在手机上使用吗?", a: "Tikke 目前仅提供 Windows 与 macOS 桌面版本。如果你正在使用手机直播,建议在同一网络下的桌面或笔记本上运行 Tikke,并行管理聊天、翻译与数据。目前没有专门的手机应用计划。" },
       { q: "现在可以使用吗?价格如何?", a: "Tikke 现处于公测阶段,下载后即可使用。正式发布时,我们将根据使用规模与功能提供免费/付费方案。" },
       { q: "需要安装额外的应用吗?", a: "是的,需要安装 Tikke 桌面应用。完成一次 TikTok 登录后,后续会自动连接。" },
-      { q: "在直播中如何使用?", a: "保持 Tikke 在后台运行。聊天、礼物、翻译和数据将在独立窗口中显示,叠加层可作为浏览器源添加到 OBS。" },
+      { q: "在直播中如何使用?", a: "保持 Tikke 在后台运行。聊天、礼物、翻译和数据将在独立窗口中显示,叠加层可作为链接源添加到 TikTok LIVE Studio。" },
       { q: "我的聊天数据保存在哪里?", a: "默认仅保存在本地。云同步为可选项,你可以随时导出或彻底删除数据。" },
     ],
 

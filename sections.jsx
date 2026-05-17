@@ -99,45 +99,10 @@ function DemoVideo() {
       <div className="container">
         <div className="video-card">
           <div className="video-poster"></div>
-          <div className="video-content" style={{ gap: "0px", margin: "0px", borderWidth: "0px", borderStyle: "solid", borderRadius: "0px" }}>
-            <div className="video-top">
-              <div className="video-info">
-                <div className="sub">{t("video_sub")}</div>
-                <div className="title">{t("video_title")}</div>
-              </div>
-              <span className="pill live" style={{ padding: "4px 12px" }}>
-                <span className="dot"></span> {t("video_pill")}
-              </span>
-            </div>
-            <div className="video-bottom">
-              <div className="video-chapters">
-                <span className="video-chapter active">00:00 · {t("video_ch1")}</span>
-                <span className="video-chapter">00:08 · {t("video_ch2")}</span>
-                <span className="video-chapter">00:16 · {t("video_ch3")}</span>
-                <span className="video-chapter">00:22 · {t("video_ch4")}</span>
-              </div>
-              <div className="video-timeline">
-                <div className="video-timeline-fill"></div>
-                <div className="video-timeline-knob"></div>
-              </div>
-              <div className="video-meta">
-                <div className="lhs">
-                  <span>00:12 / 00:30</span>
-                  <span style={{ color: "var(--t-3)" }}>1080p</span>
-                </div>
-                <span style={{ color: "var(--t-3)" }}>{t("video_caption")}</span>
-              </div>
-            </div>
-          </div>
-          <div className="video-center">
-            <button className="play-button" type="button" aria-label={t("video_play")}>
-              <Icon name="play" size={32} color="#001318" />
-            </button>
-          </div>
+          <DemoPlayer t={t} />
         </div>
       </div>
     </section>);
-
 }
 
 /* ====================== MOBILE STICKY CTA ====================== */

@@ -57,7 +57,7 @@
 
   /* ---- Card-level tilt + shine ---- */
   const SELECTOR =
-    ".feature, .step, .platform, .partner, .panel, .live-card, .download, .preview-wrap, .faq-item, .video-card";
+    ".feature, .step, .platform, .partner, .panel, .live-card, .download, .preview-wrap, .faq-item";
   const TILT_MAX = 10;
 
   function onMove(e) {
