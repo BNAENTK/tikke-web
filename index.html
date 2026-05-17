@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060C" />
+
+  <title>Tikke — TikTok Live 스트리머를 위한 방송 보조 도구</title>
+  <meta name="description" content="Tikke는 TikTok Live에 바로 연결되는 데스크톱 방송 보조 도구입니다. 채팅 모더레이션, 실시간 번역(38개 언어), 선물·팔로우 알림, 커스텀 오버레이를 한 화면에서." />
+  <meta name="keywords" content="Tikke, TikTok Live, 방송 보조, 채팅 모더레이션, 실시간 번역, 라이브 스트리밍, 오버레이, OBS, 스트리머 도구" />
+  <meta name="author" content="Tikke" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://tikke-web.pages.dev/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tikke" />
+  <meta property="og:title" content="Tikke — TikTok Live 스트리머를 위한 방송 보조 도구" />
+  <meta property="og:description" content="채팅 모더레이션, 38개 언어 실시간 번역, 선물·팔로우 알림, 커스텀 오버레이까지 — 라이브 방송을 한 단계 더 영리하게." />
+  <meta property="og:url" content="https://tikke-web.pages.dev/" />
+  <meta property="og:image" content="https://tikke-web.pages.dev/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Tikke — 라이브 방송을 한 단계 더 영리하게" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta property="og:locale:alternate" content="zh_CN" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tikke — TikTok Live 스트리머를 위한 방송 보조 도구" />
+  <meta name="twitter:description" content="채팅 · 번역 · 선물 알림 · 오버레이까지, 라이브 방송을 한 단계 더 영리하게." />
+  <meta name="twitter:image" content="https://tikke-web.pages.dev/og-image.png" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Serif+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="i18n.jsx"></script>
+  <script type="text/babel" src="live-preview.jsx"></script>
+  <script type="text/babel" src="sections.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+  <script src="interactions.js" defer></script>
+</body>
+</html>

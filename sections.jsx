@@ -1,0 +1,726 @@
+// All page sections (i18n-aware)
+const { useState: useStateS } = React;
+
+/* ====================== NAV ====================== */
+function Nav() {
+  const { t } = useT();
+  return (
+    <header className="nav">
+      <div className="container nav-inner">
+        <div className="brand">
+          <div className="brand-mark"></div>
+          <span className="brand-name">TIKKE</span>
+        </div>
+        <nav className="nav-links">
+          <a href="#features">{t("nav_features")}</a>
+          <a href="#preview">{t("nav_preview")}</a>
+          <a href="#how">{t("nav_how")}</a>
+          <a href="#faq">{t("nav_faq")}</a>
+        </nav>
+        <div className="nav-cta">
+          <LangSwitcher />
+          <a className="btn sm btn-primary" href="#download">
+            <Icon name="download" size={14} /> {t("nav_download")}
+          </a>
+        </div>
+      </div>
+    </header>);
+
+}
+
+/* ====================== HERO ====================== */
+function Hero() {
+  const { t } = useT();
+  return (
+    <section className="hero">
+      <div className="container hero-grid">
+        <div>
+          <div className="pill live">
+            <span className="dot"></span>
+            {t("hero_pill")}
+          </div>
+          <h1>{t("hero_h1")}</h1>
+          <p className="hero-sub">{t("hero_sub")}</p>
+          <div className="hero-actions">
+            <a className="btn lg btn-primary" href="#download">
+              <Icon name="download" size={16} /> {t("hero_cta_download")}
+              <span className="arrow"><Icon name="arrow" size={16} color="#001318" /></span>
+            </a>
+            <a className="btn lg btn-ghost" href="#how">
+              <Icon name="play" size={14} /> {t("hero_cta_how")}
+            </a>
+          </div>
+          <div className="hero-stats">
+            <div className="hero-stat">
+              <div className="v">{t("hero_stat1_v")}</div>
+              <div className="l">{t("hero_stat1_l")}</div>
+            </div>
+            <div className="hero-stat">
+              <div className="v">{t("hero_stat2_v")}</div>
+              <div className="l">{t("hero_stat2_l")}</div>
+            </div>
+            <div className="hero-stat">
+              <div className="v">{t("hero_stat3_v")}</div>
+              <div className="l">{t("hero_stat3_l")}</div>
+            </div>
+          </div>
+        </div>
+        <LivePreview />
+      </div>
+    </section>);
+
+}
+
+/* ====================== MARQUEE ====================== */
+function Marquee() {
+  const { t, lang } = useT();
+  const items = t("marquee");
+  const doubled = [...items, ...items];
+  return (
+    <div className="marquee-wrap" style={{ fontFamily: "\"Space Grotesk\"", lineHeight: "1.5", padding: "22px 0px" }}>
+      <div className="marquee" key={lang}>
+        {doubled.map((txt, i) =>
+        <span key={i} className="item">
+            <span className="num">{String(i % items.length + 1).padStart(2, "0")}</span>
+            {txt}
+            <span className="sep" aria-hidden="true"></span>
+          </span>
+        )}
+      </div>
+    </div>);
+
+}
+
+/* ====================== DEMO VIDEO ====================== */
+function DemoVideo() {
+  const { t } = useT();
+  return (
+    <section className="video-section" id="demo">
+      <div className="container">
+        <div className="video-card">
+          <div className="video-poster"></div>
+          <div className="video-content" style={{ gap: "0px", margin: "0px", borderWidth: "0px", borderStyle: "solid", borderRadius: "0px" }}>
+            <div className="video-top">
+              <div className="video-info">
+                <div className="sub">{t("video_sub")}</div>
+                <div className="title">{t("video_title")}</div>
+              </div>
+              <span className="pill live" style={{ padding: "4px 12px" }}>
+                <span className="dot"></span> {t("video_pill")}
+              </span>
+            </div>
+            <div className="video-bottom">
+              <div className="video-chapters">
+                <span className="video-chapter active">00:00 · {t("video_ch1")}</span>
+                <span className="video-chapter">00:08 · {t("video_ch2")}</span>
+                <span className="video-chapter">00:16 · {t("video_ch3")}</span>
+                <span className="video-chapter">00:22 · {t("video_ch4")}</span>
+              </div>
+              <div className="video-timeline">
+                <div className="video-timeline-fill"></div>
+                <div className="video-timeline-knob"></div>
+              </div>
+              <div className="video-meta">
+                <div className="lhs">
+                  <span>00:12 / 00:30</span>
+                  <span style={{ color: "var(--t-3)" }}>1080p</span>
+                </div>
+                <span style={{ color: "var(--t-3)" }}>{t("video_caption")}</span>
+              </div>
+            </div>
+          </div>
+          <div className="video-center">
+            <button className="play-button" type="button" aria-label={t("video_play")}>
+              <Icon name="play" size={32} color="#001318" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== MOBILE STICKY CTA ====================== */
+function StickyCta() {
+  const { t } = useT();
+  return (
+    <div className="sticky-cta" aria-hidden="false">
+      <div className="brand-mark"></div>
+      <div className="sticky-cta-left">
+        <span className="sticky-name">TIKKE</span>
+        <span className="sticky-tagline">{t("sticky_tagline")}</span>
+      </div>
+      <a
+        className="btn sm btn-primary"
+        href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.exe">
+        
+        <Icon name="download" size={14} /> {t("nav_download")}
+      </a>
+    </div>);
+
+}
+
+/* ====================== FEATURES ====================== */
+function Features() {
+  const { t } = useT();
+  const days = t("feat_gift_days");
+  return (
+    <section className="section" id="features">
+      <div className="container">
+        <div className="section-eyebrow">
+          <Icon name="spark" size={12} /> {t("features_eyebrow")}
+        </div>
+        <h2 className="section-title">{t("features_title")}</h2>
+        <p className="section-lead">{t("features_lead")}</p>
+
+        <div className="features-grid">
+          <div className="feature lg" style={{ "--c": "var(--cyan)" }}>
+            <div className="ic"><Icon name="chat" size={20} /></div>
+            <h3>{t("feat_chat_h")}</h3>
+            <p>{t("feat_chat_p")}</p>
+            <div className="visual">
+              <div className="visual-chat">
+                <div className="row">
+                  <span className="av" style={{ background: "linear-gradient(135deg,#00E5FF,#7C3AED)" }}></span>
+                  <b style={{ color: "#fff" }}>jiwon</b>
+                  <span style={{ color: "#B6B6C8" }}>{t("feat_chat_q1")}</span>
+                  <span className="tag">{t("feat_chat_tag_reply")}</span>
+                </div>
+                <div className="row">
+                  <span className="av" style={{ background: "linear-gradient(135deg,#FF2D87,#FFC857)" }}></span>
+                  <b style={{ color: "#fff" }}>kpop_fan</b>
+                  <span style={{ color: "#B6B6C8" }}>{t("feat_chat_q2")}</span>
+                  <span className="tag warn">{t("feat_chat_tag_faq")}</span>
+                </div>
+                <div className="row">
+                  <span className="av" style={{ background: "linear-gradient(135deg,#7C3AED,#FF2D87)" }}></span>
+                  <b style={{ color: "#fff" }}>spam_bot_42</b>
+                  <span style={{ color: "#7A7A90", textDecoration: "line-through" }}>{t("feat_chat_q3")}</span>
+                  <span className="tag bad">{t("feat_chat_tag_block")}</span>
+                </div>
+                <div className="row">
+                  <span className="av" style={{ background: "linear-gradient(135deg,#00FFA3,#00E5FF)" }}></span>
+                  <b style={{ color: "#fff" }}>haruki_jp</b>
+                  <span style={{ color: "#B6B6C8" }}>{t("feat_chat_q4")}</span>
+                  <span className="tag">JP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="feature lg" style={{ "--c": "var(--violet)" }}>
+            <div className="ic"><Icon name="translate" size={20} /></div>
+            <h3>{t("feat_trans_h")}</h3>
+            <p>{t("feat_trans_p")}</p>
+            <div className="visual visual-trans">
+              <div className="trans-row">
+                <span className="lang">JP → KO/EN</span>
+                <span className="src">{t("feat_trans_src1")}</span>
+                <span className="dst">{t("feat_trans_dst1")}</span>
+              </div>
+              <div className="trans-row">
+                <span className="lang">{useT().lang === "ja" ? "KO → JA" : "EN → KO/JA"}</span>
+                <span className="src">{t("feat_trans_src2")}</span>
+                <span className="dst">{t("feat_trans_dst2")}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="feature md" style={{ "--c": "var(--pink)" }}>
+            <div className="ic"><Icon name="link" size={20} /></div>
+            <h3>{t("feat_connect_h")}</h3>
+            <p>{t("feat_connect_p")}</p>
+          </div>
+
+          <div className="feature md" style={{ "--c": "var(--pink)" }}>
+            <div className="ic"><Icon name="gift" size={20} /></div>
+            <h3>{t("feat_gift_h")}</h3>
+            <p>{t("feat_gift_p")}</p>
+            <div className="visual visual-gifts">
+              {[40, 75, 30, 90, 55, 70, 100, 60].map((h, i) =>
+              <div className="gift-col" key={i}>
+                  <div className="bar" style={{ height: h + "%" }}></div>
+                  <div className="l">{days[i]}</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="feature md" style={{ "--c": "var(--cyan)" }}>
+            <div className="ic"><Icon name="layout" size={20} /></div>
+            <h3>{t("feat_overlay_h")}</h3>
+            <p>{t("feat_overlay_p")}</p>
+            <div className="visual visual-overlay">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, height: "100%" }}>
+                <div className="overlay-tile" style={{ gridRow: "span 2" }}>{t("feat_overlay_chat")}<br />380×500</div>
+                <div className="overlay-tile">{t("feat_overlay_alert")}<br />340×120</div>
+                <div className="overlay-tile" style={{ color: "var(--pink)", borderColor: "rgba(255,45,135,0.4)", background: "rgba(255,45,135,0.05)" }}>{t("feat_overlay_goal")}<br />340×80</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="feature sm" style={{ "--c": "var(--gold)" }}>
+            <div className="ic"><Icon name="mic" size={20} /></div>
+            <h3>{t("feat_tts_h")}</h3>
+            <p>{t("feat_tts_p")}</p>
+          </div>
+
+          <div className="feature sm" style={{ "--c": "var(--green)" }}>
+            <div className="ic"><Icon name="music" size={20} /></div>
+            <h3>{t("feat_sound_h")}</h3>
+            <p>{t("feat_sound_p")}</p>
+          </div>
+
+          <div className="feature sm" style={{ "--c": "var(--violet)" }}>
+            <div className="ic"><Icon name="command" size={20} /></div>
+            <h3>{t("feat_command_h")}</h3>
+            <p>{t("feat_command_p")}</p>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== APP PREVIEW ====================== */
+function AppPreview() {
+  const { t } = useT();
+  return (
+    <section className="section" id="preview">
+      <div className="container">
+        <div className="section-eyebrow">
+          <Icon name="layout" size={12} /> {t("preview_eyebrow")}
+        </div>
+        <h2 className="section-title">{t("preview_title")}</h2>
+        <p className="section-lead">{t("preview_lead")}</p>
+
+        <div className="preview-wrap">
+          <div className="preview-grid">
+            <div className="preview-window">
+              <div className="win-bar">
+                <div className="win-dots"><span></span><span></span><span></span></div>
+                <div className="win-title">{t("preview_win_title")}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span className="pill live" style={{ padding: "3px 8px", fontSize: 10 }}>
+                    <span className="dot"></span> {t("preview_connected")}
+                  </span>
+                </div>
+              </div>
+              <div className="win-body">
+                <aside className="app-sidebar">
+                  <div className="side-section">{t("preview_side_broadcast")}</div>
+                  <div className="side-item active">
+                    <Icon name="broadcast" size={14} /> {t("preview_side_dashboard")}
+                  </div>
+                  <div className="side-item">
+                    <Icon name="chat" size={14} /> {t("preview_side_chat")} <span className="badge">128</span>
+                  </div>
+                  <div className="side-item">
+                    <Icon name="gift" size={14} /> {t("preview_side_gifts")}
+                  </div>
+                  <div className="side-item">
+                    <Icon name="users" size={14} /> {t("preview_side_viewers")}
+                  </div>
+                  <div className="side-section">{t("preview_side_settings")}</div>
+                  <div className="side-item">
+                    <Icon name="layout" size={14} /> {t("preview_side_overlay")}
+                  </div>
+                  <div className="side-item">
+                    <Icon name="translate" size={14} /> {t("preview_side_translate")}
+                  </div>
+                  <div className="side-item">
+                    <Icon name="settings" size={14} /> {t("preview_side_prefs")}
+                  </div>
+                </aside>
+                <main className="app-main">
+                  <div className="app-h">
+                    <h4>{t("preview_today")}</h4>
+                    <span style={{ fontFamily: "var(--f-mono)", fontSize: 12, color: "var(--t-3)" }}>
+                      02:14:08
+                    </span>
+                  </div>
+                  <div className="kpi-grid">
+                    <div className="kpi accent">
+                      <div className="l">{t("preview_kpi_viewers")}</div>
+                      <div className="v">12,480</div>
+                      <div className="delta up">▲ 8.2%</div>
+                    </div>
+                    <div className="kpi">
+                      <div className="l">{t("preview_kpi_followers")}</div>
+                      <div className="v">312</div>
+                      <div className="delta up">▲ 12%</div>
+                    </div>
+                    <div className="kpi">
+                      <div className="l">{t("preview_kpi_gifts")}</div>
+                      <div className="v">1,940</div>
+                      <div className="delta up">▲ 24%</div>
+                    </div>
+                    <div className="kpi">
+                      <div className="l">{t("preview_kpi_dwell")}</div>
+                      <div className="v">8:42</div>
+                      <div className="delta dn">▼ 0.4%</div>
+                    </div>
+                  </div>
+                  <div className="chart">
+                    <svg viewBox="0 0 400 110" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.5" />
+                          <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
+                        </linearGradient>
+                        <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#FF2D87" stopOpacity="0.45" />
+                          <stop offset="100%" stopColor="#FF2D87" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      {[0, 1, 2, 3].map((i) =>
+                      <line key={i} x1="0" y1={20 + i * 22} x2="400" y2={20 + i * 22}
+                      stroke="rgba(255,255,255,0.05)" />
+                      )}
+                      <path d="M0,80 C30,72 60,60 90,55 C120,50 150,58 180,45 C210,30 240,38 270,28 C300,18 330,32 360,22 L400,18 L400,110 L0,110 Z" fill="url(#g1)" />
+                      <path d="M0,80 C30,72 60,60 90,55 C120,50 150,58 180,45 C210,30 240,38 270,28 C300,18 330,32 360,22 L400,18" stroke="#00E5FF" strokeWidth="1.6" fill="none" />
+                      <path d="M0,95 C40,88 70,84 110,80 C150,76 190,70 230,62 C270,54 310,48 350,44 L400,40 L400,110 L0,110 Z" fill="url(#g2)" />
+                      <path d="M0,95 C40,88 70,84 110,80 C150,76 190,70 230,62 C270,54 310,48 350,44 L400,40" stroke="#FF2D87" strokeWidth="1.4" fill="none" />
+                      <circle cx="360" cy="22" r="4" fill="#00E5FF" />
+                      <circle cx="360" cy="22" r="9" fill="#00E5FF" opacity="0.2" />
+                    </svg>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: "var(--t-3)" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ width: 8, height: 2, background: "#00E5FF", borderRadius: 1 }}></span>
+                      {t("preview_chart_legend_viewers")}
+                    </span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ width: 8, height: 2, background: "#FF2D87", borderRadius: 1 }}></span>
+                      {t("preview_chart_legend_gifts")}
+                    </span>
+                    <span style={{ marginLeft: "auto", fontFamily: "var(--f-mono)" }}>{t("preview_chart_period")}</span>
+                  </div>
+                </main>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="phone">
+              <div className="phone-notch"></div>
+              <div className="phone-screen">
+                <div style={{ position: "absolute", top: 38, left: 16, right: 16, display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff", fontSize: 11, fontFamily: "var(--f-mono)" }}>
+                  <span>9:41</span>
+                  <span>●●●●</span>
+                </div>
+
+                <div style={{ position: "absolute", top: 70, left: 14, right: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span className="live-tag" style={{ padding: "4px 8px", fontSize: 10 }}>
+                    <span className="ld"></span>LIVE
+                  </span>
+                  <span style={{ background: "rgba(0,0,0,0.5)", color: "#fff", fontFamily: "var(--f-mono)", fontSize: 11, padding: "4px 10px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)" }}>
+                    <Icon name="users" size={11} color="#00E5FF" /> 12.4K
+                  </span>
+                </div>
+
+                <div style={{ position: "absolute", top: 110, left: 14, right: 14, display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#00E5FF,#FF2D87)", border: "2px solid #fff" }}></div>
+                  <div style={{ color: "#fff", fontSize: 13 }}>
+                    <div style={{ fontWeight: 600 }}>@tikke_demo</div>
+                    <div style={{ fontSize: 11, opacity: 0.7 }}>{t("preview_host_cat")}</div>
+                  </div>
+                </div>
+
+                <div style={{
+                  position: "absolute", top: 200, left: 14, right: 14,
+                  padding: "12px 14px", borderRadius: 14,
+                  background: "linear-gradient(135deg, rgba(255,45,135,0.6), rgba(124,58,237,0.6))",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  backdropFilter: "blur(8px)",
+                  color: "#fff"
+                }}>
+                  <div style={{ fontSize: 10, fontFamily: "var(--f-mono)", letterSpacing: 0.1, textTransform: "uppercase", opacity: 0.85 }}>
+                    🎁 NEW GIFT
+                  </div>
+                  <div style={{ fontSize: 14, marginTop: 4, fontWeight: 600 }}>
+                    kpop_fan → 🌹 ×10
+                  </div>
+                </div>
+
+                <div style={{
+                  position: "absolute", bottom: 90, left: 14, right: 14,
+                  display: "flex", flexDirection: "column", gap: 6,
+                  fontSize: 11
+                }}>
+                  {[
+                  { u: "minji", m: "🔥🔥🔥", c: "#FF7AB3" },
+                  { u: "soyeon", m: "Tikke ✨", c: "#A78BFA" },
+                  { u: "haruki", m: "こんばんは〜", c: "#FFC857", t: "👋" }].
+                  map((c, i) =>
+                  <div key={i} style={{
+                    padding: "6px 10px", borderRadius: 12,
+                    background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
+                    display: "flex", alignItems: "flex-start", gap: 6
+                  }}>
+                      <span style={{ width: 16, height: 16, borderRadius: "50%", background: AVATARS[i] }}></span>
+                      <div>
+                        <b style={{ color: c.c, marginRight: 4 }}>{c.u}</b>
+                        <span style={{ color: "#fff" }}>{c.m}</span>
+                        {c.t &&
+                      <div style={{ borderLeft: "2px solid #00E5FF", paddingLeft: 6, marginTop: 2, color: "rgba(167,233,255,0.95)" }}>
+                            {c.t}
+                          </div>
+                      }
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{
+                  position: "absolute", bottom: 14, left: 14, right: 14,
+                  display: "flex", gap: 8, alignItems: "center",
+                  padding: "8px 10px",
+                  background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 14
+                }}>
+                  <div style={{ flex: 1, height: 26, padding: "0 12px", borderRadius: 999, background: "rgba(255,255,255,0.08)", display: "flex", alignItems: "center", color: "rgba(255,255,255,0.6)", fontSize: 10 }}>
+                    ...
+                  </div>
+                  <span className="live-icon" style={{ color: "#FFC857", width: 26, height: 26 }}><Icon name="gift" size={13} /></span>
+                  <span className="live-icon" style={{ color: "#FF2D87", width: 26, height: 26 }}><Icon name="heart" size={13} /></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== STEPS ====================== */
+function Steps() {
+  const { t } = useT();
+  const steps = t("steps");
+  return (
+    <section className="section" id="how">
+      <div className="container">
+        <div className="section-eyebrow">
+          <Icon name="play" size={12} /> {t("steps_eyebrow")}
+        </div>
+        <h2 className="section-title">{t("steps_title")}</h2>
+        <p className="section-lead">{t("steps_lead")}</p>
+
+        <div className="steps">
+          {steps.map((s, i) =>
+          <div className="step" key={i}>
+              <div className="step-num">{String(i + 1).padStart(2, "0")}</div>
+              <h4>{s.h}</h4>
+              <p>{s.p}</p>
+              <span className="tag">⏱ {s.t}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== DOWNLOAD ====================== */
+function Download() {
+  const { t } = useT();
+  return (
+    <section className="section" id="download">
+      <div className="container">
+        <div className="download">
+          <div className="download-grid">
+            <div>
+              <div className="section-eyebrow" style={{ color: "rgb(209, 51, 233)", letterSpacing: "3.3px", lineHeight: "1.5", fontSize: "13px", opacity: "0.99", padding: "1px", margin: "0px 0px 18px", borderStyle: "solid", borderRadius: "128px", borderWidth: "0px", borderColor: "rgb(246, 246, 246)" }}>
+                <Icon name="download" size={12} /> {t("download_eyebrow")}
+              </div>
+              <h2>{t("download_h2")}</h2>
+              <p>{t("download_p")}</p>
+              <div className="download-actions">
+                <a
+                  className="btn lg btn-primary"
+                  href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.exe">
+                  
+                  <Icon name="download" size={16} /> {t("download_cta")}
+                </a>
+              </div>
+              <div className="download-meta">
+                <span>{t("download_meta_version")} <b>v0.8.2</b></span>
+                <span>{t("download_meta_updated")} <b>2026.05.12</b></span>
+                <span>{t("download_meta_size")} <b>92 MB</b></span>
+                <span>{t("download_meta_os")} <b>Windows · macOS</b></span>
+              </div>
+            </div>
+
+            <div className="platforms">
+              <a className="platform" href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke.dmg">
+                <span className="ic" style={{ color: "#fff" }}><Icon name="apple" size={18} /></span>
+                <div className="info">
+                  <span className="l">{t("download_platform_mac_l")}</span>
+                  <span className="n">{t("download_platform_mac_n")}</span>
+                </div>
+                <span className="arrow"><Icon name="arrow" size={14} /></span>
+              </a>
+              <a
+                className="platform"
+                href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.exe">
+                
+                <span className="ic" style={{ color: "#6DD5FF" }}><Icon name="windows" size={18} /></span>
+                <div className="info">
+                  <span className="l">{t("download_platform_win_l")}</span>
+                  <span className="n">{t("download_platform_win_n")}</span>
+                </div>
+                <span className="arrow"><Icon name="arrow" size={14} /></span>
+              </a>
+              <a className="platform" href="#">
+                <span className="ic" style={{ color: "#A78BFA" }}><Icon name="spark" size={18} /></span>
+                <div className="info">
+                  <span className="l">{t("download_platform_changes_l")}</span>
+                  <span className="n">{t("download_platform_changes_n")}</span>
+                </div>
+                <span className="arrow"><Icon name="arrow" size={14} /></span>
+              </a>
+              <a className="platform" href="#">
+                <span className="ic" style={{ color: "#FFC857" }}><Icon name="bell" size={18} /></span>
+                <div className="info">
+                  <span className="l">{t("download_platform_updates_l")}</span>
+                  <span className="n">{t("download_platform_updates_n")}</span>
+                </div>
+                <span className="arrow"><Icon name="arrow" size={14} /></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== PARTNER ====================== */
+function Partner() {
+  const { t } = useT();
+  return (
+    <section className="section" id="partner" style={{ paddingTop: 0 }}>
+      <div className="container">
+        <div className="partner">
+          <div className="partner-content">
+            <div className="partner-chips">
+              <span className="partner-chip" style={{ "--c": "#00E5FF" }}>
+                <span className="pdot"></span>{t("partner_chip_creator")}
+              </span>
+              <span className="partner-chip" style={{ "--c": "#FF2D87" }}>
+                <span className="pdot"></span>{t("partner_chip_host")}
+              </span>
+              <span className="partner-chip" style={{ "--c": "#7C3AED" }}>
+                <span className="pdot"></span>{t("partner_chip_agent")}
+              </span>
+            </div>
+            <h3>{t("partner_h")}</h3>
+            <p>{t("partner_p")}</p>
+          </div>
+          <a
+            className="btn lg btn-kakao"
+            href="https://open.kakao.com/o/sbGTDIYh"
+            target="_blank"
+            rel="noopener noreferrer">
+            
+            <Icon name="kakao" size={18} color="#181600" />
+            {t("partner_cta")}
+            <span className="arrow"><Icon name="arrow" size={16} color="#181600" /></span>
+          </a>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== FAQ ====================== */
+function FAQ() {
+  const { t } = useT();
+  const [open, setOpen] = useStateS(0);
+  const items = t("faq_items");
+  return (
+    <section className="section" id="faq">
+      <div className="container">
+        <div className="section-eyebrow">
+          <Icon name="spark" size={12} /> {t("faq_eyebrow")}
+        </div>
+        <h2 className="section-title">{t("faq_title")}</h2>
+        <p className="section-lead">{t("faq_lead")}</p>
+
+        <div className="faq-list">
+          {items.map((it, i) =>
+          <div className={"faq-item" + (open === i ? " open" : "")} key={i}>
+              <div className="faq-q" onClick={() => setOpen(open === i ? -1 : i)}>
+                <span>{it.q}</span>
+                <span className="icon-toggle"><Icon name="plus" size={16} /></span>
+              </div>
+              <div className="faq-a">{it.a}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ====================== FOOTER ====================== */
+function Footer() {
+  const { t } = useT();
+  return (
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <div className="brand">
+              <div className="brand-mark"></div>
+              <span className="brand-name">TIKKE</span>
+            </div>
+            <p>{t("footer_about")}</p>
+          </div>
+          <div className="footer-col">
+            <h5>{t("footer_product")}</h5>
+            <a href="#features">{t("footer_link_features")}</a>
+            <a href="#preview">{t("footer_link_preview")}</a>
+            <a href="#download">{t("footer_link_download")}</a>
+            <a href="#">{t("footer_link_changes")}</a>
+          </div>
+          <div className="footer-col">
+            <h5>{t("footer_resources")}</h5>
+            <a href="#how">{t("footer_link_how")}</a>
+            <a href="#faq">{t("footer_link_faq")}</a>
+            <a href="#">{t("footer_link_docs")}</a>
+            <a href="#">{t("footer_link_shortcuts")}</a>
+          </div>
+          <div className="footer-col">
+            <h5>{t("footer_community")}</h5>
+            <a href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener noreferrer">{t("footer_link_kakao")}</a>
+            <a href="#">{t("footer_link_contact")}</a>
+            <a href="#">{t("footer_link_feedback")}</a>
+            <a href="#">{t("footer_link_notice")}</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>{t("footer_copy")}</span>
+          <div className="socials">
+            <a href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener noreferrer" aria-label="KakaoTalk"><Icon name="kakao" size={14} /></a>
+            <a href="#" aria-label="X"><Icon name="x" size={14} /></a>
+          </div>
+        </div>
+      </div>
+    </footer>);
+
+}
+
+window.Nav = Nav;
+window.Hero = Hero;
+window.Marquee = Marquee;
+window.DemoVideo = DemoVideo;
+window.StickyCta = StickyCta;
+window.Features = Features;
+window.AppPreview = AppPreview;
+window.Steps = Steps;
+window.Download = Download;
+window.Partner = Partner;
+window.FAQ = FAQ;
+window.Footer = Footer;
