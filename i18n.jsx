@@ -6,12 +6,13 @@ const I18N = {
     nav_preview: "미리보기",
     nav_how: "사용법",
     nav_faq: "FAQ",
+    nav_guide: "가이드",
     nav_download: "다운로드",
 
     // Hero
     hero_pill: "TikTok LIVE 방송 툴킷",
     hero_h1: <>라이브 방송을<br /><span className="accent">한 단계 더</span> 영리하게.</>,
-    hero_sub: "Tikke는 TikTok LIVE에 바로 연결되는 데스크탑 방송 툴킷입니다. 채팅·선물·사운드·TTS·TikTok LIVE Studio 오버레이를 한 화면에서 — 더 풍성한 방송을 만들어보세요.",
+    hero_sub: "Tikke는 TikTok LIVE에 바로 연결되는 데스크탑 방송 툴킷입니다. 채팅·번역·선물 알림·오버레이는 기본, 리그 조각컷·타이머·dB 측정기·최고 후원자 랭킹까지 한 화면에서 다룰 수 있습니다.",
     hero_cta_download: "지금 다운로드",
     hero_cta_how: "사용법 보기",
     hero_stat1_v: "< 3분",
@@ -19,40 +20,68 @@ const I18N = {
     hero_stat2_v: "38개 언어",
     hero_stat2_l: "실시간 자동 번역",
     hero_stat3_v: "원클릭",
-    hero_stat3_l: "TikTok Live 자동 연결",
+    hero_stat3_l: "연결 버튼으로 라이브와 연결",
 
     // Marquee
     marquee: [
+      "리그 조각컷 실시간 조회",
       "채팅 자동 모더레이션",
-      "38개 언어 실시간 자막",
+      "타이머 오버레이 (카운트다운/업)",
+      "38개 언어 실시간 번역",
+      "최고 후원자 랭킹",
       "선물 ・ 팔로우 알림",
-      "커스텀 오버레이",
-      "원클릭 TikTok Live 연결",
-      "저지연 채팅 시그널",
+      "dB 측정기로 마이크 모니터링",
+      "원클릭 TikTok Live 수동 연결",
+      "커스텀 오버레이 무제한",
       "글로벌 시청자 인터랙션",
-      "방송 통계 대시보드",
     ],
 
     // Features
     features_eyebrow: "기능 / FEATURES",
     features_title: <>방송에 필요한 모든 것,<br />하나의 <em>컨트롤 룸</em>에.</>,
-    features_lead: "연결부터 모더레이션, 번역, 시각화까지 — Tikke가 라이브 방송의 잡일을 대신합니다.",
+    features_lead: "연결부터 모더레이션, 번역, 오버레이, 시청자 분석까지 — Tikke가 라이브 방송의 모든 잡일을 대신합니다.",
+
+    /* ─── 카테고리 라벨 ─── */
+    features_cat_broadcast: "라이브 운영 / Broadcast",
+    features_cat_overlay:   "오버레이 / On-Screen",
+    features_cat_content:   "콘텐츠 도구 / Content",
+    features_cat_ext:       "확장·통합 / Extensions",
+
+    /* ─── 기존 기능 ─── */
     feat_chat_h: "스마트 채팅 패널",
-    feat_chat_p: "스팸 필터, 키워드 강조, 답장 보낼 메시지 마킹 — 수천 명이 떠들어도 놓치지 않습니다.",
+    feat_chat_p: "스팸 필터, 키워드 강조, 답장 마킹 — 수천 명이 떠들어도 놓치지 않습니다.",
     feat_trans_h: "실시간 번역 자막",
-    feat_trans_p: "글로벌 시청자의 채팅을 자동 감지해 한국어로 옮기고, 호스트가 읽기 쉬운 자막으로 정리합니다.",
+    feat_trans_p: "38개 언어를 자동 감지해 한국어로 옮기고, 호스트가 읽기 쉬운 자막으로 정리합니다.",
     feat_connect_h: "원클릭 라이브 연결",
-    feat_connect_p: "계정 인증 한 번이면 라이브 세션을 자동 감지해 연결합니다.",
-    feat_gift_h: "선물 ・ 팔로우 알림",
+    feat_connect_p: "TikTok ID 입력 후 연결 버튼을 누르면 라이브 세션과 즉시 연결됩니다.",
+    feat_gift_h: "선물·팔로우 알림",
     feat_gift_p: "큰 화면 알림, 사운드, 누적 통계 — 인터랙션을 놓치지 마세요.",
     feat_overlay_h: "커스텀 오버레이",
-    feat_overlay_p: "채팅·선물 위젯, 목표 진행바 — 드래그로 화면에 자유롭게 배치.",
-    feat_sound_h: "사운드 라이브러리",
-    feat_sound_p: "이벤트별 효과음 라이브러리. 아이테미별 트리거 설정 가능.",
+    feat_overlay_p: "채팅·선물 위젯, 목표 진행바 — TikTok LIVE Studio에 드래그로 연결.",
+    feat_sound_h: "사운드 라이브러리·브라우저",
+    feat_sound_p: "이벤트별 효과음, 커뮤니티 사운드 탐색·미리듣기, 아이템별 트리거.",
     feat_tts_h: "TTS 음성 안내",
-    feat_tts_p: "채팅·선물·팔로우를 실시간으로 읽어주는 TTS. 다국어 보이스와 MVP 시청자별 전용 보이스까지.",
+    feat_tts_p: "채팅·선물·팔로우를 실시간 읽어주는 TTS. 다국어 보이스와 MVP 시청자별 전용 보이스.",
     feat_command_h: "챗 명령어",
-    feat_command_p: "!명령어로 사운드·오버레이·이벤트 트리거. 시청자와의 인터랙션을 자동화합니다.",
+    feat_command_p: "!명령어로 사운드·오버레이·이벤트 트리거. 시청자 인터랙션 자동화.",
+
+    /* ─── 신규 기능 ─── */
+    feat_dashboard_h: "라이브 대시보드",
+    feat_dashboard_p: "시청자·신규 팔로우·선물 합계·평균 체류 — 핵심 지표를 한 화면에서 실시간으로.",
+    feat_league_h: "리그 조각컷 ⚡",
+    feat_league_p: "TikTok LIVE A·B·C·D 리그의 상위 1·10·20% 컷오프를 5분마다 자동 갱신. 본인 리그는 자동 감지·강조.",
+    feat_timer_h: "타이머 오버레이",
+    feat_timer_p: "카운트다운/카운트업, +1·3·5·10분 빠른 추가, 글자·배경 색 커스텀까지. 방송 화면에 바로 송출.",
+    feat_topdonor_h: "최고 후원자 랭킹",
+    feat_topdonor_p: "오늘·이번 방송의 누적 후원 랭킹을 오버레이로. 시청자 후원 동기를 자연스럽게.",
+    feat_dbmeter_h: "dB 측정기",
+    feat_dbmeter_p: "마이크 입력 데시벨을 실시간 시각화. 너무 작거나 너무 큰 음량을 즉시 캐치.",
+    feat_translation_overlay_h: "번역 자막 오버레이",
+    feat_translation_overlay_p: "라이브 화면 위에 깔끔한 번역 자막을 띄워 외국 시청자도 흐름을 따라올 수 있게.",
+    feat_integrations_h: "외부 연동",
+    feat_integrations_p: "OBS, TikTok LIVE Studio, GTA5 모드, 게이밍 도구까지 — 외부 시스템과 매끄럽게 연결.",
+    feat_gift_browser_h: "선물 브라우저",
+    feat_gift_browser_p: "TikTok의 모든 선물을 검색·미리보기. 받은 선물의 시각 효과·코인을 한눈에 비교.",
     feat_chat_tag_reply: "답장 대기",
     feat_chat_tag_faq: "FAQ",
     feat_chat_tag_block: "차단",
@@ -101,7 +130,7 @@ const I18N = {
     steps: [
       { h: "다운로드", p: "Windows · macOS 빌드를 받아 설치합니다.", t: "20초" },
       { h: "앱 실행", p: "처음 실행 시 환경을 자동으로 점검합니다.", t: "10초" },
-      { h: "TikTok Live 연결", p: "@닉네임 입력 후 한 번만 인증하면 끝.", t: "30초" },
+      { h: "TikTok Live 연결", p: "@제외 TikTok ID 입력 후 한 번만 인증하면 끝.", t: "30초" },
       { h: "기능 설정", p: "번역, 오버레이, 알림, 단축키를 취향대로.", t: "2분" },
       { h: "방송 시작", p: "Tikke를 켠 상태로 평소처럼 라이브하면 됩니다.", t: "1초" },
     ],
@@ -110,7 +139,7 @@ const I18N = {
     download_eyebrow: "다운로드 / GET STARTED",
     download_h2: <>지금 바로 시작하세요.<br /><span className="dl-accent">데스크톱에서, 바로.</span></>,
     download_p: "Windows · macOS에서 동작하는 Tikke를 설치하고, TikTok 계정으로 한 번 인증하면 끝. 다음 라이브부터 바로 적용됩니다.",
-    download_cta: "최신 버전 받기 (v0.8.2)",
+    download_cta: "최신 버전 받기",
     download_meta_version: "버전",
     download_meta_updated: "업데이트",
     download_meta_size: "크기",
@@ -137,7 +166,7 @@ const I18N = {
     faq_title: <>궁금한 것, <em>먼저</em> 답해드릴게요.</>,
     faq_lead: "여기서 답을 못 찾으셨다면 카카오톡 오픈채팅에서 함께 이야기해요.",
     faq_items: [
-      { q: "TikTok Live에서 정말 사용할 수 있나요?", a: "네. Tikke는 TikTok 라이브 인터페이스에 연결되도록 설계되었습니다. 계정 인증 한 번이면 라이브 세션을 자동으로 감지합니다." },
+      { q: "TikTok Live에서 정말 사용할 수 있나요?", a: "네. Tikke는 TikTok 라이브 인터페이스와 연결되도록 설계되었습니다. TikTok ID를 입력한 뒤 연결 버튼을 눌러 라이브 세션과 도킹합니다." },
       { q: "모바일에서도 사용할 수 있나요?", a: "현재 Tikke는 Windows와 macOS 데스크톱 앱으로만 제공됩니다. 휴대폰으로 라이브 방송 중이라면, 같은 네트워크의 데스크톱이나 노트북에서 Tikke를 실행해 채팅·번역·통계를 함께 관리하는 방식을 권장합니다. 모바일 전용 앱은 현재 로드맵에 포함되어 있지 않습니다." },
       { q: "지금 사용 가능한가요? 가격 정책은 어떻게 되나요?", a: "지금은 베타 기간으로, 다운로드 후 바로 사용할 수 있습니다. 향후 정식 출시 시점에는 사용 규모와 기능에 따라 무료 / 유료 플랜이 함께 제공될 예정입니다." },
       { q: "별도 앱 설치가 필요한가요?", a: "네, Tikke 데스크톱 앱을 설치해야 합니다. 설치 후 TikTok 계정으로 한 번 로그인하면 그 다음부터는 자동 연결됩니다." },
@@ -160,7 +189,7 @@ const I18N = {
     sticky_tagline: "지금 바로 다운로드",
 
     // Footer
-    footer_about: "TikTok LIVE 스트리머를 위한 데스크톡 방송 툴킷. 채팅·선물·사운드·TTS·오버레이를 한 화면에서.",
+    footer_about: "TikTok LIVE 스트리머를 위한 데스크톱 방송 툴킷. 채팅·선물·사운드·TTS·오버레이를 한 화면에서.",
     footer_product: "Product",
     footer_resources: "Resources",
     footer_community: "Community",
@@ -184,6 +213,7 @@ const I18N = {
     nav_preview: "Preview",
     nav_how: "How it works",
     nav_faq: "FAQ",
+    nav_guide: "Guide",
     nav_download: "Download",
 
     hero_pill: "TikTok LIVE broadcast toolkit",
@@ -196,7 +226,7 @@ const I18N = {
     hero_stat2_v: "38 languages",
     hero_stat2_l: "real-time auto translate",
     hero_stat3_v: "One click",
-    hero_stat3_l: "TikTok Live auto-connect",
+    hero_stat3_l: "TikTok Live one-click connect",
 
     marquee: [
       "Auto chat moderation",
@@ -217,7 +247,7 @@ const I18N = {
     feat_trans_h: "Live translated captions",
     feat_trans_p: "Detect viewer chats in any language and surface them as clean, readable captions for the host.",
     feat_connect_h: "One-click live connect",
-    feat_connect_p: "Authenticate once and Tikke auto-detects every live session.",
+    feat_connect_p: "Enter your TikTok ID and hit the connect button to attach to your active live session.",
     feat_gift_h: "Gift & follow alerts",
     feat_gift_p: "Big-screen notifications, sound cues, cumulative analytics — never miss an interaction.",
     feat_overlay_h: "Custom overlays",
@@ -285,7 +315,7 @@ const I18N = {
     steps: [
       { h: "Download", p: "Get the Windows or macOS build and install.", t: "20s" },
       { h: "Launch", p: "Tikke runs an auto-check on first launch.", t: "10s" },
-      { h: "Connect TikTok Live", p: "Enter your handle, authenticate once, done.", t: "30s" },
+      { h: "Connect TikTok Live", p: "Enter your TikTok ID (without @), authenticate once, done.", t: "30s" },
       { h: "Configure", p: "Tune translation, overlays, alerts, hotkeys.", t: "2m" },
       { h: "Go live", p: "Keep Tikke open and stream as usual.", t: "1s" },
     ],
@@ -293,7 +323,7 @@ const I18N = {
     download_eyebrow: "GET STARTED",
     download_h2: <>Start right now.<br /><span className="dl-accent">From your desktop.</span></>,
     download_p: "Install Tikke for Windows or macOS, authenticate with TikTok once, and you're set. It activates from your next live onward.",
-    download_cta: "Get latest build (v0.8.2)",
+    download_cta: "Get latest build",
     download_meta_version: "Version",
     download_meta_updated: "Updated",
     download_meta_size: "Size",
@@ -318,10 +348,10 @@ const I18N = {
     faq_title: <>Common questions, <em>answered</em>.</>,
     faq_lead: "Can't find what you're looking for? Drop into our KakaoTalk open chat.",
     faq_items: [
-      { q: "Does this really work with TikTok Live?", a: "Yes. Tikke is built to connect with the TikTok live interface — authenticate once and it auto-detects your live sessions." },
+      { q: "Does this really work with TikTok Live?", a: "Yes. Tikke is built to connect with the TikTok live interface — enter your TikTok ID and hit connect to attach to your active live session." },
       { q: "Can I use Tikke on mobile?", a: "Tikke is currently desktop-only (Windows and macOS). If you're streaming from your phone, run Tikke on a nearby desktop or laptop on the same network to manage chat, translation, and analytics in parallel. A native mobile app isn't on the roadmap right now." },
       { q: "Is it usable today? What about pricing?", a: "Tikke is in beta — download and use it right away. At public launch we'll offer both free and paid plans depending on scale and features." },
-      { q: "Do I need a separate app installed?", a: "Yes, you install the Tikke desktop app. After a one-time TikTok sign-in, future sessions auto-connect." },
+      { q: "Do I need a separate app installed?", a: "Yes, you install the Tikke desktop app. After entering your TikTok ID once, future sessions reconnect with a single click." },
       { q: "How do I actually use it while streaming?", a: "Keep Tikke running in the background during your live. Chat, gifts, translation, and analytics show in dedicated windows; overlays can be added to TikTok LIVE Studio as a link source." },
       { q: "Where is my chat data stored?", a: "Locally by default. Cloud sync is optional, and you can export or fully delete your data at any time." },
     ],
@@ -350,6 +380,7 @@ const I18N = {
     nav_preview: "プレビュー",
     nav_how: "使い方",
     nav_faq: "FAQ",
+    nav_guide: "ガイド",
     nav_download: "ダウンロード",
 
     hero_pill: "TikTok LIVE 配信ツールキット",
@@ -362,7 +393,7 @@ const I18N = {
     hero_stat2_v: "38言語",
     hero_stat2_l: "リアルタイム自動翻訳",
     hero_stat3_v: "ワンクリック",
-    hero_stat3_l: "TikTok Live自動接続",
+    hero_stat3_l: "TikTok Liveワンクリック接続",
 
     marquee: [
       "チャット自動モデレーション",
@@ -383,7 +414,7 @@ const I18N = {
     feat_trans_h: "リアルタイム翻訳字幕",
     feat_trans_p: "海外視聴者のチャットを自動検出して翻訳し、ホストが読みやすい字幕として整理します。",
     feat_connect_h: "ワンクリック接続",
-    feat_connect_p: "アカウント認証を一度すれば、ライブセッションを自動検出して接続します。",
+    feat_connect_p: "TikTok IDを入力して接続ボタンを押すと、ライブセッションにすぐ接続されます。",
     feat_gift_h: "ギフト ・ フォロー通知",
     feat_gift_p: "大きな画面通知、サウンド、累積統計 — インタラクションを逃しません。",
     feat_overlay_h: "カスタムオーバーレイ",
@@ -451,7 +482,7 @@ const I18N = {
     steps: [
       { h: "ダウンロード", p: "Windows · macOSビルドを取得してインストール。", t: "20秒" },
       { h: "アプリ起動", p: "初回起動時に環境を自動チェックします。", t: "10秒" },
-      { h: "TikTok Live接続", p: "ハンドルを入力して一度認証すれば完了。", t: "30秒" },
+      { h: "TikTok Live接続", p: "TikTok ID(@を除く)を入力して一度認証すれば完了。", t: "30秒" },
       { h: "機能設定", p: "翻訳、オーバーレイ、通知、ショートカットを調整。", t: "2分" },
       { h: "配信開始", p: "Tikkeを起動したまま普段通り配信するだけ。", t: "1秒" },
     ],
@@ -459,7 +490,7 @@ const I18N = {
     download_eyebrow: "ダウンロード / GET STARTED",
     download_h2: <>今すぐ始めよう。<br /><span className="dl-accent">デスクトップで、すぐに。</span></>,
     download_p: "Windows · macOSで動くTikkeをインストールし、TikTokアカウントで一度認証すれば完了。次のライブから自動で適用されます。",
-    download_cta: "最新ビルドを取得 (v0.8.2)",
+    download_cta: "最新ビルドを取得",
     download_meta_version: "バージョン",
     download_meta_updated: "更新日",
     download_meta_size: "サイズ",
@@ -484,10 +515,10 @@ const I18N = {
     faq_title: <>気になる点を <em>先に</em> お答えします。</>,
     faq_lead: "答えが見つからない場合はKakaoTalkオープンチャットでお声がけください。",
     faq_items: [
-      { q: "本当にTikTok Liveで使えますか?", a: "はい。TikkeはTikTokのライブインターフェースに接続するよう設計されています。一度認証すれば、以降のライブセッションを自動検出します。" },
+      { q: "本当にTikTok Liveで使えますか?", a: "はい。TikkeはTikTokのライブインターフェースに接続するよう設計されています。TikTok IDを入力して接続ボタンを押すと、現在配信中のライブセッションに接続します。" },
       { q: "モバイルでも使えますか?", a: "現在TikkeはWindowsとmacOSのデスクトップアプリのみ提供しています。スマホで配信中の場合は、同じネットワーク上のデスクトップやノートPCでTikkeを動かして、チャット・翻訳・統計を並行管理する運用がおすすめです。モバイル専用アプリは現時点ではロードマップに入っていません。" },
       { q: "今使えますか? 価格はどうなりますか?", a: "現在はベータ期間で、ダウンロード後すぐに使えます。正式リリース時には利用規模や機能に応じて無料/有料プランを提供する予定です。" },
-      { q: "別途アプリのインストールは必要?", a: "はい、Tikkeデスクトップアプリのインストールが必要です。一度TikTokアカウントでサインインすれば、以降は自動接続します。" },
+      { q: "別途アプリのインストールは必要?", a: "はい、Tikkeデスクトップアプリのインストールが必要です。TikTok IDを一度入力すれば、次回からはワンクリックで再接続できます。" },
       { q: "配信中はどう使いますか?", a: "ライブを開始した状態でTikkeをバックグラウンドで動かしてください。チャット・ギフト・翻訳・統計が個別ウィンドウに表示され、オーバーレイはTikTok LIVE Studioにリンクソースとして追加できます。" },
       { q: "チャットデータはどこに保存されますか?", a: "デフォルトではローカルにのみ保存されます。クラウド同期は任意で、いつでもデータをエクスポート、または完全削除できます。" },
     ],
@@ -516,6 +547,7 @@ const I18N = {
     nav_preview: "预览",
     nav_how: "使用方法",
     nav_faq: "常见问题",
+    nav_guide: "指南",
     nav_download: "下载",
 
     hero_pill: "TikTok LIVE 直播工具箱",
@@ -528,7 +560,7 @@ const I18N = {
     hero_stat2_v: "38 种语言",
     hero_stat2_l: "实时自动翻译",
     hero_stat3_v: "一键",
-    hero_stat3_l: "TikTok Live 自动连接",
+    hero_stat3_l: "TikTok Live 一键连接",
 
     marquee: [
       "聊天自动审核",
@@ -549,7 +581,7 @@ const I18N = {
     feat_trans_h: "实时翻译字幕",
     feat_trans_p: "自动识别海外观众的留言并翻译,以清晰可读的字幕呈现给主播。",
     feat_connect_h: "一键直播连接",
-    feat_connect_p: "账号验证一次,Tikke 即可自动识别每一场直播。",
+    feat_connect_p: "输入 TikTok ID 后点击连接按钮,立即连接到直播会话。",
     feat_gift_h: "礼物 ・ 关注提示",
     feat_gift_p: "大屏通知、提示音、累计统计 — 不错过任何互动。",
     feat_overlay_h: "自定义叠加层",
@@ -617,7 +649,7 @@ const I18N = {
     steps: [
       { h: "下载", p: "获取 Windows · macOS 版本并安装。", t: "20 秒" },
       { h: "启动应用", p: "首次启动时自动检查环境。", t: "10 秒" },
-      { h: "连接 TikTok Live", p: "输入账号一次验证,即可完成。", t: "30 秒" },
+      { h: "连接 TikTok Live", p: "输入 TikTok ID(不含 @),一次验证即可完成。", t: "30 秒" },
       { h: "功能设置", p: "按喜好配置翻译、叠加层、提示和快捷键。", t: "2 分钟" },
       { h: "开始直播", p: "保持 Tikke 运行,像往常一样开播即可。", t: "1 秒" },
     ],
@@ -625,7 +657,7 @@ const I18N = {
     download_eyebrow: "下载 / GET STARTED",
     download_h2: <>立即开始。<br /><span className="dl-accent">就在你的桌面上。</span></>,
     download_p: "在 Windows · macOS 上安装 Tikke,使用 TikTok 账号完成一次验证即可。下次直播开始即自动生效。",
-    download_cta: "获取最新版本 (v0.8.2)",
+    download_cta: "获取最新版本",
     download_meta_version: "版本",
     download_meta_updated: "更新",
     download_meta_size: "大小",
@@ -650,10 +682,10 @@ const I18N = {
     faq_title: <>常见疑问,<em>先行</em> 解答。</>,
     faq_lead: "如果没有找到你想要的答案,欢迎在 KakaoTalk 开放聊天中与我们交流。",
     faq_items: [
-      { q: "真的可以在 TikTok Live 上使用吗?", a: "可以。Tikke 设计为连接 TikTok 直播接口 — 验证一次后即可自动识别后续直播会话。" },
+      { q: "真的可以在 TikTok Live 上使用吗?", a: "可以。Tikke 设计为连接 TikTok 直播接口 — 输入 TikTok ID 并点击连接按钮,即可连接到正在进行的直播会话。" },
       { q: "可以在手机上使用吗?", a: "Tikke 目前仅提供 Windows 与 macOS 桌面版本。如果你正在使用手机直播,建议在同一网络下的桌面或笔记本上运行 Tikke,并行管理聊天、翻译与数据。目前没有专门的手机应用计划。" },
       { q: "现在可以使用吗?价格如何?", a: "Tikke 现处于公测阶段,下载后即可使用。正式发布时,我们将根据使用规模与功能提供免费/付费方案。" },
-      { q: "需要安装额外的应用吗?", a: "是的,需要安装 Tikke 桌面应用。完成一次 TikTok 登录后,后续会自动连接。" },
+      { q: "需要安装额外的应用吗?", a: "是的,需要安装 Tikke 桌面应用。一次性输入 TikTok ID 后,下次只需一键即可重新连接。" },
       { q: "在直播中如何使用?", a: "保持 Tikke 在后台运行。聊天、礼物、翻译和数据将在独立窗口中显示,叠加层可作为链接源添加到 TikTok LIVE Studio。" },
       { q: "我的聊天数据保存在哪里?", a: "默认仅保存在本地。云同步为可选项,你可以随时导出或彻底删除数据。" },
     ],
@@ -678,6 +710,35 @@ const I18N = {
   },
 };
 
+/* ========== Content override system (managed via /admin.html) ========== */
+window.__TIKKE_OVERRIDES = window.__TIKKE_OVERRIDES || {};
+
+window.applyContentOverrides = function (overrides) {
+  window.__TIKKE_OVERRIDES = overrides || {};
+  window.dispatchEvent(new CustomEvent("tikke-overrides-changed"));
+};
+
+function getOverride(lang, key) {
+  const ov = window.__TIKKE_OVERRIDES;
+  if (!ov) return undefined;
+  const langOv = ov[lang];
+  if (langOv && Object.prototype.hasOwnProperty.call(langOv, key)) {
+    const v = langOv[key];
+    if (v !== "" && v != null) return v;
+  }
+  return undefined;
+}
+
+function renderOverrideValue(v) {
+  if (typeof v === "string" && /<[a-z][\s\S]*>/i.test(v)) {
+    return React.createElement("span", {
+      style: { display: "contents" },
+      dangerouslySetInnerHTML: { __html: v }
+    });
+  }
+  return v;
+}
+
 const LangContext = React.createContext({ lang: "ko", setLang: () => {}, t: (k) => k });
 
 function detectLang() {
@@ -694,10 +755,17 @@ function detectLang() {
 
 function LangProvider({ children }) {
   const [lang, setLangState] = React.useState(detectLang);
+  const [ovBump, setOvBump] = React.useState(0);
 
   React.useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  React.useEffect(() => {
+    const handler = () => setOvBump((n) => n + 1);
+    window.addEventListener("tikke-overrides-changed", handler);
+    return () => window.removeEventListener("tikke-overrides-changed", handler);
+  }, []);
 
   const setLang = React.useCallback((l) => {
     setLangState(l);
@@ -705,10 +773,13 @@ function LangProvider({ children }) {
   }, []);
 
   const t = React.useCallback((key) => {
+    const ov = getOverride(lang, key);
+    if (ov !== undefined) return renderOverrideValue(ov);
     const dict = I18N[lang] || I18N.ko;
     const v = dict[key];
     return v !== undefined ? v : (I18N.ko[key] !== undefined ? I18N.ko[key] : key);
-  }, [lang]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, ovBump]);
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>

@@ -60,6 +60,18 @@ const Icon = ({ name, size = 18, color = "currentColor", stroke = 1.6 }) => {
       return <svg {...p}><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
     case "bell":
       return <svg {...p}><path d="M18 16a4 4 0 0 1-1-3v-3a5 5 0 0 0-10 0v3a4 4 0 0 1-1 3Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>;
+    case "trophy":
+      return <svg {...p}><path d="M6 9H4a2 2 0 0 1-2-2V5h4"/><path d="M18 9h2a2 2 0 0 0 2-2V5h-4"/><path d="M6 5h12v6a6 6 0 0 1-12 0V5z"/><path d="M9 21h6"/><path d="M12 15v6"/></svg>;
+    case "crown":
+      return <svg {...p}><path d="M2 8l4 8h12l4-8-5 3-5-7-5 7-5-3z"/><path d="M5 20h14"/></svg>;
+    case "gauge":
+      return <svg {...p}><path d="M12 14a2 2 0 1 0 2-2"/><path d="M12 14l-4-4"/><path d="M3.5 17a10 10 0 1 1 17 0"/><path d="M3 21h18"/></svg>;
+    case "chart":
+      return <svg {...p}><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/><circle cx="7" cy="14" r="1.5" fill={color}/><circle cx="11" cy="10" r="1.5" fill={color}/><circle cx="15" cy="14" r="1.5" fill={color}/></svg>;
+    case "plug":
+      return <svg {...p}><path d="M12 22v-5"/><path d="M9 7V2"/><path d="M15 7V2"/><path d="M6 13V8h12v5a5 5 0 0 1-10 0 5 5 0 0 1-2 0"/></svg>;
+    case "search":
+      return <svg {...p}><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>;
     default: return null;
   }
 };

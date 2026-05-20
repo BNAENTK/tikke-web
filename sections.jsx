@@ -1,5 +1,76 @@
 // All page sections (i18n-aware)
-const { useState: useStateS } = React;
+const { useState: useStateS, useEffect: useEffectS } = React;
+
+/* ---- GitHub latest release info (version / date / size) ---- */
+const GH_REPO = "BNAENTK/tikke-download";
+const GH_CACHE_KEY = "tikke_gh_release_v1";
+const GH_CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+function formatDateYMD(iso) {
+  try {
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}.${m}.${day}`;
+  } catch (e) {
+    return null;
+  }
+}
+
+function formatSizeMB(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return null;
+  const mb = bytes / (1024 * 1024);
+  return `${Math.round(mb)} MB`;
+}
+
+function pickAssetSize(assets) {
+  if (!Array.isArray(assets) || assets.length === 0) return 0;
+  // Prefer the Windows installer; fall back to the largest asset.
+  const exe = assets.find((a) => /Tikke-?Setup.*\.exe$/i.test(a.name || ""));
+  if (exe && exe.size) return exe.size;
+  const dmg = assets.find((a) => /\.dmg$/i.test(a.name || ""));
+  if (dmg && dmg.size) return dmg.size;
+  return assets.reduce((m, a) => Math.max(m, a.size || 0), 0);
+}
+
+function useLatestRelease() {
+  const [info, setInfo] = React.useState(() => {
+    try {
+      const raw = localStorage.getItem(GH_CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (Date.now() - parsed.ts < GH_CACHE_TTL_MS) return parsed.data;
+    } catch (e) {}
+    return null;
+  });
+
+  useEffectS(() => {
+    let cancelled = false;
+    fetch(`https://api.github.com/repos/${GH_REPO}/releases/latest`, {
+      headers: { Accept: "application/vnd.github+json" }
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("gh fetch failed"))))
+      .then((data) => {
+        if (cancelled) return;
+        const next = {
+          version: data.tag_name || data.name || null,
+          updated: formatDateYMD(data.published_at || data.created_at),
+          size: formatSizeMB(pickAssetSize(data.assets))
+        };
+        setInfo(next);
+        try {
+          localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: next }));
+        } catch (e) {}
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return info;
+}
 
 /* ====================== NAV ====================== */
 function Nav() {
@@ -15,6 +86,7 @@ function Nav() {
           <a href="#features">{t("nav_features")}</a>
           <a href="#preview">{t("nav_preview")}</a>
           <a href="#how">{t("nav_how")}</a>
+          <a href="guide/index.html">{t("nav_guide")}</a>
           <a href="#faq">{t("nav_faq")}</a>
         </nav>
         <div className="nav-cta">
@@ -129,6 +201,43 @@ function StickyCta() {
 function Features() {
   const { t } = useT();
   const days = t("feat_gift_days");
+
+  // 컴팩트 카드들의 카테고리 정의 — 신규 기능은 isNew 표시
+  const CATS = [
+    {
+      key: "features_cat_broadcast",
+      items: [
+        { icon: "link",      h: "feat_connect_h",   p: "feat_connect_p",   color: "var(--pink)" },
+        { icon: "chart",     h: "feat_dashboard_h", p: "feat_dashboard_p", color: "var(--green)", isNew: true },
+        { icon: "trophy",    h: "feat_league_h",    p: "feat_league_p",    color: "var(--gold)",  isNew: true },
+      ]
+    },
+    {
+      key: "features_cat_overlay",
+      items: [
+        { icon: "timer",     h: "feat_timer_h",              p: "feat_timer_p",              color: "var(--cyan)",   isNew: true },
+        { icon: "crown",     h: "feat_topdonor_h",           p: "feat_topdonor_p",           color: "var(--gold)",   isNew: true },
+        { icon: "translate", h: "feat_translation_overlay_h", p: "feat_translation_overlay_p", color: "var(--violet)" },
+        { icon: "gauge",     h: "feat_dbmeter_h",            p: "feat_dbmeter_p",            color: "var(--pink)",   isNew: true },
+      ]
+    },
+    {
+      key: "features_cat_content",
+      items: [
+        { icon: "mic",     h: "feat_tts_h",     p: "feat_tts_p",     color: "var(--gold)" },
+        { icon: "music",   h: "feat_sound_h",   p: "feat_sound_p",   color: "var(--green)" },
+        { icon: "command", h: "feat_command_h", p: "feat_command_p", color: "var(--violet)" },
+      ]
+    },
+    {
+      key: "features_cat_ext",
+      items: [
+        { icon: "plug",   h: "feat_integrations_h", p: "feat_integrations_p", color: "var(--cyan)", isNew: true },
+        { icon: "search", h: "feat_gift_browser_h", p: "feat_gift_browser_p", color: "var(--pink)", isNew: true },
+      ]
+    }
+  ];
+
   return (
     <section className="section" id="features">
       <div className="container">
@@ -138,6 +247,7 @@ function Features() {
         <h2 className="section-title">{t("features_title")}</h2>
         <p className="section-lead">{t("features_lead")}</p>
 
+        {/* 1. Featured (rich visuals) — Chat / Translation / Gift / Overlay */}
         <div className="features-grid">
           <div className="feature lg" style={{ "--c": "var(--cyan)" }}>
             <div className="ic"><Icon name="chat" size={20} /></div>
@@ -191,13 +301,7 @@ function Features() {
             </div>
           </div>
 
-          <div className="feature md" style={{ "--c": "var(--pink)" }}>
-            <div className="ic"><Icon name="link" size={20} /></div>
-            <h3>{t("feat_connect_h")}</h3>
-            <p>{t("feat_connect_p")}</p>
-          </div>
-
-          <div className="feature md" style={{ "--c": "var(--pink)" }}>
+          <div className="feature lg" style={{ "--c": "var(--pink)" }}>
             <div className="ic"><Icon name="gift" size={20} /></div>
             <h3>{t("feat_gift_h")}</h3>
             <p>{t("feat_gift_p")}</p>
@@ -211,7 +315,7 @@ function Features() {
             </div>
           </div>
 
-          <div className="feature md" style={{ "--c": "var(--cyan)" }}>
+          <div className="feature lg" style={{ "--c": "var(--cyan)" }}>
             <div className="ic"><Icon name="layout" size={20} /></div>
             <h3>{t("feat_overlay_h")}</h3>
             <p>{t("feat_overlay_p")}</p>
@@ -223,24 +327,25 @@ function Features() {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="feature sm" style={{ "--c": "var(--gold)" }}>
-            <div className="ic"><Icon name="mic" size={20} /></div>
-            <h3>{t("feat_tts_h")}</h3>
-            <p>{t("feat_tts_p")}</p>
-          </div>
-
-          <div className="feature sm" style={{ "--c": "var(--green)" }}>
-            <div className="ic"><Icon name="music" size={20} /></div>
-            <h3>{t("feat_sound_h")}</h3>
-            <p>{t("feat_sound_p")}</p>
-          </div>
-
-          <div className="feature sm" style={{ "--c": "var(--violet)" }}>
-            <div className="ic"><Icon name="command" size={20} /></div>
-            <h3>{t("feat_command_h")}</h3>
-            <p>{t("feat_command_p")}</p>
-          </div>
+        {/* 2. More features — categorical compact cards */}
+        <div className="features-more">
+          {CATS.map((cat) => (
+            <div className="features-cat-block" key={cat.key}>
+              <h4 className="features-cat-label">{t(cat.key)}</h4>
+              <div className="features-mini-grid">
+                {cat.items.map((it) => (
+                  <div className="feature compact" key={it.h} style={{ "--c": it.color }}>
+                    <div className="ic"><Icon name={it.icon} size={18} /></div>
+                    {it.isNew && <span className="badge-new">NEW</span>}
+                    <h3>{t(it.h)}</h3>
+                    <p>{t(it.p)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>);
@@ -490,6 +595,10 @@ function Steps() {
 /* ====================== DOWNLOAD ====================== */
 function Download() {
   const { t } = useT();
+  const release = useLatestRelease();
+  const version = (release && release.version) || "v0.8.2";
+  const updated = (release && release.updated) || "2026.05.12";
+  const size = (release && release.size) || "92 MB";
   return (
     <section className="section" id="download">
       <div className="container">
@@ -506,13 +615,13 @@ function Download() {
                   className="btn lg btn-primary"
                   href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.exe">
                   
-                  <Icon name="download" size={16} /> {t("download_cta")}
+                  <Icon name="download" size={16} /> {t("download_cta")} ({version})
                 </a>
               </div>
               <div className="download-meta">
-                <span>{t("download_meta_version")} <b>v0.8.2</b></span>
-                <span>{t("download_meta_updated")} <b>2026.05.12</b></span>
-                <span>{t("download_meta_size")} <b>92 MB</b></span>
+                <span>{t("download_meta_version")} <b>{version}</b></span>
+                <span>{t("download_meta_updated")} <b>{updated}</b></span>
+                <span>{t("download_meta_size")} <b>{size}</b></span>
                 <span>{t("download_meta_os")} <b>Windows · macOS</b></span>
               </div>
             </div>
@@ -648,21 +757,28 @@ function Footer() {
             <a href="#features">{t("footer_link_features")}</a>
             <a href="#preview">{t("footer_link_preview")}</a>
             <a href="#download">{t("footer_link_download")}</a>
-            <a href="#">{t("footer_link_changes")}</a>
+            <a href="https://github.com/BNAENTK/tikke-download/releases" target="_blank" rel="noopener noreferrer">{t("footer_link_changes")}</a>
           </div>
           <div className="footer-col">
             <h5>{t("footer_resources")}</h5>
-            <a href="#how">{t("footer_link_how")}</a>
+            <a href="guide/index.html">가이드</a>
+            <a href="guide/getting-started.html">{t("footer_link_how")}</a>
             <a href="#faq">{t("footer_link_faq")}</a>
-            <a href="#">{t("footer_link_docs")}</a>
-            <a href="#">{t("footer_link_shortcuts")}</a>
+            <a href="guide/troubleshooting.html">{t("footer_link_docs")}</a>
           </div>
           <div className="footer-col">
             <h5>{t("footer_community")}</h5>
             <a href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener noreferrer">{t("footer_link_kakao")}</a>
-            <a href="#">{t("footer_link_contact")}</a>
-            <a href="#">{t("footer_link_feedback")}</a>
-            <a href="#">{t("footer_link_notice")}</a>
+            <a href="contact.html">{t("footer_link_contact")}</a>
+            <a href="about.html">소개</a>
+            <a href="contact.html">{t("footer_link_feedback")}</a>
+          </div>
+          <div className="footer-col">
+            <h5>회사</h5>
+            <a href="about.html">Tikke 소개</a>
+            <a href="privacy.html">개인정보처리방침</a>
+            <a href="terms.html">이용약관</a>
+            <a href="contact.html">문의하기</a>
           </div>
         </div>
         <div className="footer-bottom">
