@@ -25,14 +25,14 @@ function V1Scene({ showCaption }) {
         {({ progress }) => (
           <div style={{ position: 'absolute', inset: 0 }}>
             {[
-              { y: 380, x: 80, n: 'user_1', m: 'asdfasdf', c: '#FF7AB3', d: 0.1 },
-              { y: 520, x: 140, n: 'spammer', m: 'follow back???', c: '#FFC857', d: 0.0 },
-              { y: 660, x: 60, n: 'unknown', m: '???? 무슨말?', c: '#A78BFA', d: 0.2 },
-              { y: 800, x: 160, n: 'kpop_fan', m: 'hi from 🇯🇵', c: '#00F2EA', d: 0.15 },
-              { y: 940, x: 80, n: 'sneaky', m: 'CHECK BIO 👀', c: '#FF0050', d: 0.3 },
-              { y: 1080, x: 140, n: 'random', m: '뭐라는거임 ㅋㅋ', c: '#FF7AB3', d: 0.25 },
-              { y: 1220, x: 60, n: 'haruki', m: 'こんばんは!!', c: '#00FFA3', d: 0.18 },
-              { y: 1360, x: 160, n: 'spam_99', m: 'click link', c: '#FF0050', d: 0.4 },
+              { y: 460, x: 80, n: 'user_1', m: 'asdfasdf', c: '#FF7AB3', d: 0.1 },
+              { y: 600, x: 140, n: 'spammer', m: 'follow back???', c: '#FFC857', d: 0.0 },
+              { y: 740, x: 60, n: 'unknown', m: '???? 무슨말?', c: '#A78BFA', d: 0.2 },
+              { y: 880, x: 160, n: 'kpop_fan', m: 'hi from 🇯🇵', c: '#00F2EA', d: 0.15 },
+              { y: 1020, x: 80, n: 'sneaky', m: 'CHECK BIO 👀', c: '#FF0050', d: 0.3 },
+              { y: 1160, x: 140, n: 'random', m: '뭐라는거임 ㅋㅋ', c: '#FF7AB3', d: 0.25 },
+              { y: 1300, x: 60, n: 'haruki', m: 'こんばんは!!', c: '#00FFA3', d: 0.18 },
+              { y: 1440, x: 160, n: 'spam_99', m: 'click link', c: '#FF0050', d: 0.4 },
             ].map((c, i) => {
               const localT = clamp(progress * 2 - c.d, 0, 1);
               const opacity = Easing.easeOutCubic(clamp(localT * 3, 0, 1));
@@ -53,11 +53,11 @@ function V1Scene({ showCaption }) {
               textAlign: 'center',
               fontFamily: 'Pretendard Variable',
               fontWeight: 900,
-              fontSize: 140,
+              fontSize: 130,
               letterSpacing: '-0.04em',
-              lineHeight: 1,
+              lineHeight: 1.1,
               color: '#fff',
-              textShadow: `0 0 40px ${NEON.pink}, 0 4px 24px rgba(0,0,0,0.6)`,
+              textShadow: `0 0 36px ${NEON.pink}, 0 4px 20px rgba(0,0,0,0.6)`,
               opacity: Easing.easeOutBack(clamp(progress * 1.5, 0, 1)),
             }}>
               감당 안 돼?
@@ -402,16 +402,18 @@ function V1Scene({ showCaption }) {
         {({ localTime }) => {
           const features = [
             { t: 0.0, label: '실시간 채팅 모더레이션', color: NEON.cyan, icon: '💬' },
-            { t: 0.7, label: '38개 언어 자동 번역', color: NEON.violet, icon: '🌐' },
-            { t: 1.4, label: '선물·팔로우 알림', color: NEON.pink, icon: '🎁' },
-            { t: 2.1, label: '커맨드 자동 응답', color: NEON.green, icon: '⚡' },
-            { t: 2.8, label: '사운드보드 · 단축키', color: NEON.gold, icon: '🎵' },
-            { t: 3.5, label: '대시보드 · 통계', color: NEON.cyan, icon: '📊' },
+            { t: 0.45, label: '38개 언어 자동 번역', color: NEON.violet, icon: '🌐' },
+            { t: 0.9, label: '선물·팔로우 알림', color: NEON.pink, icon: '🎁' },
+            { t: 1.35, label: '커맨드 자동 응답', color: NEON.green, icon: '⚡' },
+            { t: 1.8, label: '🏆 리그 조각컷 실시간', color: NEON.gold, icon: '🏆' },
+            { t: 2.25, label: '⏱ 타이머 오버레이', color: NEON.cyan, icon: '⏱' },
+            { t: 2.7, label: '👑 최고 후원자 랭킹', color: NEON.violet, icon: '👑' },
+            { t: 3.15, label: '🎚 dB 측정기', color: NEON.pink, icon: '🎚' },
           ];
           return (
             <div style={{ position: 'absolute', inset: 0 }}>
               <div style={{
-                position: 'absolute', left: 60, right: 60, top: 280,
+                position: 'absolute', left: 60, right: 60, top: 240,
                 fontFamily: 'JetBrains Mono', fontSize: 26,
                 color: '#fff', letterSpacing: '0.16em', textTransform: 'uppercase',
                 opacity: Easing.easeOutCubic(clamp(localTime / 0.4, 0, 1)),
@@ -426,7 +428,7 @@ function V1Scene({ showCaption }) {
                   <div key={i} style={{
                     position: 'absolute',
                     left: 60 + col * 500,
-                    top: 420 + row * 360,
+                    top: 360 + row * 360,
                     width: 460, height: 320,
                     padding: 28,
                     borderRadius: 26,
@@ -442,7 +444,7 @@ function V1Scene({ showCaption }) {
                     <div style={{ fontSize: 72 }}>{f.icon}</div>
                     <div style={{
                       fontFamily: 'Pretendard Variable',
-                      fontWeight: 700, fontSize: 32,
+                      fontWeight: 700, fontSize: 30,
                       color: '#fff', lineHeight: 1.2,
                     }}>{f.label}</div>
                   </div>

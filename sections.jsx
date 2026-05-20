@@ -49,21 +49,21 @@ function useLatestRelease() {
     let cancelled = false;
     fetch(`https://api.github.com/repos/${GH_REPO}/releases/latest`, {
       headers: { Accept: "application/vnd.github+json" }
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("gh fetch failed"))))
-      .then((data) => {
-        if (cancelled) return;
-        const next = {
-          version: data.tag_name || data.name || null,
-          updated: formatDateYMD(data.published_at || data.created_at),
-          size: formatSizeMB(pickAssetSize(data.assets))
-        };
-        setInfo(next);
-        try {
-          localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: next }));
-        } catch (e) {}
-      })
-      .catch(() => {});
+    }).
+    then((r) => r.ok ? r.json() : Promise.reject(new Error("gh fetch failed"))).
+    then((data) => {
+      if (cancelled) return;
+      const next = {
+        version: data.tag_name || data.name || null,
+        updated: formatDateYMD(data.published_at || data.created_at),
+        size: formatSizeMB(pickAssetSize(data.assets))
+      };
+      setInfo(next);
+      try {
+        localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: next }));
+      } catch (e) {}
+    }).
+    catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -169,10 +169,23 @@ function DemoVideo() {
   return (
     <section className="video-section" id="demo">
       <div className="container">
-        <div className="video-card">
-          <div className="video-poster"></div>
-          <DemoPlayer t={t} />
-        </div>
+      <div className="video-card">
+        <iframe
+            src="promo-loop.html"
+            title="Tikke 홍보 영상"
+            className="promo-iframe"
+            style={{
+              position: "absolute",
+              top: 16, left: 16, right: 16, bottom: 16,
+              width: "calc(100% - 32px)",
+              height: "calc(100% - 32px)",
+              border: 0,
+              borderRadius: 16,
+              background: "#0a0a0a"
+            }}
+            allow="autoplay">
+          </iframe>
+      </div>
       </div>
     </section>);
 }
@@ -204,39 +217,39 @@ function Features() {
 
   // 컴팩트 카드들의 카테고리 정의 — 신규 기능은 isNew 표시
   const CATS = [
-    {
-      key: "features_cat_broadcast",
-      items: [
-        { icon: "link",      h: "feat_connect_h",   p: "feat_connect_p",   color: "var(--pink)" },
-        { icon: "chart",     h: "feat_dashboard_h", p: "feat_dashboard_p", color: "var(--green)", isNew: true },
-        { icon: "trophy",    h: "feat_league_h",    p: "feat_league_p",    color: "var(--gold)",  isNew: true },
-      ]
-    },
-    {
-      key: "features_cat_overlay",
-      items: [
-        { icon: "timer",     h: "feat_timer_h",              p: "feat_timer_p",              color: "var(--cyan)",   isNew: true },
-        { icon: "crown",     h: "feat_topdonor_h",           p: "feat_topdonor_p",           color: "var(--gold)",   isNew: true },
-        { icon: "translate", h: "feat_translation_overlay_h", p: "feat_translation_overlay_p", color: "var(--violet)" },
-        { icon: "gauge",     h: "feat_dbmeter_h",            p: "feat_dbmeter_p",            color: "var(--pink)",   isNew: true },
-      ]
-    },
-    {
-      key: "features_cat_content",
-      items: [
-        { icon: "mic",     h: "feat_tts_h",     p: "feat_tts_p",     color: "var(--gold)" },
-        { icon: "music",   h: "feat_sound_h",   p: "feat_sound_p",   color: "var(--green)" },
-        { icon: "command", h: "feat_command_h", p: "feat_command_p", color: "var(--violet)" },
-      ]
-    },
-    {
-      key: "features_cat_ext",
-      items: [
-        { icon: "plug",   h: "feat_integrations_h", p: "feat_integrations_p", color: "var(--cyan)", isNew: true },
-        { icon: "search", h: "feat_gift_browser_h", p: "feat_gift_browser_p", color: "var(--pink)", isNew: true },
-      ]
-    }
-  ];
+  {
+    key: "features_cat_broadcast",
+    items: [
+    { icon: "link", h: "feat_connect_h", p: "feat_connect_p", color: "var(--pink)" },
+    { icon: "chart", h: "feat_dashboard_h", p: "feat_dashboard_p", color: "var(--green)", isNew: true },
+    { icon: "trophy", h: "feat_league_h", p: "feat_league_p", color: "var(--gold)", isNew: true }]
+
+  },
+  {
+    key: "features_cat_overlay",
+    items: [
+    { icon: "timer", h: "feat_timer_h", p: "feat_timer_p", color: "var(--cyan)", isNew: true },
+    { icon: "crown", h: "feat_topdonor_h", p: "feat_topdonor_p", color: "var(--gold)", isNew: true },
+    { icon: "translate", h: "feat_translation_overlay_h", p: "feat_translation_overlay_p", color: "var(--violet)" },
+    { icon: "gauge", h: "feat_dbmeter_h", p: "feat_dbmeter_p", color: "var(--pink)", isNew: true }]
+
+  },
+  {
+    key: "features_cat_content",
+    items: [
+    { icon: "mic", h: "feat_tts_h", p: "feat_tts_p", color: "var(--gold)" },
+    { icon: "music", h: "feat_sound_h", p: "feat_sound_p", color: "var(--green)" },
+    { icon: "command", h: "feat_command_h", p: "feat_command_p", color: "var(--violet)" }]
+
+  },
+  {
+    key: "features_cat_ext",
+    items: [
+    { icon: "plug", h: "feat_integrations_h", p: "feat_integrations_p", color: "var(--cyan)", isNew: true },
+    { icon: "search", h: "feat_gift_browser_h", p: "feat_gift_browser_p", color: "var(--pink)", isNew: true }]
+
+  }];
+
 
   return (
     <section className="section" id="features">
@@ -331,21 +344,21 @@ function Features() {
 
         {/* 2. More features — categorical compact cards */}
         <div className="features-more">
-          {CATS.map((cat) => (
-            <div className="features-cat-block" key={cat.key}>
+          {CATS.map((cat) =>
+          <div className="features-cat-block" key={cat.key}>
               <h4 className="features-cat-label">{t(cat.key)}</h4>
               <div className="features-mini-grid">
-                {cat.items.map((it) => (
-                  <div className="feature compact" key={it.h} style={{ "--c": it.color }}>
+                {cat.items.map((it) =>
+              <div className="feature compact" key={it.h} style={{ "--c": it.color }}>
                     <div className="ic"><Icon name={it.icon} size={18} /></div>
                     {it.isNew && <span className="badge-new">NEW</span>}
                     <h3>{t(it.h)}</h3>
                     <p>{t(it.p)}</p>
                   </div>
-                ))}
+              )}
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </section>);
@@ -596,9 +609,9 @@ function Steps() {
 function Download() {
   const { t } = useT();
   const release = useLatestRelease();
-  const version = (release && release.version) || "v0.8.2";
-  const updated = (release && release.updated) || "2026.05.12";
-  const size = (release && release.size) || "92 MB";
+  const version = release && release.version || "v0.8.2";
+  const updated = release && release.updated || "2026.05.12";
+  const size = release && release.size || "92 MB";
   return (
     <section className="section" id="download">
       <div className="container">

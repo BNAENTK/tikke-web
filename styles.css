@@ -1580,7 +1580,10 @@ html[lang="zh"] .platform-recommended::before { content: "推荐"; }
     radial-gradient(120% 80% at 0% 0%, rgba(0,229,255,0.20) 0%, transparent 55%),
     radial-gradient(120% 80% at 100% 100%, rgba(255,45,135,0.22) 0%, transparent 55%),
     linear-gradient(180deg, #0f0a1a 0%, #050308 100%);
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
   border: 1px solid var(--hairline-hi);
   box-shadow:
     0 60px 120px -40px rgba(0,0,0,0.7),

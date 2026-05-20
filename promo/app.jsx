@@ -32,8 +32,52 @@ const VARIANTS = {
 
 function PromoApp() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const variant = VARIANTS[t.variant] || VARIANTS.v1;
+
+  // Loop mode: cycle v1 → v2 → v3 every variant.duration seconds.
+  const loopMode = React.useMemo(() => {
+    try {
+      const qs = new URLSearchParams(location.search);
+      if (qs.get('loop') === '1') return true;
+      const meta = document.querySelector('meta[name="tikke-loop"]');
+      if (meta && meta.content === '1') return true;
+    } catch (e) {}
+    return false;
+  }, []);
+
+  // Forced variant via URL param (?v=v1) or meta tag — used by single-variant HTML files.
+  const forcedVariant = React.useMemo(() => {
+    try {
+      const qs = new URLSearchParams(location.search);
+      const qv = qs.get('v');
+      if (qv && VARIANTS[qv]) return qv;
+      const meta = document.querySelector('meta[name="tikke-variant"]');
+      const mv = meta && meta.content;
+      if (mv && VARIANTS[mv]) return mv;
+    } catch (e) {}
+    return null;
+  }, []);
+
+  // Local loop index (starts at v1 → cycles)
+  const [loopIdx, setLoopIdx] = React.useState(0);
+  const loopOrder = ['v1', 'v2', 'v3'];
+
+  React.useEffect(() => {
+    if (!loopMode) return;
+    const current = VARIANTS[loopOrder[loopIdx]];
+    const dur = (current.duration || 30) * 1000;
+    const id = setTimeout(() => {
+      setLoopIdx((i) => (i + 1) % loopOrder.length);
+    }, dur);
+    return () => clearTimeout(id);
+  }, [loopMode, loopIdx]);
+
+  const activeKey = loopMode
+    ? loopOrder[loopIdx]
+    : (forcedVariant || t.variant);
+  const variant = VARIANTS[activeKey] || VARIANTS.v1;
   const Scene = variant.Scene;
+
+  const hideChrome = loopMode || forcedVariant;
 
   return (
     <div style={{
@@ -43,7 +87,8 @@ function PromoApp() {
       color: '#fff',
       fontFamily: 'Pretendard Variable, system-ui, sans-serif',
     }}>
-      {/* Top bar */}
+      {/* Top bar (hidden in embed/loop mode) */}
+      {!hideChrome && (
       <header style={{
         flex: '0 0 auto',
         padding: '18px 24px',
@@ -82,13 +127,14 @@ function PromoApp() {
           </div>
         </div>
 
-        {/* Variant tabs */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          marginLeft: 24, flex: 1,
-        }}>
-          {Object.entries(VARIANTS).map(([key, v]) => {
-            const active = t.variant === key;
+        {/* Variant tabs (hidden in single-variant mode) */}
+        {!forcedVariant && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            marginLeft: 24, flex: 1,
+          }}>
+          {!forcedVariant && Object.entries(VARIANTS).map(([key, v]) => {
+            const active = activeKey === key;
             return (
               <button
                 key={key}
@@ -113,7 +159,8 @@ function PromoApp() {
               </button>
             );
           })}
-        </div>
+          </div>
+        )}
 
         <div style={{
           fontFamily: 'Pretendard Variable', fontSize: 13,
@@ -121,6 +168,7 @@ function PromoApp() {
           maxWidth: 360, textAlign: 'right',
         }}>{variant.blurb}</div>
       </header>
+      )}
 
       {/* Stage container */}
       <div style={{
@@ -131,8 +179,8 @@ function PromoApp() {
           height={1920}
           duration={variant.duration}
           background="#06060c"
-          persistKey={`tikke-promo-${t.variant}`}
-          key={t.variant}
+          persistKey={`tikke-promo-${activeKey}`}
+          key={activeKey}
         >
           <Scene showCaption={t.showCaptions} />
           <SafeAreaGuides show={t.showSafeArea} />
@@ -140,15 +188,19 @@ function PromoApp() {
       </div>
 
       {/* Tweaks panel */}
+      {/* Tweaks panel (hidden in embed/loop mode) */}
+      {!hideChrome && (
       <TweaksPanel title="Tweaks · 영상 옵션">
-        <TweakSection label="버전">
-          <TweakRadio
-            label="시안"
-            value={t.variant}
-            options={['v1', 'v2', 'v3']}
-            onChange={(v) => setTweak('variant', v)}
-          />
-        </TweakSection>
+        {!forcedVariant && (
+          <TweakSection label="버전">
+            <TweakRadio
+              label="시안"
+              value={t.variant}
+              options={['v1', 'v2', 'v3']}
+              onChange={(v) => setTweak('variant', v)}
+            />
+          </TweakSection>
+        )}
         <TweakSection label="자막">
           <TweakToggle
             label="한국어 자막"
@@ -164,6 +216,7 @@ function PromoApp() {
           />
         </TweakSection>
       </TweaksPanel>
+      )}
     </div>
   );
 }

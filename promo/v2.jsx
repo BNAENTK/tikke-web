@@ -42,7 +42,7 @@ function V2Scene({ showCaption }) {
                     {['민지  화면 안 보이는데?', 'soyeon  지금 뭐하는거에요', 'jiwon  답 좀!'].map((c, i) => (
                       <div key={i} style={{
                         position: 'absolute',
-                        left: 60, top: 580 + i * 140,
+                        left: 60, top: 740 + i * 140,
                         padding: '18px 24px',
                         borderRadius: 16,
                         background: 'rgba(20,20,28,0.7)',
