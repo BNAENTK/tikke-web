@@ -7,7 +7,7 @@ const { useState: useStateS, useEffect: useEffectS } = React;
    Tikketone(자매 제품) URL.
    배포되면 이 값만 업데이트하면 모든 링크에 반영됩니다.
 */
-const TIKKETONE_URL = "#"; // TODO: Tikketone 배포 후 URL 입력 (예: "https://www.tikketone.kr/")
+const TIKKETONE_URL = "/tikketone/"; // tikke.kr 도메인 내 서브경로 (AdSense 같은 사이트로 포함)
 
 /* ---- GitHub latest release info (version / date / size) ---- */
 const GH_REPO = "BNAENTK/tikke-download";

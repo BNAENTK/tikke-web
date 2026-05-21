@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tikketone — 내 목소리로 채팅을 읽어드립니다</title>
+<meta name="description" content="TikTok LIVE 시청자 채팅을 클로닝된 내 목소리로 실시간 TTS 변환. Tikke 앱과 연동.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.tikke.kr/tikketone/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tikke">
+<meta property="og:title" content="Tikketone — 내 목소리로 채팅을 읽어드립니다">
+<meta property="og:description" content="TikTok LIVE 시청자 채팅을 클로닝된 내 목소리로 실시간 TTS 변환. Tikke 앱의 자매 서비스.">
+<meta property="og:url" content="https://www.tikke.kr/tikketone/">
+<meta property="og:image" content="https://www.tikke.kr/og-image.png">
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1658572145633986" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-1658572145633986">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --bg2: #0d0d14;
+    --bg3: #12121c;
+    --purple: #a855f7;
+    --purple-dim: rgba(168,85,247,0.15);
+    --purple-glow: rgba(168,85,247,0.4);
+    --teal: #14b8a6;
+    --teal-dim: rgba(20,184,166,0.12);
+    --teal-glow: rgba(20,184,166,0.35);
+    --text: #e8e8f0;
+    --text-muted: #6b6b80;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--purple);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(168,85,247,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:has(a:hover) .cursor { background: var(--teal); transform: translate(-50%,-50%) scale(1.5); }
+  body:has(a:hover) .cursor-ring { border-color: rgba(20,184,166,0.5); transform: translate(-50%,-50%) scale(1.3); }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(168,85,247,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(168,85,247,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,5,8,0.8);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--text);
+  }
+
+  .logo-diamond {
+    width: 32px; height: 32px;
+    position: relative;
+  }
+  .logo-diamond svg { width: 100%; height: 100%; }
+
+  .nav-wordmark {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .nav-wordmark span { color: var(--purple); }
+
+  .nav-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    border: 1px solid rgba(20,184,166,0.3);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 24px 80px;
+    text-align: center;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-glow-1 {
+    position: absolute;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(ellipse, rgba(168,85,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow-2 {
+    position: absolute;
+    bottom: 0; right: -10%;
+    width: 500px; height: 400px;
+    background: radial-gradient(ellipse, rgba(20,184,166,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--purple);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.35s forwards;
+  }
+  .hero-title .line-2 {
+    background: linear-gradient(90deg, var(--purple), var(--teal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 400;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.6;
+    margin: 28px auto 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.65s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--purple);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 32px rgba(168,85,247,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 48px rgba(168,85,247,0.5);
+  }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 16px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+  /* WAVEFORM ANIMATION */
+  .waveform {
+    display: flex; align-items: center; gap: 3px;
+    height: 20px;
+  }
+  .waveform span {
+    display: block;
+    width: 3px;
+    background: currentColor;
+    border-radius: 2px;
+    animation: wave 1.2s ease-in-out infinite;
+  }
+  .waveform span:nth-child(1) { animation-delay: 0s; }
+  .waveform span:nth-child(2) { animation-delay: 0.1s; }
+  .waveform span:nth-child(3) { animation-delay: 0.2s; }
+  .waveform span:nth-child(4) { animation-delay: 0.3s; }
+  .waveform span:nth-child(5) { animation-delay: 0.2s; }
+  .waveform span:nth-child(6) { animation-delay: 0.1s; }
+  .waveform span:nth-child(7) { animation-delay: 0s; }
+
+  @keyframes wave {
+    0%, 100% { height: 4px; }
+    50% { height: 18px; }
+  }
+
+  /* DEMO VISUAL */
+  .hero-visual {
+    margin-top: 72px;
+    width: 100%; max-width: 760px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s 0.85s forwards;
+  }
+
+  .terminal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(168,85,247,0.1);
+  }
+
+  .terminal-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .terminal-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto; margin-right: auto;
+    transform: translateX(-20px);
+  }
+
+  .terminal-body {
+    padding: 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    text-align: left;
+  }
+
+  .chat-line {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+  }
+  .chat-line:last-child { border-bottom: none; }
+
+  .chat-user { color: var(--purple); font-weight: 500; min-width: 100px; }
+  .chat-msg { color: var(--text); }
+  .chat-tts {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--teal);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .chat-line:nth-child(1) { animation: fadeIn 0.4s 1.2s forwards; }
+  .chat-line:nth-child(2) { animation: fadeIn 0.4s 1.8s forwards; }
+  .chat-line:nth-child(3) { animation: fadeIn 0.4s 2.4s forwards; }
+  .chat-line:nth-child(4) { animation: fadeIn 0.4s 3.0s forwards; }
+
+  /* FEATURES */
+  .section {
+    position: relative; z-index: 1;
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 64px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .feature-card:hover { border-color: rgba(168,85,247,0.3); }
+  .feature-card:hover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--purple-dim);
+    pointer-events: none;
+  }
+
+  .feature-card:nth-child(2):hover { border-color: rgba(20,184,166,0.3); }
+  .feature-card:nth-child(2):hover::before { background: var(--teal-dim); }
+  .feature-card:nth-child(4):hover { border-color: rgba(20,184,166,0.3); }
+  .feature-card:nth-child(4):hover::before { background: var(--teal-dim); }
+
+  .feature-card:first-child { border-radius: 12px 0 0 0; }
+  .feature-card:nth-child(2) { border-radius: 0 12px 0 0; }
+  .feature-card:nth-child(3) { border-radius: 0 0 0 12px; }
+  .feature-card:last-child { border-radius: 0 0 12px 0; }
+
+  .feature-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+  }
+  .feature-icon.purple { background: var(--purple-dim); color: var(--purple); }
+  .feature-icon.teal { background: var(--teal-dim); color: var(--teal); }
+
+  .feature-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  /* FLOW SECTION */
+  .flow-section {
+    position: relative; z-index: 1;
+    padding: 0 48px 120px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .flow-steps {
+    display: flex;
+    gap: 0;
+    position: relative;
+  }
+  .flow-steps::before {
+    content: '';
+    position: absolute;
+    top: 40px; left: 40px; right: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--purple), var(--teal));
+    opacity: 0.3;
+  }
+
+  .flow-step {
+    flex: 1;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .flow-num {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+  }
+  .flow-step:first-child .flow-num { border-color: rgba(168,85,247,0.4); color: var(--purple); }
+  .flow-step:last-child .flow-num { border-color: rgba(20,184,166,0.4); color: var(--teal); }
+
+  .flow-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .flow-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* REQUIREMENTS */
+  .req-section {
+    position: relative; z-index: 1;
+    padding: 0 48px 120px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .req-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+
+  .req-icon { color: var(--purple); flex-shrink: 0; margin-top: 2px; }
+  .req-label { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; letter-spacing: 0.05em; }
+  .req-value { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* CTA SECTION */
+  .cta-section {
+    position: relative; z-index: 1;
+    padding: 0 48px 160px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 80px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -60%; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(168,85,247,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-title {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .cta-sub {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto; margin-right: auto;
+  }
+
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, var(--purple), #7c3aed);
+    color: #fff;
+    text-decoration: none;
+    padding: 18px 40px;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    box-shadow: 0 0 60px rgba(168,85,247,0.35), 0 20px 40px rgba(0,0,0,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-download:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 80px rgba(168,85,247,0.5), 0 30px 60px rgba(0,0,0,0.5);
+  }
+
+  .download-meta {
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .footer-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-link {
+    color: var(--teal);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--text); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .section, .flow-section, .req-section, .cta-section { padding-left: 24px; padding-right: 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card:first-child { border-radius: 12px 12px 0 0; }
+    .feature-card:nth-child(2) { border-radius: 0; }
+    .feature-card:nth-child(3) { border-radius: 0; }
+    .feature-card:last-child { border-radius: 0 0 12px 12px; }
+    .flow-steps { flex-direction: column; gap: 32px; }
+    .flow-steps::before { display: none; }
+    .req-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-diamond">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M16 2 L30 16 L16 30 L2 16 Z" fill="url(#lg)" />
+        <defs>
+          <linearGradient id="lg" x1="2" y1="16" x2="30" y2="16" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#a855f7"/>
+            <stop offset="1" stop-color="#14b8a6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Tikket<span>one</span></span>
+  </a>
+  <div class="nav-badge">v0.1.0 BETA</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="hero-eyebrow">TikTok LIVE 보이스 클로닝 TTS 엔진</div>
+
+  <h1 class="hero-title">
+    내 목소리로<br>
+    <span class="line-2" style="font-size: 106px; opacity: 1; font-weight: 600; line-height: 1.1">채팅을 읽어드립니다</span>
+  </h1>
+
+  <p class="hero-sub">
+    TikTok LIVE 시청자 채팅을 클로닝된 내 목소리로 실시간 변환.<br>
+    Tikke 앱과 연동하여 완전 자동 운영.
+  </p>
+
+  <div class="hero-cta">
+    <a href="https://github.com/BNAENTK/tikketone-download/releases/latest/download/Tikketone.Setup.0.1.0.exe" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12L3 7h3V2h4v5h3L8 12zM2 14h12v-1.5H2V14z"/></svg>
+      Windows 다운로드
+    </a>
+    <a href="https://tikke.kr" class="btn-secondary">
+      Tikke 앱 →
+    </a>
+  </div>
+
+  <div class="hero-visual">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">Tikketone — 실시간 채팅 TTS</span>
+      </div>
+      <div class="terminal-body">
+        <div class="chat-line">
+          <span class="chat-user">viewer_01</span>
+          <span class="chat-msg">안녕하세요! 오늘 방송 기대돼요 🎉</span>
+          <span class="chat-tts">
+            <div class="waveform">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            TTS 재생 중
+          </span>
+        </div>
+        <div class="chat-line">
+          <span class="chat-user">tikke_fan</span>
+          <span class="chat-msg">목소리 진짜 신기하다</span>
+          <span class="chat-tts">
+            <div class="waveform">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            TTS 재생 중
+          </span>
+        </div>
+        <div class="chat-line">
+          <span class="chat-user">live_watcher</span>
+          <span class="chat-msg">클로닝 목소리가 진짜랑 똑같아요</span>
+          <span class="chat-tts">
+            <div class="waveform">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            TTS 재생 중
+          </span>
+        </div>
+        <div class="chat-line">
+          <span class="chat-user">super_chat</span>
+          <span class="chat-msg">이 기술 어디서 만든 거예요?? 대박</span>
+          <span class="chat-tts">
+            <div class="waveform">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            TTS 재생 중
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-label">핵심 기능</div>
+    <h2 class="section-title">방송을 위한<br>최고의 TTS 엔진</h2>
+  </div>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-num">01</div>
+      <div class="feature-icon purple">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="feature-title">CosyVoice 2 한국어 특화</div>
+      <div class="feature-desc">알리바바 CosyVoice 2 기반 제로샷 보이스 클로닝. 5~10초 음성 샘플만으로 내 목소리를 완벽하게 재현합니다.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-icon teal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <div class="feature-title">GPU 로컬 추론 — 완전 오프라인</div>
+      <div class="feature-desc">클라우드 없이 내 PC의 NVIDIA GPU로 직접 추론. 개인정보 보호, 지연시간 최소화, 월 구독 없음.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-icon purple">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+      </div>
+      <div class="feature-title">Tikke 앱과 원클릭 연동</div>
+      <div class="feature-desc">Tikke 앱에서 TTS 엔진을 Tikketone으로 선택하면 끝. 별도 설정 없이 실시간 채팅 읽기가 시작됩니다.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-icon teal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="feature-title">실시간 채팅 TTS</div>
+      <div class="feature-desc">채팅이 오는 즉시 처리. 큐 기반 자동 재생으로 방송 중 모든 채팅을 내 목소리로 자연스럽게 읽어드립니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="flow-section">
+  <div class="reveal">
+    <div class="section-label">사용 방법</div>
+    <h2 class="section-title" style="margin-bottom:64px">3단계로 시작</h2>
+  </div>
+  <div class="flow-steps reveal">
+    <div class="flow-step">
+      <div class="flow-num">01</div>
+      <div class="flow-title">목소리 등록</div>
+      <div class="flow-desc">5~10초 음성을 녹음하여 업로드. Tikketone이 자동으로 클로닝 모델 생성.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">02</div>
+      <div class="flow-title">엔진 초기화</div>
+      <div class="flow-desc">Tikketone 앱에서 CosyVoice 2 엔진을 선택하고 초기화. 모델 다운로드 ~1.5GB.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">03</div>
+      <div class="flow-title">Tikke 연동</div>
+      <div class="flow-desc">Tikke 앱 TTS 설정에서 Tikketone 선택. 이제 채팅이 내 목소리로 읽힙니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section class="req-section">
+  <div class="reveal">
+    <div class="section-label">시스템 요구사항</div>
+    <h2 class="section-title" style="margin-bottom:40px">설치 전 확인</h2>
+  </div>
+  <div class="req-grid reveal">
+    <div class="req-card">
+      <div class="req-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>
+        </svg>
+      </div>
+      <div>
+        <div class="req-label">운영체제</div>
+        <div class="req-value">Windows 10/11 64-bit</div>
+      </div>
+    </div>
+    <div class="req-card">
+      <div class="req-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+          <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="req-label">GPU</div>
+        <div class="req-value">NVIDIA (CUDA 지원)</div>
+      </div>
+    </div>
+    <div class="req-card">
+      <div class="req-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="req-label">런타임</div>
+        <div class="req-value">Python 3.12</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <div class="cta-box">
+    <h2 class="cta-title">지금 무료로<br>시작하세요</h2>
+    <p class="cta-sub">설치부터 첫 TTS까지 10분이면 충분합니다. Tikke 앱과 함께 더 강력한 방송을 경험하세요.</p>
+    <a href="https://github.com/BNAENTK/tikketone-download/releases/latest/download/Tikketone.Setup.0.1.0.exe" class="btn-download">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M10 14l-5-5h3V3h4v6h3L10 14zM3 16h14v-1.5H3V16z"/>
+      </svg>
+      Tikketone 다운로드
+    </a>
+    <div class="download-meta">Windows 64-bit · v0.1.0 · 무료</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+      <path d="M16 2 L30 16 L16 30 L2 16 Z" fill="url(#lg2)" />
+      <defs>
+        <linearGradient id="lg2" x1="2" y1="16" x2="30" y2="16" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#a855f7"/><stop offset="1" stop-color="#14b8a6"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    Tikketone
+  </div>
+  <div class="footer-copy">
+    © 2026 Tikketone &nbsp;|&nbsp; <a href="https://tikke.kr" class="footer-link">tikke.kr</a>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
