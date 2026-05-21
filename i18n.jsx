@@ -82,6 +82,8 @@ const I18N = {
     feat_integrations_p: "OBS, TikTok LIVE Studio, GTA5 모드, 게이밍 도구까지 — 외부 시스템과 매끄럽게 연결.",
     feat_gift_browser_h: "선물 브라우저",
     feat_gift_browser_p: "TikTok의 모든 선물을 검색·미리보기. 받은 선물의 시각 효과·코인을 한눈에 비교.",
+    feat_tikketone_h: "음성 클로닝 (Tikketone)",
+    feat_tikketone_p: "내 목소리를 클로닝해 시청자 채팅을 실시간 TTS로 읽어주는 자매 서비스. Tikke와 매끄럽게 연동.",
     feat_chat_tag_reply: "답장 대기",
     feat_chat_tag_faq: "FAQ",
     feat_chat_tag_block: "차단",

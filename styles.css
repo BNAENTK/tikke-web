@@ -808,6 +808,101 @@ button { font-family: inherit; }
   margin-bottom: 8px;
 }
 
+/* === Tikketone (자매 제품) 링크 === */
+.nav-tikketone {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(20, 184, 166, 0.08));
+  border: 1px solid rgba(168, 85, 247, 0.30);
+  color: #c8b8f0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition: all .2s;
+}
+.nav-tikketone:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(20, 184, 166, 0.14));
+  border-color: rgba(168, 85, 247, 0.6);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+}
+.nav-tikketone-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #A855F7;
+  box-shadow: 0 0 8px #A855F7;
+  flex-shrink: 0;
+}
+.nav-tikketone-soon {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #14b8a6;
+  background: rgba(20, 184, 166, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.35);
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+
+/* === Feature compact card: linked variant === */
+a.feature.compact {
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+.feature.compact.linked {
+  position: relative;
+}
+.feature.compact.linked:hover {
+  border-color: var(--c);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--c) 25%, transparent);
+}
+.feature-arrow {
+  position: absolute;
+  top: 18px; right: 20px;
+  font-size: 18px;
+  color: var(--c);
+  opacity: 0.6;
+  transition: all .2s;
+}
+.feature.compact.linked:hover .feature-arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+.feature-tag {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  padding: 2px 7px;
+  border-radius: 100px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.badge-soon {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #14b8a6;
+  background: rgba(20, 184, 166, 0.10);
+  border: 1px solid rgba(20, 184, 166, 0.35);
+  padding: 2px 7px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+  margin-left: 6px;
+}
+
 /* Feature visual cards (large) */
 .feature .visual {
   margin-top: 18px;

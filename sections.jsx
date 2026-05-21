@@ -1,6 +1,14 @@
 // All page sections (i18n-aware)
 const { useState: useStateS, useEffect: useEffectS } = React;
 
+/* ────────────────────────────────────────────
+   TIKKETONE LINK
+   ────────────────────────────────────────────
+   Tikketone(자매 제품) URL.
+   배포되면 이 값만 업데이트하면 모든 링크에 반영됩니다.
+*/
+const TIKKETONE_URL = "#"; // TODO: Tikketone 배포 후 URL 입력 (예: "https://www.tikketone.kr/")
+
 /* ---- GitHub latest release info (version / date / size) ---- */
 const GH_REPO = "BNAENTK/tikke-download";
 const GH_CACHE_KEY = "tikke_gh_release_v1";
@@ -88,6 +96,16 @@ function Nav() {
           <a href="#how">{t("nav_how")}</a>
           <a href="guide/index.html">{t("nav_guide")}</a>
           <a href="#faq">{t("nav_faq")}</a>
+          <a
+            href={TIKKETONE_URL}
+            target={TIKKETONE_URL === "#" ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            className="nav-tikketone"
+            title={TIKKETONE_URL === "#" ? "Tikketone — 곧 공개" : "Tikketone"}>
+            <span className="nav-tikketone-dot"></span>
+            Tikketone
+            {TIKKETONE_URL === "#" && <span className="nav-tikketone-soon">SOON</span>}
+          </a>
         </nav>
         <div className="nav-cta">
           <LangSwitcher />
@@ -311,7 +329,8 @@ function Features() {
     key: "features_cat_ext",
     items: [
     { icon: "plug", h: "feat_integrations_h", p: "feat_integrations_p", color: "var(--cyan)", isNew: true },
-    { icon: "search", h: "feat_gift_browser_h", p: "feat_gift_browser_p", color: "var(--pink)", isNew: true }]
+    { icon: "search", h: "feat_gift_browser_h", p: "feat_gift_browser_p", color: "var(--pink)", isNew: true },
+    { icon: "mic", h: "feat_tikketone_h", p: "feat_tikketone_p", color: "#A855F7", link: TIKKETONE_URL }]
 
   }];
 
@@ -413,14 +432,35 @@ function Features() {
           <div className="features-cat-block" key={cat.key}>
               <h4 className="features-cat-label">{t(cat.key)}</h4>
               <div className="features-mini-grid">
-                {cat.items.map((it) =>
-              <div className="feature compact" key={it.h} style={{ "--c": it.color }}>
-                    <div className="ic"><Icon name={it.icon} size={18} /></div>
-                    {it.isNew && <span className="badge-new">NEW</span>}
-                    <h3>{t(it.h)}</h3>
-                    <p>{t(it.p)}</p>
-                  </div>
-              )}
+                {cat.items.map((it) => {
+                  const isLinked = !!it.link;
+                  const isComingSoon = isLinked && it.link === "#";
+                  const cardProps = isLinked && !isComingSoon ? {
+                    href: it.link,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  } : {};
+                  const Tag = isLinked && !isComingSoon ? "a" : "div";
+                  return (
+                    <Tag
+                      className={"feature compact" + (isLinked ? " linked" : "")}
+                      key={it.h}
+                      style={{ "--c": it.color }}
+                      {...cardProps}>
+                      <div className="ic"><Icon name={it.icon} size={18} /></div>
+                      {it.isNew && <span className="badge-new">NEW</span>}
+                      {isComingSoon && <span className="badge-soon">SOON</span>}
+                      <h3>
+                        {t(it.h)}
+                        {it.label && <span className="feature-tag">{it.label}</span>}
+                      </h3>
+                      <p>{t(it.p)}</p>
+                      {isLinked && !isComingSoon && (
+                        <span className="feature-arrow">↗</span>
+                      )}
+                    </Tag>
+                  );
+                })}
               </div>
             </div>
           )}
