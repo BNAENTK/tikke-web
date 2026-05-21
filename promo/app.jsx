@@ -8,21 +8,24 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 
 const VARIANTS = {
   v1: {
-    title: '에너제틱 빠른 컷',
+    title: '에너제틱',
+    label: '빠른 컷',
     blurb: 'TikTok 스타일 · 강한 임팩트 · 카오스→해결',
     accent: '#FF0050',
     Scene: V1Scene,
     duration: 30,
   },
   v2: {
-    title: '스토리텔링',
+    title: '스토리',
+    label: '시네마틱',
     blurb: '시네마틱 · 차분한 호흡 · 문제→해결→공감',
     accent: '#00F2EA',
     Scene: V2Scene,
     duration: 30,
   },
   v3: {
-    title: '기능 데모 쇼케이스',
+    title: '쇼케이스',
+    label: '기능 데모',
     blurb: '클린 · 정확한 데모 · 프로덕트 중심',
     accent: '#A78BFA',
     Scene: V3Scene,
@@ -58,15 +61,30 @@ function PromoApp() {
   }, []);
 
   // Local loop index (starts at v1 → cycles)
-  const [loopIdx, setLoopIdx] = React.useState(0);
   const loopOrder = ['v1', 'v2', 'v3'];
+  const [loopIdx, setLoopIdx] = React.useState(0);
 
+  // Clear stale persisted time for each variant when loop mode starts,
+  // so each variant always plays from 0 when the loop advances.
+  React.useEffect(() => {
+    if (!loopMode) return;
+    try {
+      loopOrder.forEach((k) => {
+        localStorage.removeItem('tikke-promo-' + k + ':t');
+      });
+    } catch (e) {}
+  }, [loopMode]);
+
+  // Auto-advance: cycle through variants in loop mode.
   React.useEffect(() => {
     if (!loopMode) return;
     const current = VARIANTS[loopOrder[loopIdx]];
     const dur = (current.duration || 30) * 1000;
     const id = setTimeout(() => {
-      setLoopIdx((i) => (i + 1) % loopOrder.length);
+      // Clear next variant's persisted time so it starts at 0.
+      const next = (loopIdx + 1) % loopOrder.length;
+      try { localStorage.removeItem('tikke-promo-' + loopOrder[next] + ':t'); } catch (e) {}
+      setLoopIdx(next);
     }, dur);
     return () => clearTimeout(id);
   }, [loopMode, loopIdx]);
@@ -78,6 +96,14 @@ function PromoApp() {
   const Scene = variant.Scene;
 
   const hideChrome = loopMode || forcedVariant;
+
+  // Jump to a specific variant (used by chapter badges in loop mode)
+  const jumpToVariant = React.useCallback((key) => {
+    const i = loopOrder.indexOf(key);
+    if (i < 0) return;
+    try { localStorage.removeItem('tikke-promo-' + key + ':t'); } catch (e) {}
+    setLoopIdx(i);
+  }, []);
 
   return (
     <div style={{
@@ -170,6 +196,9 @@ function PromoApp() {
       </header>
       )}
 
+      {/* Loop-mode: listen for parent jump commands via postMessage */}
+      {loopMode && <LoopMessageBridge onJump={jumpToVariant} activeKey={activeKey} />}
+
       {/* Stage container */}
       <div style={{
         position: 'relative', flex: 1, minHeight: 0,
@@ -223,3 +252,35 @@ function PromoApp() {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<PromoApp />);
+
+// Small helper component — listens for parent postMessage to jump variants,
+// and broadcasts active variant changes back to parent so it can highlight the badge.
+function LoopMessageBridge({ onJump, activeKey }) {
+  React.useEffect(() => {
+    function onMsg(e) {
+      if (!e.data) return;
+      if (e.data.type === 'tikke-jump' && e.data.key) {
+        onJump(e.data.key);
+      }
+    }
+    window.addEventListener('message', onMsg);
+    // Tell parent we're ready
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'tikke-loop-ready' }, '*');
+      }
+    } catch (e) {}
+    return () => window.removeEventListener('message', onMsg);
+  }, [onJump]);
+
+  React.useEffect(() => {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'tikke-active', key: activeKey }, '*');
+      }
+    } catch (e) {}
+  }, [activeKey]);
+
+  return null;
+}
+window.LoopMessageBridge = LoopMessageBridge;

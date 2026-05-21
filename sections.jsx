@@ -164,13 +164,78 @@ function Marquee() {
 }
 
 /* ====================== DEMO VIDEO ====================== */
+const PROMO_VARIANTS = [
+  { key: 'v1', label: 'HOOK',  blurb: '30초 미리보기 · 강한 임팩트',  accent: '#FF0050' },
+  { key: 'v2', label: 'STORY', blurb: '비하인드 · 우리가 만든 이유',   accent: '#00F2EA' },
+  { key: 'v3', label: 'TOUR',  blurb: '기능 투어 · 자세히 둘러보기',   accent: '#A78BFA' },
+];
+
 function DemoVideo() {
   const { t } = useT();
+  const [activeKey, setActiveKey] = useStateS('v1');
+  const iframeRef = React.useRef(null);
+
+  // Receive active variant updates from iframe
+  React.useEffect(() => {
+    function onMsg(e) {
+      if (!e.data) return;
+      if (e.data.type === 'tikke-active' && e.data.key) setActiveKey(e.data.key);
+    }
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  // Tell iframe to jump to a variant
+  const jumpTo = React.useCallback((key) => {
+    setActiveKey(key);
+    const w = iframeRef.current && iframeRef.current.contentWindow;
+    if (w) {
+      try { w.postMessage({ type: 'tikke-jump', key }, '*'); } catch (e) {}
+    }
+  }, []);
+
+  const activeMeta = PROMO_VARIANTS.find((v) => v.key === activeKey) || PROMO_VARIANTS[0];
+
   return (
     <section className="video-section" id="demo">
       <div className="container">
-      <div className="video-card">
-        <iframe
+        {/* Header: title + chapter badges, OUTSIDE the video card */}
+        <div className="promo-header">
+          <div className="promo-header-l">
+            <div className="promo-eyebrow">
+              <span className="promo-dot" style={{ background: activeMeta.accent }}></span>
+              <span>{t("video_sub") || "30초 데모"}</span>
+            </div>
+            <h2 className="promo-title">{t("video_title") || "Tikke가 어떻게 방송을 돕는지 보세요."}</h2>
+            <p className="promo-blurb">
+              <b style={{ color: activeMeta.accent }}>{activeMeta.label}</b>
+              <span style={{ margin: "0 8px", opacity: 0.4 }}>·</span>
+              {activeMeta.blurb}
+            </p>
+          </div>
+          <div className="promo-badges">
+            {PROMO_VARIANTS.map((v) => {
+              const active = activeKey === v.key;
+              return (
+                <button
+                  key={v.key}
+                  type="button"
+                  className={"promo-badge" + (active ? " active" : "")}
+                  onClick={() => jumpTo(v.key)}
+                  style={active ? { "--c": v.accent } : { "--c": "rgba(255,255,255,0.5)" }}
+                >
+                  <span className="promo-badge-num">{v.key.toUpperCase()}</span>
+                  <span className="promo-badge-label">{v.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Video card — no overlays inside */}
+        <div className="video-card">
+          <iframe
+            ref={iframeRef}
             src="promo-loop.html"
             title="Tikke 홍보 영상"
             className="promo-iframe"
@@ -185,7 +250,7 @@ function DemoVideo() {
             }}
             allow="autoplay">
           </iframe>
-      </div>
+        </div>
       </div>
     </section>);
 }

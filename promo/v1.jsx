@@ -20,50 +20,261 @@ function V1Scene({ showCaption }) {
     <>
       <NeonBackground intensity={1} />
 
-      {/* 0-2s: Chaos — chat spam */}
+      {/* 0-2s: MAXIMUM CHAOS HOOK */}
       <Sprite start={0} end={2.0}>
-        {({ progress }) => (
-          <div style={{ position: 'absolute', inset: 0 }}>
-            {[
-              { y: 460, x: 80, n: 'user_1', m: 'asdfasdf', c: '#FF7AB3', d: 0.1 },
-              { y: 600, x: 140, n: 'spammer', m: 'follow back???', c: '#FFC857', d: 0.0 },
-              { y: 740, x: 60, n: 'unknown', m: '???? 무슨말?', c: '#A78BFA', d: 0.2 },
-              { y: 880, x: 160, n: 'kpop_fan', m: 'hi from 🇯🇵', c: '#00F2EA', d: 0.15 },
-              { y: 1020, x: 80, n: 'sneaky', m: 'CHECK BIO 👀', c: '#FF0050', d: 0.3 },
-              { y: 1160, x: 140, n: 'random', m: '뭐라는거임 ㅋㅋ', c: '#FF7AB3', d: 0.25 },
-              { y: 1300, x: 60, n: 'haruki', m: 'こんばんは!!', c: '#00FFA3', d: 0.18 },
-              { y: 1440, x: 160, n: 'spam_99', m: 'click link', c: '#FF0050', d: 0.4 },
-            ].map((c, i) => {
-              const localT = clamp(progress * 2 - c.d, 0, 1);
-              const opacity = Easing.easeOutCubic(clamp(localT * 3, 0, 1));
-              const tx = (1 - opacity) * 80;
-              return (
-                <div key={i} style={{
-                  position: 'absolute', left: c.x, top: c.y,
-                  transform: `translateX(${tx}px) rotate(${(i % 2 ? -1 : 1) * 1.5}deg)`,
-                  opacity,
-                }}>
-                  <ChatRow name={c.n} msg={c.m} color={c.c} width={780} />
-                </div>
-              );
-            })}
-            {/* Big red question */}
+        {({ progress, localTime }) => {
+          // Multiple flash punches at 0.0, 0.5, 1.0, 1.5
+          const flash1 = clamp(1 - localTime * 12, 0, 1) * 1.0;
+          const flash2 = clamp(1 - Math.abs(localTime - 0.5) * 14, 0, 1) * 0.55;
+          const flash3 = clamp(1 - Math.abs(localTime - 1.0) * 14, 0, 1) * 0.45;
+          const flash4 = clamp(1 - Math.abs(localTime - 1.5) * 14, 0, 1) * 0.65;
+
+          // Aggressive shake (stronger, more chaotic)
+          const shakeIntensity = clamp(1 - localTime * 0.3, 0.4, 1);
+          const shakeX = (Math.sin(localTime * 140) + Math.sin(localTime * 67)) * 9 * shakeIntensity;
+          const shakeY = (Math.cos(localTime * 130) + Math.sin(localTime * 89)) * 7 * shakeIntensity;
+
+          // Glitch jitter (sub-frame jolts at random intervals)
+          const glitch = Math.sin(localTime * 220) > 0.7 ? 12 : 0;
+
+          // Chromatic aberration pulse — full duration with cycles
+          const aberration = (Math.sin(localTime * 16) * 0.5 + 0.5) * 10 + (1 - clamp(localTime / 0.4, 0, 1)) * 8;
+
+          return (
             <div style={{
-              position: 'absolute', left: 0, right: 0, top: 200,
-              textAlign: 'center',
-              fontFamily: 'Pretendard Variable',
-              fontWeight: 900,
-              fontSize: 130,
-              letterSpacing: '-0.04em',
-              lineHeight: 1.1,
-              color: '#fff',
-              textShadow: `0 0 36px ${NEON.pink}, 0 4px 20px rgba(0,0,0,0.6)`,
-              opacity: Easing.easeOutBack(clamp(progress * 1.5, 0, 1)),
+              position: 'absolute', inset: 0,
+              transform: `translate(${shakeX + glitch}px, ${shakeY}px)`,
             }}>
-              감당 안 돼?
+              {/* TRIPLE FLASH STACK */}
+              <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flash1, pointerEvents: 'none', zIndex: 100 }} />
+              <div style={{ position: 'absolute', inset: 0, background: NEON.pink, opacity: flash2, pointerEvents: 'none', zIndex: 99, mixBlendMode: 'screen' }} />
+              <div style={{ position: 'absolute', inset: 0, background: NEON.cyan, opacity: flash3, pointerEvents: 'none', zIndex: 99, mixBlendMode: 'screen' }} />
+              <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flash4, pointerEvents: 'none', zIndex: 100 }} />
+
+              {/* Pink radial pulse */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: `radial-gradient(circle at 50% 40%, ${NEON.pink}88, transparent 55%)`,
+                opacity: 1 - clamp(localTime / 1.8, 0, 1) * 0.6,
+                mixBlendMode: 'screen',
+                pointerEvents: 'none',
+              }} />
+
+              {/* Scanline / glitch bars */}
+              {[0.18, 0.42, 0.76, 1.12, 1.48, 1.78].map((tt, i) => {
+                const show = Math.abs(localTime - tt) < 0.08;
+                if (!show) return null;
+                return (
+                  <div key={i} style={{
+                    position: 'absolute',
+                    left: 0, right: 0,
+                    top: 200 + (i * 247) % 1500,
+                    height: 4 + (i % 3) * 6,
+                    background: i % 2 ? NEON.cyan : NEON.pink,
+                    opacity: 0.85,
+                    boxShadow: `0 0 20px ${i % 2 ? NEON.cyan : NEON.pink}`,
+                    pointerEvents: 'none',
+                  }} />
+                );
+              })}
+
+              {/* Question marks floating around */}
+              {[
+                { x: 90,  y: 360, t: 0.2, s: 110, c: NEON.pink },
+                { x: 880, y: 480, t: 0.4, s: 130, c: NEON.cyan },
+                { x: 140, y: 1480, t: 0.6, s: 90, c: NEON.violet },
+                { x: 820, y: 1280, t: 0.85, s: 100, c: NEON.gold },
+                { x: 60,  y: 980, t: 1.0, s: 80, c: NEON.pink },
+                { x: 920, y: 1700, t: 1.25, s: 120, c: NEON.cyan },
+              ].map((q, i) => {
+                if (localTime < q.t) return null;
+                const tt = clamp((localTime - q.t) * 4, 0, 1);
+                const rot = (i % 2 ? 1 : -1) * (15 - tt * 5);
+                return (
+                  <div key={i} style={{
+                    position: 'absolute', left: q.x, top: q.y,
+                    fontFamily: 'Pretendard Variable',
+                    fontWeight: 900,
+                    fontSize: q.s,
+                    color: q.c,
+                    opacity: tt * 0.65 * (1 - clamp((localTime - q.t - 0.7) * 2, 0, 1)),
+                    transform: `rotate(${rot}deg) scale(${0.5 + tt * 0.7})`,
+                    textShadow: `0 0 24px ${q.c}cc`,
+                  }}>?</div>
+                );
+              })}
+
+              {/* Chat rows behind */}
+              {[
+                { y: 460, x: 80, n: 'user_1', m: 'asdfasdf', c: '#FF7AB3', d: 0.1 },
+                { y: 600, x: 140, n: 'spammer', m: 'follow back???', c: '#FFC857', d: 0.0 },
+                { y: 740, x: 60, n: 'unknown', m: '???? 무슨말?', c: '#A78BFA', d: 0.2 },
+                { y: 880, x: 160, n: 'kpop_fan', m: 'hi from 🇯🇵', c: '#00F2EA', d: 0.15 },
+                { y: 1020, x: 80, n: 'sneaky', m: 'CHECK BIO 👀', c: '#FF0050', d: 0.3 },
+                { y: 1160, x: 140, n: 'random', m: '뭐라는거임 ㅋㅋ', c: '#FF7AB3', d: 0.25 },
+                { y: 1300, x: 60, n: 'haruki', m: 'こんばんは!!', c: '#00FFA3', d: 0.18 },
+                { y: 1440, x: 160, n: 'spam_99', m: 'click link', c: '#FF0050', d: 0.4 },
+              ].map((c, i) => {
+                const localT = clamp(progress * 2 - c.d, 0, 1);
+                const opacity = Easing.easeOutCubic(clamp(localT * 3, 0, 1)) * 0.45;
+                const tx = (1 - opacity) * 80;
+                return (
+                  <div key={i} style={{
+                    position: 'absolute', left: c.x, top: c.y,
+                    transform: `translateX(${tx}px) rotate(${(i % 2 ? -1 : 1) * 2.5}deg)`,
+                    opacity,
+                    filter: 'blur(1.2px)',
+                  }}>
+                    <ChatRow name={c.n} msg={c.m} color={c.c} width={780} />
+                  </div>
+                );
+              })}
+
+              {/* "잠깐!" — 강한 stamp */}
+              {localTime > 0.05 && (() => {
+                const t1 = clamp((localTime - 0.05) / 0.2, 0, 1);
+                const scale = 0.3 + Easing.easeOutBack(t1) * 0.7;
+                return (
+                  <div style={{
+                    position: 'absolute', left: 0, right: 0, top: 280,
+                    textAlign: 'center',
+                    transform: `scale(${scale}) rotate(${(1 - t1) * -8}deg)`,
+                    opacity: t1,
+                  }}>
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '14px 42px',
+                      background: NEON.gold,
+                      color: '#000',
+                      fontFamily: 'Pretendard Variable',
+                      fontWeight: 900,
+                      fontSize: 72,
+                      letterSpacing: '-0.02em',
+                      borderRadius: 8,
+                      boxShadow: `0 0 30px ${NEON.gold}, 0 8px 28px rgba(0,0,0,0.7)`,
+                      transform: 'skew(-6deg)',
+                    }}>
+                      잠깐!!
+                    </span>
+                  </div>
+                );
+              })()}
+
+              {/* BIG headline with chromatic aberration */}
+              <div style={{
+                position: 'absolute', left: 0, right: 0, top: 460,
+                textAlign: 'center',
+                opacity: Easing.easeOutBack(clamp((localTime - 0.2) * 3, 0, 1)),
+              }}>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <div style={{
+                    position: 'absolute', left: -aberration, top: 0,
+                    fontFamily: 'Pretendard Variable', fontWeight: 900, fontSize: 156,
+                    letterSpacing: '-0.045em', lineHeight: 1,
+                    color: NEON.cyan, opacity: 0.7, mixBlendMode: 'screen',
+                  }}>라이브 켜자마자</div>
+                  <div style={{
+                    position: 'absolute', left: aberration, top: 0,
+                    fontFamily: 'Pretendard Variable', fontWeight: 900, fontSize: 156,
+                    letterSpacing: '-0.045em', lineHeight: 1,
+                    color: NEON.pink, opacity: 0.7, mixBlendMode: 'screen',
+                  }}>라이브 켜자마자</div>
+                  <div style={{
+                    fontFamily: 'Pretendard Variable', fontWeight: 900, fontSize: 156,
+                    letterSpacing: '-0.045em', lineHeight: 1,
+                    color: '#fff',
+                    textShadow: `0 0 50px ${NEON.pink}, 0 6px 28px rgba(0,0,0,0.7)`,
+                    position: 'relative',
+                  }}>라이브 켜자마자</div>
+                </div>
+              </div>
+
+              {/* MEGA "감당 안 돼?" with pulse */}
+              {localTime > 0.6 && (() => {
+                const t2 = clamp((localTime - 0.6) / 0.4, 0, 1);
+                const punch = Easing.easeOutBack(t2);
+                const pulse = 1 + Math.sin(localTime * 14) * 0.04;
+                return (
+                  <div style={{
+                    position: 'absolute', left: 0, right: 0, top: 760,
+                    textAlign: 'center',
+                    transform: `scale(${(0.4 + punch * 0.6) * pulse})`,
+                    opacity: t2,
+                    fontFamily: 'Pretendard Variable',
+                    fontWeight: 900,
+                    fontSize: 260,
+                    letterSpacing: '-0.06em',
+                    lineHeight: 0.95,
+                    color: NEON.pink,
+                    textShadow: `0 0 80px ${NEON.pink}, 0 0 120px ${NEON.pink}cc, 0 12px 40px rgba(0,0,0,0.9)`,
+                    WebkitTextStroke: '3px #fff',
+                  }}>
+                    감당 안 돼?
+                  </div>
+                );
+              })()}
+
+              {/* Underline emphasis stripe */}
+              {localTime > 1.05 && (() => {
+                const tt = clamp((localTime - 1.05) / 0.25, 0, 1);
+                return (
+                  <div style={{
+                    position: 'absolute',
+                    left: '20%', right: '20%', top: 1060,
+                    height: 12,
+                    background: `linear-gradient(90deg, ${NEON.pink}, ${NEON.gold}, ${NEON.pink})`,
+                    transform: `scaleX(${Easing.easeOutBack(tt)})`,
+                    transformOrigin: 'center',
+                    boxShadow: `0 0 32px ${NEON.pink}`,
+                  }} />
+                );
+              })()}
+
+              {/* Bottom subtitle */}
+              {localTime > 1.15 && (
+                <div style={{
+                  position: 'absolute', left: 0, right: 0, bottom: 220,
+                  textAlign: 'center',
+                  fontFamily: 'Pretendard Variable',
+                  fontSize: 46,
+                  fontWeight: 700,
+                  color: '#fff',
+                  letterSpacing: '-0.01em',
+                  opacity: Easing.easeOutCubic(clamp((localTime - 1.15) * 3.5, 0, 1)),
+                  textShadow: `0 0 24px ${NEON.pink}aa, 0 6px 20px rgba(0,0,0,0.9)`,
+                }}>
+                  TikTok 라이브, <span style={{ color: NEON.gold }}>혼자 다 못 해요.</span>
+                </div>
+              )}
+
+              {/* Corner stamps */}
+              {localTime > 0.8 && (
+                <>
+                  <div style={{
+                    position: 'absolute', left: 60, top: 1620,
+                    fontFamily: 'JetBrains Mono', fontSize: 22,
+                    color: NEON.pink, letterSpacing: '0.16em',
+                    transform: `rotate(-8deg)`,
+                    opacity: Easing.easeOutCubic(clamp((localTime - 0.8) * 4, 0, 1)),
+                    border: `3px solid ${NEON.pink}`,
+                    padding: '6px 14px',
+                    boxShadow: `0 0 20px ${NEON.pink}88`,
+                  }}>CHAOS MODE</div>
+                  <div style={{
+                    position: 'absolute', right: 60, top: 1700,
+                    fontFamily: 'JetBrains Mono', fontSize: 22,
+                    color: NEON.cyan, letterSpacing: '0.16em',
+                    transform: `rotate(6deg)`,
+                    opacity: Easing.easeOutCubic(clamp((localTime - 1.0) * 4, 0, 1)),
+                    border: `3px solid ${NEON.cyan}`,
+                    padding: '6px 14px',
+                    boxShadow: `0 0 20px ${NEON.cyan}88`,
+                  }}>0:01</div>
+                </>
+              )}
             </div>
-          </div>
-        )}
+          );
+        }}
       </Sprite>
 
       {/* 2-5s: Logo impact */}
