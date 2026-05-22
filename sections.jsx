@@ -745,7 +745,7 @@ function Download() {
             </div>
 
             <div className="platforms">
-              <a className="platform" href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke.dmg">
+              <a className="platform" href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.dmg">
                 <span className="ic" style={{ color: "#fff" }}><Icon name="apple" size={18} /></span>
                 <div className="info">
                   <span className="l">{t("download_platform_mac_l")}</span>
