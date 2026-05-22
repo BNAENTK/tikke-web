@@ -5,6 +5,21 @@
 
 window.ADMIN_SCHEMA = [
   {
+    id: "meta",
+    label: "메타태그 (Meta)",
+    fields: [
+      { key: "meta_title",    label: "페이지 타이틀 (title)",         type: "text",     hint: "브라우저 탭 · 검색 결과에 표시됩니다." },
+      { key: "meta_desc",     label: "설명 (description)",           type: "textarea", hint: "검색 엔진 결과 설명. 150–160자 권장." },
+      { key: "meta_keywords", label: "키워드 (keywords)",             type: "text" },
+      { key: "meta_og_title", label: "OG 제목 (og:title)",           type: "text",     hint: "SNS 공유 제목. 비워두면 meta_title 사용." },
+      { key: "meta_og_desc",  label: "OG 설명 (og:description)",     type: "textarea" },
+      { key: "meta_og_image", label: "OG 이미지 URL (og:image)",     type: "text",     hint: "SNS 공유 썸네일 URL." },
+      { key: "meta_og_url",   label: "OG URL (og:url)",              type: "text",     hint: "정규 URL. 예: https://tikke.kr" },
+      { key: "meta_tw_card",  label: "Twitter 카드 (twitter:card)",  type: "text",     hint: "예: summary_large_image" }
+    ]
+  },
+
+  {
     id: "hero",
     label: "히어로 (Hero)",
     fields: [
