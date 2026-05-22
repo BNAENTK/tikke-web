@@ -289,6 +289,65 @@ function ConfirmModal({ title, message, confirmLabel, danger, onConfirm, onClose
   );
 }
 
+/* ============================== META LIVE VIEW ============================== */
+function MetaLiveView({ tags }) {
+  const [open, setOpen] = useState(true);
+
+  if (tags === null) return (
+    <div className="ad-callout" style={{ marginBottom: 20 }}>
+      현재 사이트 메타태그 불러오는 중…
+    </div>
+  );
+
+  const KEYS = [
+    "title", "description", "keywords",
+    "og:title", "og:description", "og:image", "og:url", "og:type", "og:site_name",
+    "twitter:card", "twitter:title", "twitter:description", "twitter:image",
+    "theme-color", "robots"
+  ];
+  const entries = KEYS
+    .map(k => ({ k, v: tags[k] }))
+    .filter(e => e.v !== undefined);
+  const extra = Object.entries(tags).filter(([k]) => !KEYS.includes(k));
+
+  return (
+    <div style={{ marginBottom: 24, border: "1px solid var(--ad-border)", borderRadius: 8, overflow: "hidden" }}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        style={{
+          width: "100%", display: "flex", alignItems: "center", gap: 8,
+          padding: "10px 14px", background: "var(--ad-side-bg)", border: "none",
+          cursor: "pointer", color: "var(--ad-text-dim)", fontSize: 11,
+          fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
+        }}
+      >
+        <span style={{ flex: 1, textAlign: "left" }}>현재 사이트 메타태그 (읽기 전용)</span>
+        <span>{open ? "▲" : "▼"}</span>
+      </button>
+      {open && (
+        entries.length === 0
+          ? <div style={{ padding: "12px 14px", fontSize: 12, color: "var(--ad-text-dim)" }}>../index.html에서 메타태그를 찾을 수 없습니다.</div>
+          : <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <tbody>
+                {entries.map(({ k, v }) => (
+                  <tr key={k} style={{ borderTop: "1px solid var(--ad-border)" }}>
+                    <td style={{ padding: "7px 14px", color: "var(--ad-text-dim)", whiteSpace: "nowrap", width: "32%", fontFamily: "monospace", fontSize: 11 }}>{k}</td>
+                    <td style={{ padding: "7px 14px", wordBreak: "break-all", lineHeight: 1.5 }}>{v}</td>
+                  </tr>
+                ))}
+                {extra.map(([k, v]) => (
+                  <tr key={k} style={{ borderTop: "1px solid var(--ad-border)" }}>
+                    <td style={{ padding: "7px 14px", color: "var(--ad-text-dim)", whiteSpace: "nowrap", width: "32%", fontFamily: "monospace", fontSize: 11 }}>{k}</td>
+                    <td style={{ padding: "7px 14px", wordBreak: "break-all", lineHeight: 1.5 }}>{v}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+      )}
+    </div>
+  );
+}
+
 /* ============================== MAIN ============================== */
 function AdminApp() {
   // session
@@ -309,6 +368,7 @@ function AdminApp() {
   const [ghCfg, setGhCfgState] = useState(() => loadJSON(GH_CFG_KEY, DEFAULT_GH_CFG));
   const [publishing, setPublishing] = useState(false);
   const [bootLoading, setBootLoading] = useState(true);
+  const [liveMetaTags, setLiveMetaTags] = useState(null);
 
   const previewIframe = useRef(null);
 
@@ -320,6 +380,28 @@ function AdminApp() {
     setGhCfgState(c);
     saveJSON(GH_CFG_KEY, c);
   }
+
+  // Fetch live meta tags from site HTML
+  useEffect(() => {
+    if (!loggedIn) return;
+    (async () => {
+      try {
+        const r = await fetch('../index.html?v=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) { setLiveMetaTags({}); return; }
+        const html = await r.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const tags = {};
+        const titleEl = doc.querySelector('title');
+        if (titleEl) tags['title'] = titleEl.textContent.trim();
+        doc.querySelectorAll('meta').forEach(el => {
+          const name = el.getAttribute('name') || el.getAttribute('property');
+          const content = el.getAttribute('content');
+          if (name && content !== null) tags[name] = content;
+        });
+        setLiveMetaTags(tags);
+      } catch(e) { setLiveMetaTags({}); }
+    })();
+  }, [loggedIn]);
 
   // Initial load: fetch content.json, merge with localStorage draft if any
   useEffect(() => {
@@ -556,8 +638,23 @@ function AdminApp() {
 
       <div className={"ad-main" + (showPreview ? " with-preview" : "")}>
         <aside className="ad-side">
-          <div className="ad-side-section">섹션</div>
-          {window.ADMIN_SCHEMA.map((sec) => {
+          <div className="ad-side-section">메타태그</div>
+          {(() => {
+            const metaSec = window.ADMIN_SCHEMA.find(s => s.id === "meta");
+            const n = metaSec ? (editsPerSection["meta"] || 0) : 0;
+            return (
+              <button
+                className={"ad-side-item" + (section === "meta" ? " active" : "") + (n > 0 ? " has-edits" : "")}
+                onClick={() => setSection("meta")}
+              >
+                <span>🏷 메타태그 편집</span>
+                <span className="ad-side-count">{n}</span>
+              </button>
+            );
+          })()}
+
+          <div className="ad-side-section" style={{ marginTop: 14 }}>섹션</div>
+          {window.ADMIN_SCHEMA.filter(s => s.id !== "meta").map((sec) => {
             const n = editsPerSection[sec.id] || 0;
             return (
               <button
@@ -589,6 +686,10 @@ function AdminApp() {
               필드를 비워두면 기본값(원본)이 사용됩니다.
             </p>
           </div>
+
+          {currentSection.id === "meta" && (
+            <MetaLiveView tags={liveMetaTags} />
+          )}
 
           {currentSection.fields.map((f) => (
             <FieldRow
