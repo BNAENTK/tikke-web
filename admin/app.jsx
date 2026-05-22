@@ -290,74 +290,131 @@ function ConfirmModal({ title, message, confirmLabel, danger, onConfirm, onClose
 }
 
 /* ============================== META ============================== */
-// 메타 필드 정의 — schema.js와 무관하게 app.jsx에서 직접 관리
-const META_FIELDS = [
-  { key: "meta_title",    label: "페이지 타이틀",        type: "text",     hint: "브라우저 탭 · 검색 결과에 표시됩니다." },
-  { key: "meta_desc",     label: "설명 (description)",  type: "textarea", hint: "검색 엔진 결과 설명. 150–160자 권장." },
-  { key: "meta_keywords", label: "키워드 (keywords)",    type: "text" },
-  { key: "meta_og_title", label: "OG 제목",             type: "text",     hint: "SNS 공유 제목. 비워두면 meta_title 사용." },
-  { key: "meta_og_desc",  label: "OG 설명",             type: "textarea" },
-  { key: "meta_og_image", label: "OG 이미지 URL",        type: "text",     hint: "SNS 공유 썸네일 URL." },
-  { key: "meta_og_url",   label: "OG URL",              type: "text",     hint: "정규 URL. 예: https://tikke.kr" },
-  { key: "meta_tw_card",  label: "Twitter 카드",         type: "text",     hint: "예: summary_large_image" },
+const META_SECTION = { id: "meta", label: "메타태그", fields: [] };
+
+const META_CONFIG = [
+  { key: "title",               label: "페이지 타이틀 (title)",          type: "text",     hint: "브라우저 탭 · 검색 결과에 표시됩니다." },
+  { key: "description",         label: "설명 (description)",            type: "textarea", hint: "검색 엔진 결과 설명. 150–160자 권장." },
+  { key: "keywords",            label: "키워드 (keywords)",              type: "text" },
+  { key: "og:title",            label: "OG 제목 (og:title)",            type: "text",     hint: "SNS 공유 제목." },
+  { key: "og:description",      label: "OG 설명 (og:description)",      type: "textarea" },
+  { key: "og:image",            label: "OG 이미지 URL (og:image)",      type: "text",     hint: "SNS 공유 썸네일 URL." },
+  { key: "og:url",              label: "OG URL (og:url)",               type: "text",     hint: "정규 URL. 예: https://tikke.kr" },
+  { key: "og:type",             label: "OG 타입 (og:type)",             type: "text" },
+  { key: "og:site_name",        label: "OG 사이트명 (og:site_name)",    type: "text" },
+  { key: "twitter:card",        label: "Twitter 카드",                   type: "text",     hint: "예: summary_large_image" },
+  { key: "twitter:title",       label: "Twitter 제목",                   type: "text" },
+  { key: "twitter:description", label: "Twitter 설명",                   type: "textarea" },
 ];
 
-const META_SECTION = { id: "meta", label: "메타태그", fields: META_FIELDS };
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 
-function MetaLiveView({ tags }) {
-  const [open, setOpen] = useState(true);
+function parseMetaFromHtml(html) {
+  const tags = {};
+  const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  if (titleMatch) tags["title"] = titleMatch[1];
+  const re = /<meta\b([^>]+)>/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const attrs = m[1];
+    const nameMatch = attrs.match(/(?:name|property)="([^"]+)"/i);
+    const contentMatch = attrs.match(/content="([^"]*)"/i);
+    if (nameMatch && contentMatch) tags[nameMatch[1]] = contentMatch[1];
+  }
+  return tags;
+}
 
-  if (tags === null) return (
-    <div className="ad-callout" style={{ marginBottom: 20 }}>
-      현재 사이트 메타태그 불러오는 중…
-    </div>
+function applyMetaToHtml(html, fields) {
+  let result = html;
+  for (const [key, val] of Object.entries(fields)) {
+    const safe = val.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    if (key === "title") {
+      result = result.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${safe}$2`);
+      continue;
+    }
+    const ek = escapeRegex(key);
+    // name/property before content
+    result = result.replace(
+      new RegExp(`(<meta\\b[^>]*?(?:name|property)="${ek}"[^>]*?content=")[^"]*(")`,"i"),
+      `$1${safe}$2`
+    );
+    // content before name/property
+    result = result.replace(
+      new RegExp(`(<meta\\b[^>]*?content=")[^"]*("[^>]*?(?:name|property)="${ek}")`,"i"),
+      `$1${safe}$2`
+    );
+  }
+  return result;
+}
+
+function MetaDirectEditor({ ghCfg, onToast }) {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [rawHtml, setRawHtml] = useState("");
+  const [htmlSha, setHtmlSha] = useState(null);
+  const [fields, setFields] = useState({});
+  const [error, setError] = useState(null);
+
+  const htmlCfg = { ...ghCfg, path: "index.html" };
+
+  useEffect(() => {
+    if (!ghCfg.token) { setLoading(false); return; }
+    (async () => {
+      try {
+        const res = await window.tikkeGitHub.getFile(htmlCfg);
+        if (!res.exists) { setError("index.html 파일을 찾을 수 없습니다."); setLoading(false); return; }
+        setRawHtml(res.content);
+        setHtmlSha(res.sha);
+        setFields(parseMetaFromHtml(res.content));
+      } catch(e) { setError("불러오기 실패: " + e.message); }
+      setLoading(false);
+    })();
+  }, []);
+
+  function set(key, val) { setFields(f => ({ ...f, [key]: val })); }
+
+  async function save() {
+    if (!ghCfg.token) { onToast("GitHub 토큰이 없습니다. 설정에서 입력하세요.", "error"); return; }
+    setSaving(true);
+    try {
+      const updated = applyMetaToHtml(rawHtml, fields);
+      await window.tikkeGitHub.putFile(htmlCfg, updated, "Update meta tags via admin", htmlSha);
+      setRawHtml(updated);
+      const fresh = await window.tikkeGitHub.getFile(htmlCfg);
+      if (fresh.exists) setHtmlSha(fresh.sha);
+      onToast("메타태그가 저장되었습니다. 사이트에 곧 반영됩니다.", "success");
+    } catch(e) { onToast("저장 실패: " + e.message, "error"); }
+    setSaving(false);
+  }
+
+  if (!ghCfg.token) return (
+    <div className="ad-callout warn">GitHub 토큰이 없습니다. ⚙ 설정에서 입력하세요.</div>
   );
-
-  const KEYS = [
-    "title", "description", "keywords",
-    "og:title", "og:description", "og:image", "og:url", "og:type", "og:site_name",
-    "twitter:card", "twitter:title", "twitter:description", "twitter:image",
-    "theme-color", "robots"
-  ];
-  const entries = KEYS
-    .map(k => ({ k, v: tags[k] }))
-    .filter(e => e.v !== undefined);
-  const extra = Object.entries(tags).filter(([k]) => !KEYS.includes(k));
+  if (loading) return <div className="ad-callout">index.html 불러오는 중…</div>;
+  if (error) return <div className="ad-callout" style={{ color: "var(--ad-danger)" }}>{error}</div>;
 
   return (
-    <div style={{ marginBottom: 24, border: "1px solid var(--ad-border)", borderRadius: 8, overflow: "hidden" }}>
-      <button
-        onClick={() => setOpen(v => !v)}
-        style={{
-          width: "100%", display: "flex", alignItems: "center", gap: 8,
-          padding: "10px 14px", background: "var(--ad-side-bg)", border: "none",
-          cursor: "pointer", color: "var(--ad-text-dim)", fontSize: 11,
-          fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
-        }}
-      >
-        <span style={{ flex: 1, textAlign: "left" }}>현재 사이트 메타태그 (읽기 전용)</span>
-        <span>{open ? "▲" : "▼"}</span>
-      </button>
-      {open && (
-        entries.length === 0
-          ? <div style={{ padding: "12px 14px", fontSize: 12, color: "var(--ad-text-dim)" }}>../index.html에서 메타태그를 찾을 수 없습니다.</div>
-          : <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-              <tbody>
-                {entries.map(({ k, v }) => (
-                  <tr key={k} style={{ borderTop: "1px solid var(--ad-border)" }}>
-                    <td style={{ padding: "7px 14px", color: "var(--ad-text-dim)", whiteSpace: "nowrap", width: "32%", fontFamily: "monospace", fontSize: 11 }}>{k}</td>
-                    <td style={{ padding: "7px 14px", wordBreak: "break-all", lineHeight: 1.5 }}>{v}</td>
-                  </tr>
-                ))}
-                {extra.map(([k, v]) => (
-                  <tr key={k} style={{ borderTop: "1px solid var(--ad-border)" }}>
-                    <td style={{ padding: "7px 14px", color: "var(--ad-text-dim)", whiteSpace: "nowrap", width: "32%", fontFamily: "monospace", fontSize: 11 }}>{k}</td>
-                    <td style={{ padding: "7px 14px", wordBreak: "break-all", lineHeight: 1.5 }}>{v}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-      )}
+    <div>
+      {META_CONFIG.map(({ key, label, type, hint }) => (
+        <div className="ad-field" key={key}>
+          <div className="ad-field-head">
+            <span className="ad-field-label">{label}</span>
+            <span className="ad-field-key">{key}</span>
+          </div>
+          {type === "textarea"
+            ? <textarea className="ad-input" value={fields[key] ?? ""} rows={3}
+                onChange={e => set(key, e.target.value)} />
+            : <input type="text" className="ad-input" value={fields[key] ?? ""}
+                onChange={e => set(key, e.target.value)} />
+          }
+          {hint && <div className="ad-field-hint">{hint}</div>}
+        </div>
+      ))}
+      <div style={{ padding: "8px 0 16px" }}>
+        <button className="ad-btn primary" onClick={save} disabled={saving} style={{ minWidth: 200 }}>
+          {saving ? "저장 중…" : "💾 index.html에 저장 (GitHub 커밋)"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -382,7 +439,6 @@ function AdminApp() {
   const [ghCfg, setGhCfgState] = useState(() => loadJSON(GH_CFG_KEY, DEFAULT_GH_CFG));
   const [publishing, setPublishing] = useState(false);
   const [bootLoading, setBootLoading] = useState(true);
-  const [liveMetaTags, setLiveMetaTags] = useState(null);
 
   const previewIframe = useRef(null);
 
@@ -394,48 +450,6 @@ function AdminApp() {
     setGhCfgState(c);
     saveJSON(GH_CFG_KEY, c);
   }
-
-  // Fetch live meta tags from site HTML, inject into window.I18N as placeholders
-  useEffect(() => {
-    if (!loggedIn) return;
-    (async () => {
-      try {
-        const r = await fetch('../index.html?v=' + Date.now(), { cache: 'no-store' });
-        if (!r.ok) { setLiveMetaTags({}); return; }
-        const html = await r.text();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const tags = {};
-        const titleEl = doc.querySelector('title');
-        if (titleEl) tags['title'] = titleEl.textContent.trim();
-        doc.querySelectorAll('meta').forEach(el => {
-          const name = el.getAttribute('name') || el.getAttribute('property');
-          const content = el.getAttribute('content');
-          if (name && content !== null) tags[name] = content;
-        });
-        setLiveMetaTags(tags);
-
-        // 라이브 값을 window.I18N에 주입 → FieldRow가 placeholder로 표시
-        const keyMap = {
-          meta_title:    'title',
-          meta_desc:     'description',
-          meta_keywords: 'keywords',
-          meta_og_title: 'og:title',
-          meta_og_desc:  'og:description',
-          meta_og_image: 'og:image',
-          meta_og_url:   'og:url',
-          meta_tw_card:  'twitter:card',
-        };
-        if (window.I18N) {
-          ['ko', 'en', 'ja', 'zh'].forEach(l => {
-            if (!window.I18N[l]) window.I18N[l] = {};
-            Object.entries(keyMap).forEach(([fieldKey, htmlKey]) => {
-              if (tags[htmlKey] != null) window.I18N[l][fieldKey] = tags[htmlKey];
-            });
-          });
-        }
-      } catch(e) { setLiveMetaTags({}); }
-    })();
-  }, [loggedIn]);
 
   // Initial load: fetch content.json, merge with localStorage draft if any
   useEffect(() => {
@@ -489,19 +503,9 @@ function AdminApp() {
     return JSON.stringify(cleanOverrides) !== JSON.stringify(savedOverrides);
   }, [cleanOverrides, savedOverrides]);
 
-  // edits per section (for sidebar count)
+  // edits per section (for sidebar count) — meta excluded (direct HTML edit)
   const editsPerSection = useMemo(() => {
     const counts = {};
-    // meta section — always from META_FIELDS regardless of schema
-    let metaCount = 0;
-    META_FIELDS.forEach((f) => {
-      for (const L of ["ko", "en", "ja", "zh"]) {
-        const v = overrides[L] && overrides[L][f.key];
-        if (!isEmptyOverride(v)) metaCount += 1;
-      }
-    });
-    counts["meta"] = metaCount;
-    // other sections from schema (skip meta if present)
     window.ADMIN_SCHEMA.filter(s => s.id !== "meta").forEach((sec) => {
       let n = 0;
       sec.fields.forEach((f) => {
@@ -733,20 +737,19 @@ function AdminApp() {
             </p>
           </div>
 
-          {currentSection.id === "meta" && (
-            <MetaLiveView tags={liveMetaTags} />
-          )}
-
-          {currentSection.fields.map((f) => (
-            <FieldRow
-              key={f.key}
-              field={f}
-              lang={lang}
-              value={langOverrides[f.key]}
-              onChange={setField}
-              onReset={resetField}
-            />
-          ))}
+          {currentSection.id === "meta"
+            ? <MetaDirectEditor ghCfg={ghCfg} onToast={showToast} />
+            : currentSection.fields.map((f) => (
+                <FieldRow
+                  key={f.key}
+                  field={f}
+                  lang={lang}
+                  value={langOverrides[f.key]}
+                  onChange={setField}
+                  onReset={resetField}
+                />
+              ))
+          }
         </main>
 
         {showPreview && (
