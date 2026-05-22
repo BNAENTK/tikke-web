@@ -289,7 +289,21 @@ function ConfirmModal({ title, message, confirmLabel, danger, onConfirm, onClose
   );
 }
 
-/* ============================== META LIVE VIEW ============================== */
+/* ============================== META ============================== */
+// 메타 필드 정의 — schema.js와 무관하게 app.jsx에서 직접 관리
+const META_FIELDS = [
+  { key: "meta_title",    label: "페이지 타이틀",        type: "text",     hint: "브라우저 탭 · 검색 결과에 표시됩니다." },
+  { key: "meta_desc",     label: "설명 (description)",  type: "textarea", hint: "검색 엔진 결과 설명. 150–160자 권장." },
+  { key: "meta_keywords", label: "키워드 (keywords)",    type: "text" },
+  { key: "meta_og_title", label: "OG 제목",             type: "text",     hint: "SNS 공유 제목. 비워두면 meta_title 사용." },
+  { key: "meta_og_desc",  label: "OG 설명",             type: "textarea" },
+  { key: "meta_og_image", label: "OG 이미지 URL",        type: "text",     hint: "SNS 공유 썸네일 URL." },
+  { key: "meta_og_url",   label: "OG URL",              type: "text",     hint: "정규 URL. 예: https://tikke.kr" },
+  { key: "meta_tw_card",  label: "Twitter 카드",         type: "text",     hint: "예: summary_large_image" },
+];
+
+const META_SECTION = { id: "meta", label: "메타태그", fields: META_FIELDS };
+
 function MetaLiveView({ tags }) {
   const [open, setOpen] = useState(true);
 
@@ -458,7 +472,17 @@ function AdminApp() {
   // edits per section (for sidebar count)
   const editsPerSection = useMemo(() => {
     const counts = {};
-    window.ADMIN_SCHEMA.forEach((sec) => {
+    // meta section — always from META_FIELDS regardless of schema
+    let metaCount = 0;
+    META_FIELDS.forEach((f) => {
+      for (const L of ["ko", "en", "ja", "zh"]) {
+        const v = overrides[L] && overrides[L][f.key];
+        if (!isEmptyOverride(v)) metaCount += 1;
+      }
+    });
+    counts["meta"] = metaCount;
+    // other sections from schema (skip meta if present)
+    window.ADMIN_SCHEMA.filter(s => s.id !== "meta").forEach((sec) => {
       let n = 0;
       sec.fields.forEach((f) => {
         for (const L of ["ko", "en", "ja", "zh"]) {
@@ -587,7 +611,9 @@ function AdminApp() {
     );
   }
 
-  const currentSection = window.ADMIN_SCHEMA.find((s) => s.id === section) || window.ADMIN_SCHEMA[0];
+  const currentSection = section === "meta"
+    ? META_SECTION
+    : (window.ADMIN_SCHEMA.find((s) => s.id === section) || window.ADMIN_SCHEMA[0]);
   const langOverrides = overrides[lang] || {};
   const totalEdits = Object.values(editsPerSection).reduce((a, b) => a + b, 0);
 
