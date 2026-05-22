@@ -395,7 +395,7 @@ function AdminApp() {
     saveJSON(GH_CFG_KEY, c);
   }
 
-  // Fetch live meta tags from site HTML
+  // Fetch live meta tags from site HTML, inject into window.I18N as placeholders
   useEffect(() => {
     if (!loggedIn) return;
     (async () => {
@@ -413,6 +413,26 @@ function AdminApp() {
           if (name && content !== null) tags[name] = content;
         });
         setLiveMetaTags(tags);
+
+        // 라이브 값을 window.I18N에 주입 → FieldRow가 placeholder로 표시
+        const keyMap = {
+          meta_title:    'title',
+          meta_desc:     'description',
+          meta_keywords: 'keywords',
+          meta_og_title: 'og:title',
+          meta_og_desc:  'og:description',
+          meta_og_image: 'og:image',
+          meta_og_url:   'og:url',
+          meta_tw_card:  'twitter:card',
+        };
+        if (window.I18N) {
+          ['ko', 'en', 'ja', 'zh'].forEach(l => {
+            if (!window.I18N[l]) window.I18N[l] = {};
+            Object.entries(keyMap).forEach(([fieldKey, htmlKey]) => {
+              if (tags[htmlKey] != null) window.I18N[l][fieldKey] = tags[htmlKey];
+            });
+          });
+        }
       } catch(e) { setLiveMetaTags({}); }
     })();
   }, [loggedIn]);
