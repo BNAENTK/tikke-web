@@ -82,7 +82,7 @@ window.ADMIN_LANGS = [
   { code: "zh", label: "中文" }
 ];
 
-// 메타태그 (언어 공통 한 벌). 저장 형식: { meta: { title, description, og_image } } → KV.
+// 메타태그 (언어 공통 한 벌). 저장 형식: { meta: { title, description, keywords, og_image } } → KV.
 // 홈 Pages Function(functions/_middleware.js)이 <head>에 서버 주입. 각 필드는 여러 태그로 팬아웃.
 window.ADMIN_META_FIELDS = [
   { key: "title",       label: "페이지 제목",            type: "text",
@@ -91,6 +91,9 @@ window.ADMIN_META_FIELDS = [
   { key: "description", label: "설명",                   type: "textarea",
     placeholder: "Tikke는 TikTok LIVE에 바로 연결되는 데스크탑 방송 툴킷입니다…",
     hint: "검색 결과 · 공유 설명. 150자 내외 권장." },
+  { key: "keywords",    label: "키워드 (keywords)",      type: "textarea",
+    placeholder: "Tikke, TikTok LIVE, TikTok LIVE Studio, 방송 툴킷, 채팅 모더레이션, 실시간 번역, 라이브 스트리밍, 오버레이, TTS, 리그 조각컷, 스트리머 도구",
+    hint: "검색 키워드. 쉼표(,)로 구분해 입력. 검색엔진용 keywords 태그에 반영." },
   { key: "og_image",    label: "공유 썸네일 이미지 URL", type: "text",
     placeholder: "https://www.tikke.kr/og-image.png",
     hint: "카톡 · 페북 · 트위터 공유 시 보이는 이미지(og:image · twitter:image)." }

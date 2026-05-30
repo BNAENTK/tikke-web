@@ -32,8 +32,9 @@ export async function onRequest(context) {
 
     const title = meta.title && String(meta.title).trim();
     const desc = meta.description && String(meta.description).trim();
+    const keywords = meta.keywords && String(meta.keywords).trim();
     const ogImage = meta.og_image && String(meta.og_image).trim();
-    if (!title && !desc && !ogImage) return res;
+    if (!title && !desc && !keywords && !ogImage) return res;
 
     let rw = new HTMLRewriter();
     if (title) {
@@ -47,6 +48,9 @@ export async function onRequest(context) {
         .on('meta[name="description"]', new AttrSetter(desc))
         .on('meta[property="og:description"]', new AttrSetter(desc))
         .on('meta[name="twitter:description"]', new AttrSetter(desc));
+    }
+    if (keywords) {
+      rw = rw.on('meta[name="keywords"]', new AttrSetter(keywords));
     }
     if (ogImage) {
       rw = rw
