@@ -83,8 +83,6 @@
   .hud .bl{bottom:18px;left:18px;border-right:0;border-top:0}
   .hud .br{bottom:18px;right:18px;border-left:0;border-top:0}
   .hud .lbl{position:absolute;display:flex;align-items:center;gap:7px}
-  .hud .s-tl{top:21px;left:54px}
-  .hud .s-tr{top:21px;right:54px}
   .hud .s-bl{bottom:21px;left:54px}
   .hud .s-br{bottom:21px;right:54px;color:var(--primary)}
   .dotlive{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);
@@ -492,8 +490,6 @@
 
   <div class="hud">
     <span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
-    <span class="lbl s-tl"><span class="dotlive"></span>SYS.ONLINE</span>
-    <span class="lbl s-tr">TIKKE OPS // v1.8.46</span>
     <span class="lbl s-bl">LAT 42MS · STABLE</span>
     <span class="lbl s-br" id="coord">X000 Y000</span>
   </div>
@@ -557,9 +553,9 @@
         <a class="btn agency mag" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener">💬 에이전시 가입 문의</a>
       </div>
       <div class="stats">
-        <div class="stat"><div class="n">38<span class="u">개 언어</span></div><div class="l">Real-time Translate</div></div>
-        <div class="stat"><div class="n">20+<span class="u">오버레이</span></div><div class="l">On-screen Modules</div></div>
-        <div class="stat"><div class="n">&lt;3<span class="u">분</span></div><div class="l">Setup → On-air</div></div>
+        <div class="stat"><div class="n"><span class="nv">38</span><span class="u">개 언어</span></div><div class="l">Real-time Translate</div></div>
+        <div class="stat"><div class="n"><span class="nv">20+</span><span class="u">오버레이</span></div><div class="l">On-screen Modules</div></div>
+        <div class="stat"><div class="n"><span class="nv">&lt;3</span><span class="u">분</span></div><div class="l">Setup → On-air</div></div>
       </div>
     </div>
 
@@ -965,6 +961,8 @@
       ['h1.head .row:nth-of-type(1) .scr','h1a'],['h1.head .row:nth-of-type(2) .scr','h1b'],
       ['.sub','sub'],['.ctarow .btn.ghost','cta_modules'],['.ctarow .btn.agency','cta_agency'],
       ['.stats .stat:nth-of-type(1) .u','stat1u'],['.stats .stat:nth-of-type(2) .u','stat2u'],['.stats .stat:nth-of-type(3) .u','stat3u'],
+      ['.stats .stat:nth-of-type(1) .nv','stat1n'],['.stats .stat:nth-of-type(2) .nv','stat2n'],['.stats .stat:nth-of-type(3) .nv','stat3n'],
+      ['.stats .stat:nth-of-type(1) .l','stat1l'],['.stats .stat:nth-of-type(2) .l','stat2l'],['.stats .stat:nth-of-type(3) .l','stat3l'],
       ['.foot-brand p','foot_tag'],['.foot-col:nth-of-type(1) h4','foot_product'],['.foot-col:nth-of-type(2) h4','foot_company'],
       ['.foot-col:nth-of-type(1) a:nth-of-type(1)','foot_features'],['.foot-col:nth-of-type(1) a:nth-of-type(2)','foot_cutoffs'],
       ['.foot-col:nth-of-type(1) a:nth-of-type(3)','foot_guide'],['.foot-col:nth-of-type(1) a:nth-of-type(4)','foot_download'],
@@ -1005,6 +1003,10 @@
       m4t:"礼物 · 音效", m4d:"为每一份礼物配上声音与反应。观众的打赏在直播中鲜活起来。",
       m5t:"常客 · 集成", m5d:"把来过一次的观众变成常客，并与你惯用的工具无缝衔接。"
     });
+    Object.assign(DICT.ko,{ stat1n:"38", stat2n:"20+", stat3n:"<3", stat1l:"실시간 번역", stat2l:"화면 송출 모듈", stat3l:"설치 → 방송" });
+    Object.assign(DICT.en,{ stat1n:"38", stat2n:"20+", stat3n:"<3", stat1l:"Real-time Translate", stat2l:"On-screen Modules", stat3l:"Setup → On-air" });
+    Object.assign(DICT.ja,{ stat1n:"38", stat2n:"20+", stat3n:"<3", stat1l:"リアルタイム翻訳", stat2l:"画面送出モジュール", stat3l:"設定 → 配信" });
+    Object.assign(DICT.zh,{ stat1n:"38", stat2n:"20+", stat3n:"<3", stat1l:"实时翻译", stat2l:"画面输出模块", stat3l:"安装 → 开播" });
     const HTML_KEYS = new Set(['dep_h2','dep_ver']);
     window.applyLang = function(lang){
       const d = DICT[lang] || DICT.ko;
@@ -1038,18 +1040,27 @@
     document.getElementById('mobmenuX').addEventListener('click', () => mob.classList.remove('open'));
     mob.querySelectorAll('.mobmenu-links a').forEach(a => a.addEventListener('click', () => mob.classList.remove('open')));
 
-    // 어드민 KV 콘텐츠 오버라이드 머지 (api.tikke.kr/content) — 코드 배포와 분리된 편집분 반영
+    // 어드민 오버라이드 머지 — KV(api.tikke.kr/content)와 미리보기 postMessage 공용
+    function mergeOverrides(ov){
+      if (!ov || typeof ov !== "object") return;
+      let changed = false;
+      for (const lang of ["ko","en","ja","zh"]) {
+        if (ov[lang] && typeof ov[lang] === "object") { Object.assign(DICT[lang], ov[lang]); changed = true; }
+      }
+      if (changed) window.applyLang(window.__TIKKE_LANG || "ko");
+    }
+    // 코드 배포와 분리된 편집분(KV) 반영
     fetch("https://api.tikke.kr/content?v=" + Date.now(), { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
-      .then(ov => {
-        if (!ov || typeof ov !== "object") return;
-        let changed = false;
-        for (const lang of ["ko","en","ja","zh"]) {
-          if (ov[lang] && typeof ov[lang] === "object") { Object.assign(DICT[lang], ov[lang]); changed = true; }
-        }
-        if (changed) window.applyLang(window.__TIKKE_LANG || "ko");
-      })
+      .then(mergeOverrides)
       .catch(() => {});
+    // 어드민 실시간 미리보기 채널 — 편집 내용 postMessage 즉시 반영 + 준비 신호
+    window.addEventListener("message", function(e){
+      if (e.data && e.data.type === "tikke-overrides") mergeOverrides(e.data.data);
+    });
+    if (window.parent && window.parent !== window) {
+      try { window.parent.postMessage({ type: "tikke-preview-ready" }, "*"); } catch(e){}
+    }
   })();
   </script>
 
