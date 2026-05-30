@@ -149,35 +149,20 @@ button { font-family: inherit; }
 }
 .brand-mark {
   width: 32px; height: 32px; border-radius: 9px;
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(0, 229, 255, 0.25) 0%, transparent 60%),
-    radial-gradient(120% 80% at 100% 100%, rgba(255, 45, 135, 0.25) 0%, transparent 60%),
-    #07070f;
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px var(--hairline-hi) inset,
-    0 6px 22px -8px rgba(0, 229, 255, 0.6),
-    0 6px 22px -8px rgba(255, 45, 135, 0.6);
+  background: url('/logo.png') center/cover no-repeat;
+  flex-shrink: 0;
+  animation: logo-pulse 2.6s ease-in-out infinite;
 }
-.brand-mark::before {
-  /* square diamond (rhombus) */
-  content: '';
-  position: absolute;
-  inset: 5px;
-  background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--pink) 100%);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.55));
-}
-.brand-mark::after {
-  /* upper-facet glint */
-  content: '';
-  position: absolute;
-  inset: 5px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.15) 38%, transparent 50%);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  mix-blend-mode: overlay;
-  pointer-events: none;
+.brand-mark::before, .brand-mark::after { display: none; }
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(0,229,255,0.55)) drop-shadow(0 0 12px rgba(255,45,135,0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(0,229,255,0.9)) drop-shadow(0 0 20px rgba(255,45,135,0.75));
+    transform: scale(1.04);
+  }
 }
 .brand-name { color: var(--t-1); }
 .nav-links {
@@ -2480,3 +2465,46 @@ html[lang="zh"] .platform-recommended::before { content: "推荐"; }
   .win-body { grid-template-columns: 1fr; }
   .app-sidebar { display: none; }
 }
+
+/* Custom cursor — 네온 dot + lerp ring (tikketone 스타일) */
+html.tk-custom-cursor,
+html.tk-custom-cursor body,
+html.tk-custom-cursor a,
+html.tk-custom-cursor button,
+html.tk-custom-cursor [role="button"] { cursor: none; }
+
+.tk-cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 10px; height: 10px;
+  background: var(--cyan, #00F2EA);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, transform 0.12s ease, opacity 0.2s ease;
+  mix-blend-mode: screen;
+  box-shadow: 0 0 12px rgba(0, 242, 234, 0.7), 0 0 20px rgba(0, 242, 234, 0.4);
+}
+.tk-cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(0, 242, 234, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.2s ease;
+}
+body:has(a:hover, button:hover, [role="button"]:hover) .tk-cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--pink, #FF0050);
+  box-shadow: 0 0 14px rgba(255, 0, 80, 0.75), 0 0 24px rgba(255, 0, 80, 0.4);
+}
+body:has(a:hover, button:hover, [role="button"]:hover) .tk-cursor-ring {
+  width: 56px; height: 56px;
+  border-color: rgba(255, 0, 80, 0.6);
+}
+@media (hover: none) { .tk-cursor-dot, .tk-cursor-ring { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { .tk-cursor-dot, .tk-cursor-ring { display: none !important; } }

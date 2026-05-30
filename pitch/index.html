@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tikke — Investor Pitch Deck</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --cyan: #00E5FF;
+  --pink: #FF2D87;
+  --violet: #7C3AED;
+  --gold: #FFC857;
+  --green: #00FFA3;
+  --bg: #080810;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text: #F1F0F8;
+  --muted: rgba(241,240,248,0.5);
+}
+
+.reveal { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); }
+.reveal .slides section { text-align: left; }
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 { font-family: 'Space Grotesk', sans-serif; color: var(--text); text-transform: none; letter-spacing: -0.5px; margin-bottom: 0.5em; }
+
+/* ── Slide base ── */
+.slide { padding: 0 60px; width: 100%; box-sizing: border-box; }
+.slide.center { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+
+/* ── Brand mark ── */
+.brand-mark {
+  width: 48px; height: 48px; display: inline-block;
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-name { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+
+/* ── Pill / tag ── */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 99px;
+  border: 1px solid rgba(0,229,255,0.3); background: rgba(0,229,255,0.08);
+  font-size: 13px; font-weight: 600; color: var(--cyan);
+  margin-bottom: 24px;
+}
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+
+/* ── Accent gradient text ── */
+.accent { background: linear-gradient(90deg, var(--cyan), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* ── Grid helpers ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+/* ── Card ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 24px;
+}
+.card .num { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+.card .label { font-size: 13px; color: var(--muted); }
+.card .desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-top: 8px; }
+
+/* ── Problem ── */
+.pain { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.pain .icon { font-size: 28px; flex-shrink: 0; }
+.pain h4 { font-size: 18px; margin: 0 0 4px; }
+.pain p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+/* ── Feature row ── */
+.feat { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+.feat .ic { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.feat h4 { font-size: 16px; margin: 0 0 3px; }
+.feat p { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* ── Timeline / roadmap ── */
+.road { display: flex; flex-direction: column; gap: 0; }
+.road-item { display: flex; gap: 20px; align-items: flex-start; padding-bottom: 24px; position: relative; }
+.road-item:not(:last-child)::before { content:''; position: absolute; left: 16px; top: 36px; width: 2px; height: calc(100% - 16px); background: var(--border); }
+.road-num { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--cyan); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--cyan); flex-shrink: 0; background: var(--bg); }
+.road-num.done { background: var(--cyan); color: #000; border-color: var(--cyan); }
+.road-text h4 { font-size: 16px; margin: 0 0 4px; }
+.road-text p { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* ── Business model ── */
+.plan { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+.plan.highlight { border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.05); }
+.plan .plan-name { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.plan .plan-price { font-size: 28px; font-weight: 800; margin-bottom: 16px; }
+.plan .plan-price span { font-size: 14px; font-weight: 400; color: var(--muted); }
+.plan ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.plan ul li::before { content: '✓ '; color: var(--cyan); font-weight: 700; }
+
+/* ── Slide number ── */
+.reveal .slide-number { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
+
+/* ── Section label ── */
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Glow line ── */
+.glow-line { width: 60px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--pink)); margin-bottom: 24px; }
+
+/* ── KPI bar ── */
+.kpi-row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 120px; }
+.kpi .v { font-size: 28px; font-weight: 800; line-height: 1; }
+.kpi .l { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── Team card ── */
+.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; }
+.team-av { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--violet)); margin: 0 auto 12px; }
+.team-card h4 { font-size: 16px; margin: 0 0 4px; }
+.team-card .role { font-size: 13px; color: var(--cyan); margin-bottom: 8px; }
+.team-card p { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+/* ── Ask box ── */
+.ask-box { background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(255,45,135,0.05)); border: 1px solid rgba(0,229,255,0.2); border-radius: 20px; padding: 40px; text-align: center; }
+.ask-box .amount { font-size: 64px; font-weight: 900; line-height: 1; }
+
+/* Reveal overrides */
+.reveal .slides { height: 100%; }
+.reveal section { height: 100%; }
+.reveal section > .slide { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 01 TITLE -->
+<section data-background-gradient="radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0,229,255,0.07) 0%, transparent 70%)">
+<div class="slide center">
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <span class="brand-name">TIKKE</span>
+  </div>
+  <div style="margin: 40px 0 20px;">
+    <h1 style="font-size: clamp(36px,5vw,64px); font-weight: 900; line-height: 1.1; margin:0;">
+      TikTok LIVE 방송자를 위한<br /><span class="accent">올인원 컨트롤 룸</span>
+    </h1>
+  </div>
+  <p style="font-size: 18px; color: var(--muted); max-width: 560px; line-height: 1.7; margin: 0 auto 40px;">
+    채팅 · 선물 · TTS · 번역 · TikTok LIVE 스튜디오 오버레이를 하나의 데스크탑 앱에서.<br />
+    설치 3분 후 첫 방송부터 바로 사용.
+  </p>
+  <div style="display: flex; gap: 12px; font-size: 13px; color: var(--muted); font-family: 'Space Mono', monospace;">
+    <span>Seed Round</span>
+    <span style="color: var(--border);">|</span>
+    <span>2026</span>
+    <span style="color: var(--border);">|</span>
+    <span>CONFIDENTIAL</span>
+  </div>
+</div>
+</section>
+
+<!-- 02 PROBLEM -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Problem</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">TikTok LIVE 방송은<br /><span class="accent">도구가 없다.</span></h2>
+  <div class="glow-line"></div>
+  <div style="margin-top: 20px;">
+    <div class="pain">
+      <div class="icon">😵</div>
+      <div>
+        <h4>수천 개의 채팅, 선물, 이벤트 — 방송자 혼자 감당</h4>
+        <p>분당 수백 개의 이벤트가 쏟아지는 라이브 현장. 채팅 관리와 방송 진행을 동시에 하는 건 불가능에 가깝습니다.</p>
+      </div>
+    </div>
+    <div class="pain">
+      <div class="icon">🌐</div>
+      <div>
+        <h4>글로벌 시청자, 언어 장벽</h4>
+        <p>일본어, 영어, 태국어로 쏟아지는 채팅. 번역 없이는 인터랙션이 끊깁니다. TikTok Live 내에는 번역 기능이 없습니다.</p>
+      </div>
+    </div>
+    <div class="pain">
+      <div class="icon">🛠️</div>
+      <div>
+        <h4>파편화된 도구, 없는 한국어 지원</h4>
+        <p>TikTok LIVE 스튜디오 플러그인, 별도 TTS 앱, 엑셀 통계 — 모두 따로. 한국 TikTok 방송자를 위한 통합 툴은 존재하지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 03 MARKET SIZE -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Market Opportunity</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">TikTok LIVE<br /><span class="accent">크리에이터 이코노미</span></h2>
+  <div class="glow-line"></div>
+  <div class="g3" style="margin-top: 24px;">
+    <div class="card">
+      <div class="num" style="color: var(--cyan);">15억</div>
+      <div class="label">TikTok 월간 활성 사용자 (MAU)</div>
+      <div class="desc">2025년 기준 세계 2위 소셜 플랫폼</div>
+    </div>
+    <div class="card">
+      <div class="num" style="color: var(--pink);">$3.8B</div>
+      <div class="label">TikTok 2024 라이브 선물 수익</div>
+      <div class="desc">전년 대비 +32% 성장</div>
+    </div>
+    <div class="card">
+      <div class="num" style="color: var(--gold);">180만+</div>
+      <div class="label">한국 TikTok 라이브 스트리머</div>
+      <div class="desc">월 1회 이상 라이브 방송 진행자</div>
+    </div>
+  </div>
+  <div class="g3" style="margin-top: 20px;">
+    <div class="card">
+      <div class="num" style="color: var(--green); font-size: 28px;">TAM</div>
+      <div class="label">전 세계 TikTok 방송자 툴 시장</div>
+      <div class="desc" style="font-size: 20px; font-weight: 700; color: var(--text); margin-top: 12px;">$2.4B</div>
+    </div>
+    <div class="card">
+      <div class="num" style="color: var(--cyan); font-size: 28px;">SAM</div>
+      <div class="label">한·일·동남아 TikTok 방송자</div>
+      <div class="desc" style="font-size: 20px; font-weight: 700; color: var(--text); margin-top: 12px;">$420M</div>
+    </div>
+    <div class="card">
+      <div class="num" style="color: var(--pink); font-size: 28px;">SOM</div>
+      <div class="label">한국 파워 스트리머 (3년 목표)</div>
+      <div class="desc" style="font-size: 20px; font-weight: 700; color: var(--text); margin-top: 12px;">$18M</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 04 SOLUTION -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Solution</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;"><span class="accent">Tikke</span> — 방송자의 컨트롤 룸</h2>
+  <div class="glow-line"></div>
+  <div class="g2" style="margin-top: 24px;">
+    <div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(0,229,255,0.1);">💬</div>
+        <div><h4>스마트 채팅 패널</h4><p>실시간 채팅 관리, 스팸 필터, 키워드 강조</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(255,45,135,0.1);">🎁</div>
+        <div><h4>선물 알림 & 통계</h4><p>선물 이벤트 실시간 알림 + 일별/누적 통계</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(124,58,237,0.1);">🌐</div>
+        <div><h4>38개 언어 실시간 번역</h4><p>글로벌 시청자 채팅을 자동 한국어 번역</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(0,255,163,0.1);">🔊</div>
+        <div><h4>TTS & 사운드 엔진</h4><p>채팅/선물 이벤트를 음성으로 자동 안내</p></div>
+      </div>
+    </div>
+    <div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(255,200,87,0.1);">📺</div>
+        <div><h4>TikTok LIVE 스튜디오 오버레이</h4><p>채팅·선물·마퀴·불꽃 위젯 — 브라우저 소스 1줄</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(0,229,255,0.1);">⌘</div>
+        <div><h4>채팅 명령어 엔진</h4><p>!명령어로 사운드·오버레이·TTS 자동 트리거</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(255,45,135,0.1);">☁️</div>
+        <div><h4>클라우드 오버레이 룸</h4><p>Cloudflare Workers DO 기반 원격 오버레이 제어</p></div>
+      </div>
+      <div class="feat">
+        <div class="ic" style="background: rgba(124,58,237,0.1);">🔗</div>
+        <div><h4>외부 연동</h4><p>Telegram 알림, Minecraft, GTA 브릿지 등</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 05 PRODUCT DEMO -->
+<section data-background-gradient="radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,58,237,0.06) 0%, transparent 70%)">
+<div class="slide center">
+  <div class="eyebrow">Product</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">설치 3분 → <span class="accent">방송이 달라집니다.</span></h2>
+  <div class="glow-line" style="margin: 16px auto 24px;"></div>
+
+  <!-- Fake app window mockup -->
+  <div style="width: 100%; max-width: 720px; background: #0e0e1a; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.6);">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);">
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #FF5F57;"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E;"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #28C840;"></span>
+      <span style="margin: 0 auto; font-size: 12px; color: var(--muted);">Tikke — 컨트롤 룸</span>
+      <span style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--cyan);">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan);"></span>
+        연결됨
+      </span>
+    </div>
+    <div style="display: flex; height: 240px;">
+      <div style="width: 140px; background: rgba(255,255,255,0.02); border-right: 1px solid var(--border); padding: 12px 0; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px;">
+        <div style="padding: 6px 16px; color: var(--cyan); background: rgba(0,229,255,0.08); border-left: 2px solid var(--cyan);">📊 대시보드</div>
+        <div style="padding: 6px 16px;">💬 채팅</div>
+        <div style="padding: 6px 16px;">🎁 선물</div>
+        <div style="padding: 6px 16px;">🌐 번역</div>
+        <div style="padding: 6px 16px;">🔊 TTS</div>
+        <div style="padding: 6px 16px;">📺 오버레이</div>
+        <div style="padding: 6px 16px;">⌘ 명령어</div>
+      </div>
+      <div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+          <div style="background: rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.15); border-radius: 10px; padding: 12px;">
+            <div style="font-size: 18px; font-weight: 800; color: var(--cyan);">12,480</div>
+            <div style="font-size: 10px; color: var(--muted);">시청자</div>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px;">
+            <div style="font-size: 18px; font-weight: 800;">312</div>
+            <div style="font-size: 10px; color: var(--muted);">팔로우</div>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px;">
+            <div style="font-size: 18px; font-weight: 800; color: var(--pink);">1,940</div>
+            <div style="font-size: 10px; color: var(--muted);">선물</div>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px;">
+            <div style="font-size: 18px; font-weight: 800; color: var(--gold);">8:42</div>
+            <div style="font-size: 10px; color: var(--muted);">평균체류</div>
+          </div>
+        </div>
+        <div style="flex:1; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
+          <div style="font-size: 12px; color: var(--muted); font-weight: 600;">실시간 이벤트</div>
+          <div style="font-size: 11px; padding: 6px 10px; background: rgba(255,45,135,0.08); border-left: 2px solid var(--pink); border-radius: 4px; color: var(--text);">🎁 kpop_fan → 🦁 ×10 (1,000 coins)</div>
+          <div style="font-size: 11px; padding: 6px 10px; background: rgba(0,229,255,0.06); border-left: 2px solid var(--cyan); border-radius: 4px; color: var(--text);">💬 haruki_jp: こんばんは〜 → <span style="color:var(--cyan);">안녕하세요~</span></div>
+          <div style="font-size: 11px; padding: 6px 10px; background: var(--surface); border-left: 2px solid var(--border); border-radius: 4px; color: var(--muted);">👥 viewer2188 님이 팔로우했습니다</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 06 TRACTION -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Traction</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">출시 <span class="accent">베타 단계</span> — 이미 작동 중</h2>
+  <div class="glow-line"></div>
+  <div class="kpi-row" style="margin-top: 24px;">
+    <div class="kpi">
+      <div class="v" style="color: var(--cyan);">v1.3.42</div>
+      <div class="l">현재 릴리즈 버전</div>
+    </div>
+    <div class="kpi">
+      <div class="v" style="color: var(--pink);">Windows</div>
+      <div class="l">NSIS 인스톨러 배포 중</div>
+    </div>
+    <div class="kpi">
+      <div class="v" style="color: var(--gold);">Phase 1–13</div>
+      <div class="l">전체 기능 구현 완료</div>
+    </div>
+    <div class="kpi">
+      <div class="v" style="color: var(--green);">Cloudflare</div>
+      <div class="l">Workers + Pages 운영 중</div>
+    </div>
+  </div>
+  <div class="g2" style="margin-top: 28px;">
+    <div>
+      <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--muted);">✅ 완료된 기능</h4>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> TikTok LIVE 실시간 연결</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> 채팅 / 선물 / 팔로우 이벤트 처리</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> 38개 언어 자동 번역 자막</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> TTS / 사운드 엔진</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> TikTok LIVE 스튜디오 오버레이 (채팅/선물/마퀴/불꽃/영상)</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> 채팅 명령어 엔진</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> Supabase Auth (Google OAuth)</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--green);">✓</span> 클라우드 오버레이 룸 (Cloudflare DO)</div>
+      </div>
+    </div>
+    <div>
+      <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--muted);">🚀 다음 목표</h4>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--muted);">
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> 유료 플랜 도입 (Pro / MAX)</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> macOS 빌드 배포</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> 모바일 연동 앱 (iOS/Android 컴패니언)</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> 다중 계정 / 에이전시 기능</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> Spotify 연동 / 라이브 DJ 기능</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> AI 채팅 요약 & 인사이트</div>
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="color: var(--cyan);">→</span> 플러그인 마켓플레이스</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 07 BUSINESS MODEL -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Business Model</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">SaaS + <span class="accent">Marketplace</span></h2>
+  <div class="glow-line"></div>
+  <div class="g3" style="margin-top: 28px;">
+    <div class="plan">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">₩0 <span>/ 월</span></div>
+      <ul>
+        <li>TikTok Live 연결</li>
+        <li>채팅 / 선물 이벤트</li>
+        <li>기본 오버레이 3종</li>
+        <li>TTS (Web Speech API)</li>
+        <li>이벤트 로그 30일</li>
+      </ul>
+    </div>
+    <div class="plan highlight">
+      <div class="plan-name" style="color: var(--cyan);">Pro ⭐</div>
+      <div class="plan-price" style="color: var(--cyan);">₩14,900 <span>/ 월</span></div>
+      <ul>
+        <li>클라우드 오버레이 룸</li>
+        <li>AI TTS (Naver Clova 등)</li>
+        <li>무제한 사운드 라이브러리</li>
+        <li>번역 자막 무제한</li>
+        <li>Telegram 알림</li>
+        <li>통계 & 분석 대시보드</li>
+        <li>우선 지원</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <div class="plan-name" style="color: var(--violet);">MAX</div>
+      <div class="plan-price">₩100,000 <span>/ 월</span></div>
+      <ul>
+        <li>Pro 전체 기능</li>
+        <li>다중 계정 관리 (최대 10개)</li>
+        <li>팀 멤버 초대</li>
+        <li>화이트라벨 오버레이</li>
+        <li>API 접근</li>
+        <li>전담 온보딩</li>
+      </ul>
+    </div>
+  </div>
+  <div class="g2" style="margin-top: 20px;">
+    <div class="card">
+      <div class="num" style="color: var(--gold); font-size: 20px;">플러그인 마켓플레이스</div>
+      <div class="desc">서드파티 개발자가 오버레이·명령어 플러그인을 판매. 수익의 30% 플랫폼 수수료.</div>
+    </div>
+    <div class="card">
+      <div class="num" style="color: var(--green); font-size: 20px;">엔터프라이즈 / MCN</div>
+      <div class="desc">MCN·에이전시 대상 커스텀 계약. 화이트라벨 + API 전용 제공. 별도 협의.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 08 ROADMAP -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Roadmap</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;"><span class="accent">18개월</span> 실행 계획</h2>
+  <div class="glow-line"></div>
+  <div class="g2" style="margin-top: 24px;">
+    <div class="road">
+      <div class="road-item">
+        <div class="road-num done">Q1</div>
+        <div class="road-text">
+          <h4>제품 완성 & 베타 출시 ✅</h4>
+          <p>Phase 1–13 완료. Windows 인스톨러 배포. 핵심 기능 전체 구현.</p>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-num done">Q2</div>
+        <div class="road-text">
+          <h4>유저 검증 & macOS ✅ →</h4>
+          <p>한국 TikTok 스트리머 100명 온보딩. macOS 빌드 배포. 피드백 반영.</p>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-num">Q3</div>
+        <div class="road-text">
+          <h4>유료 플랜 론칭</h4>
+          <p>Pro / MAX 플랜 활성화. Stripe 결제 연동. 첫 수익화.</p>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-num">Q4</div>
+        <div class="road-text">
+          <h4>플러그인 마켓 + API</h4>
+          <p>서드파티 개발자 SDK 공개. 플러그인 마켓플레이스 오픈.</p>
+        </div>
+      </div>
+    </div>
+    <div class="road">
+      <div class="road-item">
+        <div class="road-num">Y2 Q1</div>
+        <div class="road-text">
+          <h4>일본 / 동남아 시장 확장</h4>
+          <p>일본어 UI. 현지 크리에이터 파트너십. 로컬 TTS 제공자 추가.</p>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-num">Y2 Q2</div>
+        <div class="road-text">
+          <h4>AI 기능 통합</h4>
+          <p>AI 채팅 요약. 인기 키워드 감지. 자동 하이라이트 클립 생성.</p>
+        </div>
+      </div>
+      <div class="road-item">
+        <div class="road-num">Y2 Q3</div>
+        <div class="road-text">
+          <h4>모바일 컴패니언 앱</h4>
+          <p>iOS/Android 앱. 방송 중 알림 수신 + 원격 제어.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 09 WHY NOW -->
+<section data-background-gradient="radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,45,135,0.06) 0%, transparent 70%)">
+<div class="slide">
+  <div class="eyebrow">Why Now</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">지금이 <span class="accent">골든 타임</span>인 이유</h2>
+  <div class="glow-line"></div>
+  <div class="g2" style="margin-top: 28px;">
+    <div class="card">
+      <div style="font-size: 28px; margin-bottom: 12px;">📈</div>
+      <h4>TikTok LIVE 고성장</h4>
+      <p class="desc">TikTok 라이브 선물 수익은 2024년 $3.8B. 2027년까지 $9B 예측. 방송자 수는 매년 40%+ 증가.</p>
+    </div>
+    <div class="card">
+      <div style="font-size: 28px; margin-bottom: 12px;">🏜️</div>
+      <h4>경쟁 공백</h4>
+      <p class="desc">국내 TikTok LIVE 전용 방송 툴이 없음. 기존 도구는 Twitch/YouTube 중심. TikTok 방송자는 방치된 상태.</p>
+    </div>
+    <div class="card">
+      <div style="font-size: 28px; margin-bottom: 12px;">🌏</div>
+      <h4>K-크리에이터 글로벌화</h4>
+      <p class="desc">한국 크리에이터는 일·동남아·미주 팬덤 보유. 다국어 인터랙션 도구 수요가 폭발적으로 증가 중.</p>
+    </div>
+    <div class="card">
+      <div style="font-size: 28px; margin-bottom: 12px;">⚡</div>
+      <h4>기술적 적기</h4>
+      <p class="desc">Cloudflare Workers DO, Electron, 브라우저 AI — 실시간 방송 도구를 저비용으로 구축할 수 있는 기술 스택이 성숙.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 10 TEAM -->
+<section>
+<div class="slide">
+  <div class="eyebrow">Team</div>
+  <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 8px;">팀 소개</h2>
+  <div class="glow-line"></div>
+  <div class="g3" style="margin-top: 28px;">
+    <div class="team-card">
+      <div class="team-av" style="background: linear-gradient(135deg, var(--cyan), var(--violet));"></div>
+      <h4>최규원 · 최태현</h4>
+      <div class="role">Co-Founders · Product</div>
+      <p>TikTok LIVE 생태계 전문가. Tikke 핵심 아키텍처 설계. 방송 플랫폼 10년+ 경험.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-av" style="background: linear-gradient(135deg, var(--pink), var(--gold));"></div>
+      <h4>자문 · 크리에이터</h4>
+      <div class="role">Creator Advisor</div>
+      <p>BNA 소속 크리에이터. 실사용 피드백 제공. 커뮤니티 채널 접근.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-av" style="background: linear-gradient(135deg, var(--green), var(--cyan));"></div>
+      <h4>채용 예정 · CTO</h4>
+      <div class="role">Engineering Lead</div>
+      <p>시드 투자 후 채용 예정. Electron / Cloudflare 스택 전문가.</p>
+    </div>
+  </div>
+  <div style="margin-top: 32px; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; display: flex; gap: 32px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 20px;">💻</span>
+      <div><div style="font-size: 14px; font-weight: 700;">Full-Stack 구현</div><div style="font-size: 12px; color: var(--muted);">Phase 1–13 전부 완성</div></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 20px;">🏗️</span>
+      <div><div style="font-size: 14px; font-weight: 700;">인프라 운영 중</div><div style="font-size: 12px; color: var(--muted);">Cloudflare Workers / Pages</div></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 20px;">📦</span>
+      <div><div style="font-size: 14px; font-weight: 700;">제품 출시 완료</div><div style="font-size: 12px; color: var(--muted);">v1.3.42 실사용 가능</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 11 ASK -->
+<section data-background-gradient="radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0,229,255,0.07) 0%, transparent 70%)">
+<div class="slide center">
+  <div class="eyebrow">The Ask</div>
+  <div class="ask-box" style="max-width: 640px; width: 100%;">
+    <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Seed Round</div>
+    <div class="amount accent">₩300M</div>
+    <div style="font-size: 18px; color: var(--muted); margin: 16px 0 32px;">시드 투자 유치 목표</div>
+    <div class="g3" style="text-align: left;">
+      <div class="card">
+        <div class="num" style="font-size: 20px; color: var(--cyan);">40%</div>
+        <div class="label">제품 & 엔지니어링</div>
+        <div class="desc">CTO 채용, 기능 개발, 서버 인프라</div>
+      </div>
+      <div class="card">
+        <div class="num" style="font-size: 20px; color: var(--pink);">35%</div>
+        <div class="label">크리에이터 마케팅</div>
+        <div class="desc">인플루언서 파트너십, 커뮤니티 구축</div>
+      </div>
+      <div class="card">
+        <div class="num" style="font-size: 20px; color: var(--gold);">25%</div>
+        <div class="label">운영 & 글로벌 확장</div>
+        <div class="desc">일본·동남아 진출, 법인 운영</div>
+      </div>
+    </div>
+    <div style="margin-top: 24px; font-size: 15px; color: var(--muted);">
+      목표: <b style="color: var(--text);">18개월 런웨이</b> · 유료 플랜 론칭 · ARR <b style="color: var(--text);">₩500M</b> 달성
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 12 CLOSE -->
+<section data-background-gradient="radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0,229,255,0.07) 0%, transparent 70%)">
+<div class="slide center">
+  <div class="brand" style="justify-content: center;">
+    <div class="brand-mark"></div>
+    <span class="brand-name">TIKKE</span>
+  </div>
+  <h2 style="font-size: 44px; font-weight: 900; margin: 32px 0 16px; max-width: 600px;">TikTok LIVE 방송자의 <span class="accent">슈퍼파워</span>가 되겠습니다.</h2>
+  <p style="font-size: 16px; color: var(--muted); max-width: 480px; line-height: 1.7; margin: 0 auto 40px;">
+    전 세계 수백만 명의 TikTok 방송자에게 — 지금까지 없었던 도구를.<br />
+    함께 만들어 갈 파트너를 찾고 있습니다.
+  </p>
+  <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; font-size: 15px;">
+    <div style="display: flex; align-items: center; gap: 10px; color: var(--cyan);">
+      <span>🌐</span> <span>tikke.kr</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; color: var(--muted);">
+      <span>✉️</span> <span>logoros11@gmail.com</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; color: var(--muted);">
+      <span>💬</span> <span>카카오톡 ID: choiwkyuwon</span>
+    </div>
+  </div>
+  <div style="margin-top: 40px; padding: 16px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace;">
+    CONFIDENTIAL · This presentation contains forward-looking statements · 2026 Tikke
+  </div>
+</div>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 1200,
+  height: 700,
+  margin: 0.04,
+  minScale: 0.2,
+  maxScale: 2.0,
+});
+</script>
+</body>
+</html>

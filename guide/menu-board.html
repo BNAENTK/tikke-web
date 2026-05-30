@@ -1,0 +1,99 @@
+<!-- 메뉴판 설정 가이드 - 영상 임베드 페이지 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060C" />
+
+  <title>메뉴판 설정 가이드 — Tikke</title>
+  <meta name="description" content="Tikke 메뉴판 설정 및 활성화 영상 가이드." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tikke.kr/guide/menu-board.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="메뉴판 설정 가이드 — Tikke" />
+  <meta property="og:description" content="메뉴판 설정 영상 가이드." />
+  <meta property="og:url" content="https://www.tikke.kr/guide/menu-board.html" />
+  <meta property="og:image" content="https://www.tikke.kr/og-image.png" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../page.css" />
+
+  <style>
+    .video-wrap { margin: 24px auto 8px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; background: #000; max-width: 360px; aspect-ratio: 9 / 16; }
+    .video-wrap iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .video-hint { font-size: 12px; color: var(--text-dim, #6b6b80); text-align: center; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="v"></div></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="page-nav">
+    <div class="page-nav-inner">
+      <a href="../index.html" class="page-nav-brand">
+        <span class="page-nav-mark"></span>
+        <span class="page-nav-name">TIKKE</span>
+        <span class="page-nav-tag">가이드</span>
+      </a>
+      <nav class="page-nav-links">
+        <a href="../index.html#features">기능</a>
+        <a href="index.html">가이드</a>
+        <a href="../about.html">소개</a>
+        <a href="../contact.html">문의</a>
+      </nav>
+      <a href="../index.html#download" class="page-nav-cta">다운로드</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Media · 메뉴판</div>
+    <h1 class="page-title">메뉴판 설정<br />가이드</h1>
+    <p class="page-lede">방송 화면 메뉴판 셀에 선물 매핑, 색상/폰트 적용, 셀 활성화까지 영상으로 안내합니다.</p>
+    <div class="page-meta">
+      <span>형식 <b>영상</b></span>
+      <span>난이도 <b>입문</b></span>
+    </div>
+  </section>
+
+  <main class="page-container">
+    <article class="article">
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/HYiKaA4baj8"
+          title="메뉴판 설정 가이드"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <p class="video-hint">▶ 재생 버튼을 누르세요 · 전체화면 지원</p>
+
+      <h2>요약</h2>
+      <ol>
+        <li>사이드바 → <b>메뉴판 설정</b> 이동.</li>
+        <li>셀에 선물 종류 + 표시 텍스트 매핑.</li>
+        <li>색상/폰트 크기/굵기 일괄 적용 가능.</li>
+        <li>URL 복사 → OBS 브라우저 소스 추가.</li>
+        <li>설정 <b>내보내기/불러오기</b>로 JSON 백업·복원.</li>
+      </ol>
+
+      <h2>참고</h2>
+      <ul>
+        <li><b>자동 동기화</b> — 메뉴판 변경 시 클라우드 자동 저장.</li>
+        <li><b>그레이스케일</b> — 미활성 셀 흑백 처리 옵션.</li>
+        <li><b>JSON 호환</b> — 다른 PC에 그대로 옮겨 사용 가능.</li>
+      </ul>
+
+      <p style="margin-top:32px;"><a href="index.html" class="page-link">← 가이드 목록으로</a></p>
+    </article>
+  </main>
+  <script src="../interactions.js" defer></script>
+</body>
+</html>

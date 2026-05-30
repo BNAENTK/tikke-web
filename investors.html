@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tikke — 투자자 정보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono&display=swap" rel="stylesheet" />
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cyan: #00E5FF; --pink: #FF2D87; --violet: #7C3AED;
+  --gold: #FFC857; --green: #00FFA3;
+  --bg: #080810; --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08); --text: #F1F0F8;
+  --muted: rgba(241,240,248,0.5); --dim: rgba(241,240,248,0.3);
+}
+body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* NAV */
+.nav { padding: 20px 0; border-bottom: 1px solid var(--border); }
+.nav-inner { display: flex; align-items: center; gap: 14px; }
+.brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, var(--cyan), var(--pink)); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); flex-shrink: 0; }
+.brand-name { font-size: 20px; font-weight: 900; letter-spacing: -1px; }
+
+/* HERO */
+.hero { padding: 80px 0 60px; text-align: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 99px; border: 1px solid rgba(0,229,255,0.25); background: rgba(0,229,255,0.06); font-size: 12px; font-weight: 600; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+.hero h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 900; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
+.accent { background: linear-gradient(90deg, var(--cyan), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { font-size: 17px; color: var(--muted); max-width: 600px; margin: 0 auto 40px; line-height: 1.7; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; border: none; transition: opacity 0.15s; }
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: var(--cyan); color: #000; }
+.btn-ghost { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+.btn-kakao { background: #FEE500; color: #181600; }
+
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 768px) { .g2, .g3, .g4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .g2, .g3, .g4 { grid-template-columns: 1fr; } }
+
+/* SECTION */
+.section { padding: 60px 0; border-top: 1px solid var(--border); }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.section-title { font-size: clamp(24px, 4vw, 40px); font-weight: 900; letter-spacing: -0.5px; margin-bottom: 12px; }
+.section-lead { font-size: 15px; color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 40px; }
+
+/* CARD */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+.card .num { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+.card .label { font-size: 12px; color: var(--muted); }
+.card .desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 8px; }
+
+/* FEATURE */
+.feat { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.feat .ic { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: rgba(0,229,255,0.08); }
+.feat h4 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.feat p { font-size: 13px; color: var(--muted); }
+
+/* PLAN */
+.plan { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+.plan.highlight { border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.04); }
+.plan-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.plan.highlight .plan-name { color: var(--cyan); }
+.plan-price { font-size: 28px; font-weight: 800; margin-bottom: 16px; }
+.plan ul { list-style: none; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.plan ul li::before { content: '✓ '; color: var(--cyan); font-weight: 700; }
+
+/* ASK */
+.ask-box { background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(255,45,135,0.05)); border: 1px solid rgba(0,229,255,0.2); border-radius: 20px; padding: 48px; text-align: center; }
+.ask-box .amount { font-size: 72px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+.use-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+.use-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 24px; min-width: 140px; text-align: center; }
+.use-item .pct { font-size: 28px; font-weight: 800; }
+.use-item .desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* KPI */
+.kpi-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 130px; }
+.kpi .v { font-size: 26px; font-weight: 800; line-height: 1; }
+.kpi .l { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* CONTACT */
+.contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.contact-box h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.contact-box p { font-size: 14px; color: var(--muted); }
+
+/* FOOTER */
+footer { padding: 32px 0; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--dim); font-family: 'Space Mono', monospace; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="brand-mark"></div>
+    <span class="brand-name">TIKKE</span>
+    <span style="margin-left: auto; font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace;">투자자 정보 · CONFIDENTIAL</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="eyebrow">✦ Investor Relations</div>
+    <h1>TikTok LIVE 방송자를 위한<br /><span class="accent">올인원 컨트롤 룸</span></h1>
+    <p>채팅 · 선물 · TTS · 38개 언어 실시간 번역 · TikTok LIVE 스튜디오 오버레이를 하나의 데스크탑 앱에서. 설치 3분 후 첫 방송부터 즉시 사용.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="pitch/index.html">📊 Pitch Deck 보기</a>
+      <a class="btn btn-ghost" href="onepager/index.html">📄 One-Pager</a>
+      <a class="btn btn-kakao" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener noreferrer">💬 카카오톡: choiwkyuwon</a>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Market Opportunity</div>
+    <h2 class="section-title">TikTok LIVE <span class="accent">크리에이터 이코노미</span></h2>
+    <div class="g4">
+      <div class="card">
+        <div class="num" style="color: var(--cyan);">15억</div>
+        <div class="label">TikTok 월간 활성 사용자 (MAU)</div>
+        <div class="desc">2025년 기준 세계 2위 소셜 플랫폼</div>
+      </div>
+      <div class="card">
+        <div class="num" style="color: var(--pink);">$3.8B</div>
+        <div class="label">TikTok 2024 라이브 선물 수익</div>
+        <div class="desc">전년 대비 +32% 성장</div>
+      </div>
+      <div class="card">
+        <div class="num" style="color: var(--gold);">180만+</div>
+        <div class="label">한국 TikTok 라이브 스트리머</div>
+        <div class="desc">월 1회 이상 라이브 방송 진행자</div>
+      </div>
+      <div class="card">
+        <div class="num" style="color: var(--green);">$18M</div>
+        <div class="label">3년 목표 SOM</div>
+        <div class="desc">한·일·동남아 시장 기준</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Product</div>
+    <h2 class="section-title">방송에 필요한 모든 것,<br /><span class="accent">하나의 컨트롤 룸</span>에.</h2>
+    <p class="section-lead">연결부터 번역, 시각화까지 — Tikke가 라이브 방송의 잡일을 대신합니다.</p>
+    <div class="g2">
+      <div>
+        <div class="feat"><div class="ic">💬</div><div><h4>스마트 채팅 패널</h4><p>스팸 필터, 키워드 강조, 실시간 이벤트 구분</p></div></div>
+        <div class="feat"><div class="ic">🎁</div><div><h4>선물 알림 & 통계</h4><p>실시간 선물 이벤트 + 일별 누적 통계 대시보드</p></div></div>
+        <div class="feat"><div class="ic">🌐</div><div><h4>38개 언어 실시간 번역</h4><p>글로벌 시청자 채팅 자동 한국어 번역 자막</p></div></div>
+        <div class="feat"><div class="ic">🔊</div><div><h4>TTS & 사운드 엔진</h4><p>채팅/선물 음성 안내, 커스텀 효과음 라이브러리</p></div></div>
+      </div>
+      <div>
+        <div class="feat"><div class="ic">📺</div><div><h4>TikTok LIVE 스튜디오 오버레이</h4><p>채팅·선물·마퀴·불꽃 위젯 — 브라우저 소스 1줄</p></div></div>
+        <div class="feat"><div class="ic">⌘</div><div><h4>채팅 명령어 엔진</h4><p>!명령어로 사운드·오버레이·TTS 자동 트리거</p></div></div>
+        <div class="feat"><div class="ic">☁️</div><div><h4>클라우드 오버레이 룸</h4><p>Cloudflare Workers DO 기반 원격 오버레이 제어</p></div></div>
+        <div class="feat"><div class="ic">🔗</div><div><h4>외부 연동</h4><p>Telegram 알림, Minecraft, GTA 브릿지 등</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACTION -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Traction</div>
+    <h2 class="section-title">출시 <span class="accent">베타 단계</span> — 이미 작동 중</h2>
+    <div class="kpi-row">
+      <div class="kpi"><div class="v" style="color:var(--cyan);">v1.3.48</div><div class="l">현재 릴리즈 버전</div></div>
+      <div class="kpi"><div class="v" style="color:var(--pink);">Windows</div><div class="l">NSIS 인스톨러 배포 중</div></div>
+      <div class="kpi"><div class="v" style="color:var(--gold);">Phase 1–13</div><div class="l">전체 기능 구현 완료</div></div>
+      <div class="kpi"><div class="v" style="color:var(--green);">Cloudflare</div><div class="l">Workers + Pages 운영 중</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS MODEL -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Business Model — SaaS + Marketplace</div>
+    <h2 class="section-title">프리미엄 <span class="accent">SaaS</span></h2>
+    <div class="g3">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₩0</div>
+        <ul>
+          <li>TikTok Live 연결</li>
+          <li>기본 오버레이 3종</li>
+          <li>TTS / 사운드 기본</li>
+          <li>이벤트 로그 30일</li>
+        </ul>
+      </div>
+      <div class="plan highlight">
+        <div class="plan-name">Pro ⭐</div>
+        <div class="plan-price">₩14,900 <span style="font-size:14px;font-weight:400;color:var(--muted);">/ 월</span></div>
+        <ul>
+          <li>클라우드 오버레이 룸</li>
+          <li>AI TTS (Naver Clova)</li>
+          <li>번역 자막 무제한</li>
+          <li>통계 & 분석</li>
+          <li>Telegram 알림</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="plan-name">MAX</div>
+        <div class="plan-price">₩100,000 <span style="font-size:14px;font-weight:400;color:var(--muted);">/ 월</span></div>
+        <ul>
+          <li>다중 계정 (10개)</li>
+          <li>화이트라벨 오버레이</li>
+          <li>팀 멤버 초대</li>
+          <li>API 접근</li>
+          <li>전담 온보딩</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASK -->
+<section class="section">
+  <div class="container">
+    <div class="ask-box">
+      <div class="section-label" style="justify-content:center;display:flex;margin-bottom:16px;">Seed Round</div>
+      <div class="amount accent">₩300M</div>
+      <p style="font-size:16px;color:var(--muted);margin-top:12px;">시드 투자 유치 목표 · 18개월 런웨이 · ARR <strong style="color:var(--text);">₩500M</strong> 달성</p>
+      <div class="use-grid">
+        <div class="use-item"><div class="pct" style="color:var(--cyan);">40%</div><div class="desc">제품 & 엔지니어링</div></div>
+        <div class="use-item"><div class="pct" style="color:var(--pink);">35%</div><div class="desc">크리에이터 마케팅</div></div>
+        <div class="use-item"><div class="pct" style="color:var(--gold);">25%</div><div class="desc">운영 & 글로벌 확장</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section">
+  <div class="container">
+    <div class="contact-box">
+      <div>
+        <h3>투자 문의</h3>
+        <p>Co-Founders 최규원 · 최태현 — 방송 플랫폼 10년+ 경험</p>
+        <p style="margin-top:8px;font-family:'Space Mono',monospace;font-size:13px;color:var(--cyan);">logoros11@gmail.com</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a class="btn btn-primary" href="pitch/index.html">📊 Pitch Deck</a>
+        <a class="btn btn-ghost" href="onepager/index.html">📄 One-Pager</a>
+        <a class="btn btn-kakao" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener noreferrer">💬 KakaoTalk</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2026 Tikke · CONFIDENTIAL · tikke.kr · v1.3.48
+  </div>
+</footer>
+
+</body>
+</html>

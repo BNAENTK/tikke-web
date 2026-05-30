@@ -166,9 +166,53 @@
     mo.observe(document.body, { childList: true, subtree: true });
   }
 
+  /* ---- Custom cursor (네온 dot + lerp ring) ---- */
+  function initCustomCursor() {
+    if (reduced) return;
+    // 터치 디바이스 제외
+    if (window.matchMedia && window.matchMedia("(hover: none)").matches) return;
+    if ("ontouchstart" in window && !window.matchMedia("(hover: hover)").matches) return;
+
+    const dot = document.createElement("div");
+    dot.className = "tk-cursor-dot";
+    const ring = document.createElement("div");
+    ring.className = "tk-cursor-ring";
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+    document.documentElement.classList.add("tk-custom-cursor");
+
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let rx = mx, ry = my;
+
+    document.addEventListener("mousemove", (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + "px";
+      dot.style.top = my + "px";
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      ring.style.left = rx + "px";
+      ring.style.top = ry + "px";
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    document.addEventListener("mouseleave", () => {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    });
+    document.addEventListener("mouseenter", () => {
+      dot.style.opacity = "";
+      ring.style.opacity = "";
+    });
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", () => { init(); initCustomCursor(); });
   } else {
     init();
+    initCustomCursor();
   }
 })();

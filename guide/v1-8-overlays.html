@@ -1,0 +1,175 @@
+<!-- v1.8.0 신규 오버레이 8종 + 카테고리 사이드바 가이드 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060C" />
+
+  <title>v1.8 신규 오버레이 8종 — Tikke 가이드</title>
+  <meta name="description" content="Tikke v1.8.0에 추가된 신규 오버레이 8종(목표 달성 바·빅 스펜더·환영 배너·선물 회오리·카메라 프레임·이모지 비·응원봉·선물 추첨)과 사이드바 카테고리화 안내." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tikke.kr/guide/v1-8-overlays.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="v1.8 신규 오버레이 8종 — Tikke 가이드" />
+  <meta property="og:description" content="목표 달성 바·빅 스펜더·환영 배너·선물 회오리·카메라 프레임·이모지 비·응원봉·선물 추첨 등 8종 신규 오버레이." />
+  <meta property="og:url" content="https://www.tikke.kr/guide/v1-8-overlays.html" />
+  <meta property="og:image" content="https://www.tikke.kr/og-image.png" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../page.css" />
+  <style>
+    .v18-hero { padding: 36px 0 24px; }
+    .v18-version-pill {
+      display: inline-block; padding: 4px 12px; border-radius: 99px;
+      background: linear-gradient(135deg, var(--cyan, #00F2EA), var(--pink, #FF0050));
+      color: #000; font-weight: 700; font-size: 12px; letter-spacing: 0.06em;
+    }
+    .v18-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 24px; }
+    .v18-card {
+      padding: 20px; border-radius: 14px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+    .v18-card:hover { transform: translateY(-2px); border-color: rgba(0,242,234,0.3); }
+    .v18-card-emoji { font-size: 36px; margin-bottom: 8px; }
+    .v18-card-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; color: var(--t-1, #fff); }
+    .v18-card-cat { font-size: 11px; color: var(--cyan, #00F2EA); margin-bottom: 12px; font-weight: 700; letter-spacing: 0.08em; }
+    .v18-card-desc { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+    .v18-section-title { font-size: 22px; font-weight: 800; margin-top: 40px; margin-bottom: 12px; }
+    .v18-cat-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .v18-cat-list li {
+      padding: 10px 16px; border-radius: 10px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px; font-weight: 600;
+    }
+    .v18-cta {
+      margin-top: 36px; padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(0,242,234,0.08), rgba(255,0,80,0.08));
+      border: 1px solid rgba(0,242,234,0.25); border-radius: 14px;
+      text-align: center;
+    }
+    .v18-cta a { color: var(--cyan, #00F2EA); text-decoration: none; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="v"></div></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="page-nav">
+    <div class="page-nav-inner">
+      <a href="../index.html" class="page-nav-brand">
+        <span class="page-nav-mark"></span>
+        <span class="page-nav-name">TIKKE</span>
+        <span class="page-nav-tag">가이드</span>
+      </a>
+      <nav class="page-nav-links">
+        <a href="../index.html#features">기능</a>
+        <a href="index.html">가이드</a>
+        <a href="../about.html">소개</a>
+        <a href="../contact.html">문의</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <article class="page-content">
+      <section class="v18-hero">
+        <span class="v18-version-pill">v1.8.0</span>
+        <h1 class="page-title" style="margin-top:12px;">새 오버레이 8종 + 사이드바 카테고리화</h1>
+        <p class="page-lead">방송을 한 단계 더 화려하고 인터랙티브하게. 다이아 목표 시각화부터 풀스크린 폭발 연출까지, TikTok LIVE Studio 링크 소스에 URL만 붙여넣으면 즉시 작동합니다.</p>
+      </section>
+
+      <h2 class="v18-section-title">🎁 신규 오버레이 8종</h2>
+      <div class="v18-grid">
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">🎯</div>
+          <div class="v18-card-title">목표 달성 바</div>
+          <div class="v18-card-cat">목표 달성</div>
+          <div class="v18-card-desc">다이아·팔로워·좋아요 목표 진행률을 일자/원형 게이지로 시각화. 시청자가 "거의 다 됐다!"를 보면 후원 동기가 폭발합니다.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">💥</div>
+          <div class="v18-card-title">빅 스펜더 풀스크린</div>
+          <div class="v18-card-cat">선물 효과</div>
+          <div class="v18-card-desc">설정한 다이아 이상 후원 시 화면 전체에 폭발 연출 + 닉네임/선물/코인 강조. 다음 후원자의 욕심을 자극합니다.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">🌟</div>
+          <div class="v18-card-title">시청자 환영 배너</div>
+          <div class="v18-card-cat">시청자 반응</div>
+          <div class="v18-card-desc">시청자 입장 시 우측 슬라이드인 환영 카드. 닉네임 + 프로필 이미지. 친밀도를 높여 단골 만들기.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">🌪️</div>
+          <div class="v18-card-title">선물 회오리</div>
+          <div class="v18-card-cat">선물 효과</div>
+          <div class="v18-card-desc">선물 수신 시 화면 중앙으로 빨려드는 회오리 파티클. 다이아 강도에 따라 파티클 수 증가.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">📺</div>
+          <div class="v18-card-title">카메라 프레임</div>
+          <div class="v18-card-cat">시청자 반응</div>
+          <div class="v18-card-desc">화면 가장자리 네온 테두리 + 코너 장식. 선물·좋아요 강도에 따라 글로우가 강해집니다.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">💧</div>
+          <div class="v18-card-title">이모지 비</div>
+          <div class="v18-card-cat">채팅·자막</div>
+          <div class="v18-card-desc">채팅 이모지를 화면 위에서 비처럼 떨어뜨림. 선물·emote 이벤트도 트리거.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">✨</div>
+          <div class="v18-card-title">응원봉 라이트</div>
+          <div class="v18-card-cat">시청자 반응</div>
+          <div class="v18-card-desc">좋아요 시 화면 가장자리 빛 점멸 + 별 파티클. 콘서트 분위기 연출.</div>
+        </div>
+
+        <div class="v18-card">
+          <div class="v18-card-emoji">🎰</div>
+          <div class="v18-card-title">선물 추첨 박스</div>
+          <div class="v18-card-cat">룰렛</div>
+          <div class="v18-card-desc">최소 다이아 이상 선물 보낸 시청자만 자동 참여. 시작 버튼으로 당첨자 뽑기.</div>
+        </div>
+
+      </div>
+
+      <h2 class="v18-section-title">🗂 사이드바 카테고리화</h2>
+      <p style="color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7;">
+        오버레이가 기능별로 정리되어 빠르게 찾을 수 있습니다. 사이드바 좌측에서 카테고리를 선택하면 해당 종류의 오버레이만 모여 표시됩니다.
+      </p>
+      <ul class="v18-cat-list">
+        <li>🎁 선물 효과 (5개)</li>
+        <li>🎰 룰렛 (3개)</li>
+        <li>💬 채팅·자막 (3개)</li>
+        <li>🎯 목표 달성 (3개)</li>
+        <li>✨ 시청자 반응 (3개)</li>
+        <li>📺 미디어 (1개)</li>
+      </ul>
+
+      <h2 class="v18-section-title">⭐ 즐겨찾기 (사용 중 표시)</h2>
+      <p style="color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7;">
+        자주 쓰는 오버레이 카드의 <strong style="color:#FBBF24;">★ 별표</strong>를 누르면 "🎬 이벤트 오버레이" 메인 페이지에 "사용 중"으로 모입니다. 자동 룰이 활성된 오버레이는 <strong style="color:#34D399;">AUTO</strong> 뱃지로 자동 표시됩니다.
+      </p>
+
+      <div class="v18-cta">
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 8px;">최신 Tikke 데스크탑 앱은 자동 업데이트됩니다.</p>
+        <p><a href="https://github.com/BNAENTK/tikke-download/releases/latest">최신 버전 다운로드 →</a></p>
+      </div>
+
+    </article>
+  </main>
+
+  <script src="../interactions.js" defer></script>
+</body>
+</html>

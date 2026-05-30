@@ -1,0 +1,19 @@
+/*.jsx
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+
+/companion/*.jsx
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+
+/interactions.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+
+/styles.css
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+
+/overlay/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache

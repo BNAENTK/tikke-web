@@ -1,0 +1,12 @@
+node_modules
+src
+package.json
+package-lock.json
+pnpm-lock.yaml
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+.gitignore
+.env
+.env.bak
+env.d.ts

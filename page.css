@@ -23,36 +23,22 @@
   white-space: nowrap;
 }
 .page-nav-mark {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(0, 229, 255, 0.25) 0%, transparent 60%),
-    radial-gradient(120% 80% at 100% 100%, rgba(255, 45, 135, 0.25) 0%, transparent 60%),
-    #07070f;
-  position: relative;
-  overflow: hidden;
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: url('/logo.png') center/cover no-repeat;
   flex-shrink: 0;
-  box-shadow:
-    0 0 0 1px var(--hairline-hi) inset,
-    0 6px 22px -8px rgba(0, 229, 255, 0.6),
-    0 6px 22px -8px rgba(255, 45, 135, 0.6);
+  animation: logo-pulse 2.6s ease-in-out infinite;
 }
-.page-nav-mark::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--pink) 100%);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.55));
-}
-.page-nav-mark::after {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.15) 38%, transparent 50%);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  mix-blend-mode: overlay;
-  pointer-events: none;
+.page-nav-mark::before, .page-nav-mark::after { display: none; }
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(0,229,255,0.55)) drop-shadow(0 0 12px rgba(255,45,135,0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(0,229,255,0.9)) drop-shadow(0 0 20px rgba(255,45,135,0.75));
+    transform: scale(1.04);
+  }
 }
 .page-nav-name {
   font-size: 15px;

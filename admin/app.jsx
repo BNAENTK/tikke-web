@@ -8,6 +8,8 @@ const PWD_HASH_KEY = "tikke_admin_pwd_hash";
 const GH_CFG_KEY = "tikke_admin_gh_cfg";
 const SESSION_KEY = "tikke_admin_session_v1";
 const DRAFT_KEY = "tikke_admin_draft_v1";
+const ADMIN_SECRET_KEY = "tikke_admin_secret_v1"; // 로그인 비번 = worker ADMIN_SECRET (KV 저장 인증용)
+const API_BASE = "https://api.tikke.kr"; // 콘텐츠 KV 저장/조회 worker
 
 const DEFAULT_GH_CFG = {
   owner: "BNAENTK",
@@ -49,6 +51,7 @@ function Login({ onLogin }) {
     const stored = localStorage.getItem(PWD_HASH_KEY) || DEFAULT_PWD_HASH;
     const h = await sha256(pwd);
     if (h === stored) {
+      sessionStorage.setItem(ADMIN_SECRET_KEY, pwd); // worker PUT 인증에 재사용
       onLogin();
     } else {
       setErr("비밀번호가 올바르지 않습니다.");
@@ -459,7 +462,7 @@ function AdminApp() {
     (async () => {
       let published = null;
       try {
-        const r = await fetch("content.json?v=" + Date.now(), { cache: "no-store" });
+        const r = await fetch(API_BASE + "/content?v=" + Date.now(), { cache: "no-store" });
         if (r.ok) published = await r.json();
       } catch (e) {}
 
@@ -585,28 +588,24 @@ function AdminApp() {
   }
 
   async function publish() {
-    if (!ghCfg.token || !ghCfg.owner || !ghCfg.repo) {
-      showToast("먼저 설정에서 GitHub 정보를 입력하세요.", "error");
-      setShowSettings(true);
-      setShowPublish(false);
+    const secret = sessionStorage.getItem(ADMIN_SECRET_KEY);
+    if (!secret) {
+      showToast("세션이 만료되었습니다. 다시 로그인하세요.", "error");
+      logout();
       return;
     }
     setPublishing(true);
     try {
-      // Get current file (for SHA)
-      let sha = null;
-      try {
-        const existing = await window.tikkeGitHub.getFile(ghCfg);
-        if (existing.exists) sha = existing.sha;
-      } catch (e) {
-        // 404 fine; other errors will surface in put
+      // KV에 저장 (코드 배포와 분리되어 덮어쓰기 안 됨)
+      const res = await fetch(API_BASE + "/content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-secret": secret },
+        body: JSON.stringify(cleanOverrides),
+      });
+      if (!res.ok) {
+        if (res.status === 403) throw new Error("저장 권한 없음 — 로그인 비밀번호가 서버 ADMIN_SECRET과 일치해야 합니다.");
+        throw new Error("서버 응답 " + res.status);
       }
-
-      const json = JSON.stringify(cleanOverrides, null, 2) + "\n";
-      const totalEdits = Object.values(editsPerSection).reduce((a, b) => a + b, 0);
-      const message = `Update site content (${totalEdits} field${totalEdits === 1 ? "" : "s"})`;
-
-      await window.tikkeGitHub.putFile(ghCfg, json, message, sha);
 
       setSavedOverrides(cleanOverrides);
       localStorage.removeItem(DRAFT_KEY);
@@ -738,7 +737,7 @@ function AdminApp() {
           </div>
 
           {currentSection.id === "meta"
-            ? <MetaDirectEditor ghCfg={ghCfg} onToast={showToast} />
+            ? <div className="ad-callout">메타태그(SEO·OG)는 이제 <b>코드에서 직접 관리</b>합니다. 어드민이 index.html을 수정하지 않으므로 배포 시 덮어쓰임 문제가 없습니다. 변경이 필요하면 개발자에게 요청하세요.</div>
             : currentSection.fields.map((f) => (
                 <FieldRow
                   key={f.key}

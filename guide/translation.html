@@ -1,0 +1,99 @@
+<!-- 번역 자막 가이드 - 영상 임베드 페이지 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060C" />
+
+  <title>번역 자막 가이드 — Tikke</title>
+  <meta name="description" content="Tikke 라이브 음성 실시간 번역 자막 설정 영상 가이드." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tikke.kr/guide/translation.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="번역 자막 가이드 — Tikke" />
+  <meta property="og:description" content="번역 자막 설정 영상 가이드." />
+  <meta property="og:url" content="https://www.tikke.kr/guide/translation.html" />
+  <meta property="og:image" content="https://www.tikke.kr/og-image.png" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../page.css" />
+
+  <style>
+    .video-wrap { margin: 24px auto 8px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; background: #000; max-width: 360px; aspect-ratio: 9 / 16; }
+    .video-wrap iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .video-hint { font-size: 12px; color: var(--text-dim, #6b6b80); text-align: center; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="v"></div></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="page-nav">
+    <div class="page-nav-inner">
+      <a href="../index.html" class="page-nav-brand">
+        <span class="page-nav-mark"></span>
+        <span class="page-nav-name">TIKKE</span>
+        <span class="page-nav-tag">가이드</span>
+      </a>
+      <nav class="page-nav-links">
+        <a href="../index.html#features">기능</a>
+        <a href="index.html">가이드</a>
+        <a href="../about.html">소개</a>
+        <a href="../contact.html">문의</a>
+      </nav>
+      <a href="../index.html#download" class="page-nav-cta">다운로드</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Media · 번역 자막</div>
+    <h1 class="page-title">번역 자막<br />설정 가이드</h1>
+    <p class="page-lede">TikTok LIVE Studio 음성을 실시간 번역해 자막으로 송출하는 방법을 영상으로 안내합니다.</p>
+    <div class="page-meta">
+      <span>형식 <b>영상</b></span>
+      <span>난이도 <b>입문</b></span>
+    </div>
+  </section>
+
+  <main class="page-container">
+    <article class="article">
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/S63XJL_Z5Hs"
+          title="번역 자막 가이드"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <p class="video-hint">▶ 재생 버튼을 누르세요 · 전체화면 지원</p>
+
+      <h2>요약</h2>
+      <ol>
+        <li>사이드바 → <b>번역 자막</b> 이동.</li>
+        <li>표시 언어 선택 (한국어/영어/일본어/중국어 등).</li>
+        <li>폰트 크기/색상/그림자/외곽선 조절.</li>
+        <li><b>설정 저장</b> 클릭으로 영구 저장.</li>
+        <li>오버레이 URL을 OBS 브라우저 소스에 추가.</li>
+      </ol>
+
+      <h2>참고</h2>
+      <ul>
+        <li><b>음성 인식</b> — TikTok 내장 Web Speech API (API 키 불필요).</li>
+        <li><b>번역 엔진</b> — Google / Papago / LibreTranslate 선택 가능.</li>
+        <li><b>표시 시간</b> — 자막 노출 ms 단위 설정.</li>
+      </ul>
+
+      <p style="margin-top:32px;"><a href="index.html" class="page-link">← 가이드 목록으로</a></p>
+    </article>
+  </main>
+  <script src="../interactions.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>리그 조각컷 — Tikke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--text:#F1F0F8;--muted:rgba(241,240,248,0.5);
+  --dim:rgba(241,240,248,0.25);--primary:#00F2EA;
+}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#app{max-width:1100px;margin:0 auto;padding:40px 20px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:14px}
+.header-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12px}
+.legend-item{display:flex;align-items:center;gap:5px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend-note{margin-left:auto;color:var(--muted);display:flex;gap:4px;white-space:nowrap}
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(0,242,234,0.1);border:1px solid rgba(0,242,234,0.3);color:#00F2EA;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.btn:hover{background:rgba(0,242,234,0.18)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.time{font-size:12px;color:var(--muted)}
+.err{padding:12px 16px;background:rgba(255,0,80,0.08);border:1px solid rgba(255,0,80,0.2);border-radius:8px;color:#f87171;font-size:13px}
+.loading{text-align:center;padding:60px;color:var(--muted)}
+.tier-section{display:flex;flex-direction:column;gap:8px}
+.tier-label{font-size:12px;font-weight:700;letter-spacing:0.6px;padding-left:2px}
+.tier-table{background:var(--surface);border-radius:12px;overflow:hidden}
+.tier-row{display:grid;padding:8px 16px;gap:8px;align-items:start}
+.tier-head{font-size:11px;font-weight:700;border-bottom-width:1px;border-bottom-style:solid}
+.tier-data{border-bottom-width:1px;border-bottom-style:solid}
+.tier-data:last-child{border-bottom:none!important}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-weight:800;font-size:13px}
+.score-main{font-weight:700;font-size:14px}
+.score-diff{font-size:11px;font-weight:600}
+.score-yd{font-size:10px;color:rgba(255,255,255,0.4)}
+.score-yd span{color:rgba(255,255,255,0.45)}
+.score-yd small{font-size:9px}
+.footer-note{font-size:11px;color:var(--muted);text-align:center;padding-bottom:16px}
+
+/* password gate */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.gate-box{width:340px;padding:36px 32px;background:var(--surface);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;gap:20px}
+.gate-box h1{font-size:20px;font-weight:800;text-align:center}
+.gate-box p{font-size:13px;color:var(--muted);text-align:center}
+.gate-form{display:flex;flex-direction:column;gap:12px}
+.gate-input{padding:10px 14px;border-radius:8px;font-size:14px;background:var(--surface2);border:1px solid rgba(255,255,255,0.1);color:var(--text);outline:none;font-family:inherit;width:100%}
+.gate-input.err-border{border-color:#f87171}
+.gate-err{font-size:12px;color:#f87171;text-align:center}
+.gate-btn{padding:10px;border-radius:8px;font-size:14px;font-weight:700;background:#00F2EA;color:#000;border:none;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.gate-btn:disabled{background:rgba(0,242,234,0.2);color:rgba(0,242,234,0.4);cursor:not-allowed}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <div style="text-align:center">
+      <div style="font-size:36px;margin-bottom:12px">🏆</div>
+      <h1>리그 조각컷</h1>
+      <p style="margin-top:6px">접근하려면 비밀번호를 입력하세요.</p>
+    </div>
+    <form class="gate-form" id="gateForm">
+      <input type="password" id="pwInput" class="gate-input" placeholder="비밀번호" autofocus/>
+      <div class="gate-err" id="gateErr" style="display:none">비밀번호가 올바르지 않습니다.</div>
+      <button type="submit" class="gate-btn" id="gateBtn" disabled>입장</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="header-row">
+    <div>
+      <h1>🏆 리그 조각컷</h1>
+      <p class="sub">TikTok LIVE 리그별 실시간 승급·유지·강등 기준 점수</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="time" id="lastUpdated"></span>
+      <button class="btn" id="refreshBtn" onclick="fetchData()">새로고침</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#FFD700"></div>상위 1% (+3 조각)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#A78BFA"></div>상위 10% (+2 조각)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#60A5FA"></div>상위 20% (+1 조각)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#F97316"></div>유지선 (강등방어)</div>
+    <div class="legend-note"><span style="color:#f87171">▲</span>/<span style="color:#34D399">▼</span>&nbsp;= 어제 동시간 비교 · 아래줄 = 어제 최종</div>
+  </div>
+
+  <div id="errBox" class="err" style="display:none"></div>
+  <div id="loadingBox" class="loading">데이터 로딩 중...</div>
+  <div id="dataBox" style="display:none;flex-direction:column;gap:20px"></div>
+  <p class="footer-note">5분마다 자동 갱신</p>
+</div>
+
+<script>
+const WORKER = "https://api.tikke.kr";
+const PW_B64 = "MzY5MzY5";
+const SESSION_KEY = "tikke_cutoffs_auth";
+
+const GROUPS = [
+  { name:"A리그", color:"#FFD700", bg:"rgba(255,215,0,0.06)",   border:"rgba(255,215,0,0.2)",   classTypes:[2000,1900,1800],           cols:[{p:1,label:"상위 1% (+3)",c:"#FFD700"},{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:60,label:"상위 60% (유지)",c:"#F97316"}] },
+  { name:"B리그", color:"#A78BFA", bg:"rgba(167,139,250,0.06)", border:"rgba(167,139,250,0.2)", classTypes:[1500,1400,1300,1200,1100], cols:[{p:1,label:"상위 1% (+3)",c:"#FFD700"},{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:70,label:"상위 70% (유지)",c:"#F97316"}] },
+  { name:"C리그", color:"#60A5FA", bg:"rgba(96,165,250,0.06)",  border:"rgba(96,165,250,0.2)",  classTypes:[1000,900,800,700,600],     cols:[{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:80,label:"상위 80% (유지)",c:"#F97316"}] },
+  { name:"D리그", color:"#34D399", bg:"rgba(52,211,153,0.06)",  border:"rgba(52,211,153,0.2)",  classTypes:[500,400,300,200,100],      cols:[{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"}] },
+];
+
+function fmt(score) {
+  if (score === null || score === undefined) return "—";
+  if (score >= 1000000) return (score/1000000).toFixed(1)+"M";
+  if (score >= 1000) return (score/1000).toFixed(1)+"K";
+  return score.toLocaleString();
+}
+function getScore(entries, p) {
+  return entries.find(e => e.percentile === p)?.cutoff_score ?? null;
+}
+function scoreCell(today, st, yd, color) {
+  if (today === null) return `<div style="color:rgba(255,255,255,0.3);font-size:13px">—</div>`;
+  const stDiff = st !== null ? today - st : null;
+  const ydDiff = yd !== null ? today - yd : null;
+  let html = `<div style="display:flex;flex-direction:column;gap:2px">`;
+  html += `<div style="display:flex;align-items:center;gap:5px">`;
+  html += `<span class="score-main" style="color:${color}">${fmt(today)}</span>`;
+  if (stDiff !== null && stDiff !== 0) {
+    const sc = stDiff > 0 ? "#f87171" : "#34D399";
+    html += `<span class="score-diff" style="color:${sc}">${stDiff>0?"▲":"▼"}${fmt(Math.abs(stDiff))}</span>`;
+  }
+  html += `</div>`;
+  if (yd !== null) {
+    html += `<div class="score-yd"><span>어제 </span><span>${fmt(yd)}</span>`;
+    if (ydDiff !== null && ydDiff !== 0) {
+      const sc = ydDiff > 0 ? "#f87171" : "#34D399";
+      html += `<small style="color:${sc}"> (${ydDiff>0?"+":""}${fmt(ydDiff)})</small>`;
+    }
+    html += `</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function renderData(data) {
+  const box = document.getElementById("dataBox");
+  let html = "";
+  for (const g of GROUPS) {
+    const colW = `70px ${g.cols.map(()=>"1fr").join(" ")}`;
+    html += `<div class="tier-section">`;
+    html += `<div class="tier-label" style="color:${g.color}">${g.name}</div>`;
+    html += `<div class="tier-table" style="border:1px solid ${g.border}">`;
+    // header
+    html += `<div class="tier-row tier-head" style="grid-template-columns:${colW};background:${g.bg};border-bottom-color:${g.border}">`;
+    html += `<div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:700">리그</div>`;
+    for (const col of g.cols) {
+      html += `<div style="color:${col.c};font-size:11px;font-weight:700">${col.label}</div>`;
+    }
+    html += `</div>`;
+    // rows
+    for (let i=0; i<g.classTypes.length; i++) {
+      const ct = g.classTypes[i];
+      const entry = data[String(ct)];
+      if (!entry) continue;
+      const {today, yesterday, yesterdaySameTime} = entry;
+      const tierId = today[0]?.league_tier_id ?? String(ct);
+      const isLast = i === g.classTypes.length - 1;
+      html += `<div class="tier-row tier-data" style="grid-template-columns:${colW};border-bottom-color:var(--border)${isLast?";border-bottom:none":""};padding:12px 16px">`;
+      html += `<div><span class="badge" style="background:${g.bg};border:1px solid ${g.border};color:${g.color}">${tierId}</span></div>`;
+      for (const col of g.cols) {
+        html += `<div>${scoreCell(getScore(today,col.p), getScore(yesterdaySameTime,col.p), getScore(yesterday,col.p), col.c)}</div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+  box.innerHTML = html;
+  box.style.display = "flex";
+}
+
+let refreshTimer = null;
+async function fetchData() {
+  const btn = document.getElementById("refreshBtn");
+  const loadBox = document.getElementById("loadingBox");
+  const errBox = document.getElementById("errBox");
+  btn.disabled = true;
+  btn.textContent = "로딩...";
+  errBox.style.display = "none";
+  try {
+    const res = await fetch(`${WORKER}/league/cutoffs`);
+    if (!res.ok) { throw new Error(`HTTP ${res.status}`); }
+    const data = await res.json();
+    loadBox.style.display = "none";
+    renderData(data);
+    const now = new Date();
+    document.getElementById("lastUpdated").textContent =
+      now.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}) + " 기준";
+  } catch(e) {
+    loadBox.style.display = "none";
+    errBox.textContent = "오류: " + String(e);
+    errBox.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "새로고침";
+  }
+}
+
+function startApp() {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  fetchData();
+  refreshTimer = setInterval(fetchData, 5*60*1000);
+}
+
+// 비밀번호 게이트
+const pwInput = document.getElementById("pwInput");
+const gateBtn = document.getElementById("gateBtn");
+const gateErr = document.getElementById("gateErr");
+
+if (sessionStorage.getItem(SESSION_KEY) === "1") {
+  startApp();
+}
+
+pwInput.addEventListener("input", () => {
+  gateBtn.disabled = !pwInput.value.trim();
+  gateErr.style.display = "none";
+  pwInput.classList.remove("err-border");
+});
+
+document.getElementById("gateForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (pwInput.value === atob(PW_B64)) {
+    sessionStorage.setItem(SESSION_KEY, "1");
+    startApp();
+  } else {
+    gateErr.style.display = "block";
+    pwInput.classList.add("err-border");
+    pwInput.value = "";
+    gateBtn.disabled = true;
+  }
+});
+</script>
+</body>
+</html>

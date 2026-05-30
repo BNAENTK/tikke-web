@@ -97,10 +97,19 @@ function Nav() {
           <a href="guide/index.html">{t("nav_guide")}</a>
           <a href="#faq">{t("nav_faq")}</a>
           <a
+            href="/cutoffs/"
+            className="nav-tikketone"
+            style={{ color:"#FFD700", background:"linear-gradient(135deg,rgba(255,215,0,0.10),rgba(251,191,36,0.08))", borderColor:"rgba(255,215,0,0.30)", minWidth:100, justifyContent:"center" }}
+            title="리그 조각컷">
+            <span className="nav-tikketone-dot" style={{ background:"#FFD700", boxShadow:"0 0 8px #FFD700" }}></span>
+            🏆 조각컷
+          </a>
+          <a
             href={TIKKETONE_URL}
             target={TIKKETONE_URL === "#" ? undefined : "_blank"}
             rel="noopener noreferrer"
             className="nav-tikketone"
+            style={{ minWidth:100, justifyContent:"center" }}
             title={TIKKETONE_URL === "#" ? "Tikketone — 곧 공개" : "Tikketone"}>
             <span className="nav-tikketone-dot"></span>
             Tikketone
