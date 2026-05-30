@@ -105,7 +105,7 @@
   .toc{background:var(--s1);border:1px solid var(--line2);padding:24px 28px;margin-bottom:56px}
   .toc-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--primary);margin-bottom:16px}
-  .toc ol{padding-left:20px;display:flex;flex-direction:column;gap:8px}
+  .toc ol{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px}
   .toc li{font-size:14px;color:var(--mut)}
   .toc a{color:var(--mut);transition:color .2s;border-bottom:1px solid transparent}
   .toc a:hover{color:var(--primary);border-color:rgba(0,229,255,.3)}
@@ -232,9 +232,9 @@
 <div class="wrap">
 
   <!-- breadcrumb -->
-  <nav class="bc" aria-label="breadcrumb">
+  <div class="bc" role="navigation" aria-label="breadcrumb">
     <a href="/">홈</a><span class="sep">/</span><span>가이드</span>
-  </nav>
+  </div>
 
   <!-- page header -->
   <header class="pg-head">
@@ -249,7 +249,7 @@
   </header>
 
   <!-- TOC -->
-  <nav class="toc" aria-label="목차">
+  <div class="toc" role="navigation" aria-label="목차">
     <div class="toc-title">목차</div>
     <ol>
       <li><a href="#install">1. 설치 및 최초 실행</a></li>
@@ -263,7 +263,7 @@
       <li><a href="#faq">9. 자주 묻는 질문</a></li>
       <li><a href="#sysreq">10. 시스템 요구사항</a></li>
     </ol>
-  </nav>
+  </div>
 
   <!-- SECTION 1: 설치 -->
   <section class="sec" id="install">
