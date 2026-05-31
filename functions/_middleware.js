@@ -1,6 +1,7 @@
 // 홈 <head> 메타태그를 KV 콘텐츠로 서버 주입하는 Pages Function 미들웨어.
 // 공유 미리보기 크롤러(카톡·페북·트위터)는 JS를 안 돌리므로 정적 HTML에 서버단 주입 필요.
 // 어드민이 KV(site:content.meta)에 저장 → 여기서 HTMLRewriter로 덮어씀. 정적 index.html 메타는 폴백.
+// companion 페이지에는 CF 환경변수(GOOGLE_TTS_KEY)를 window.__TIKKE_CFG로 주입 — 키를 소스에서 제거.
 // fail-open: 어떤 실패든(요청 실패·JSON 깨짐·빈 메타) 원본 그대로 통과 — 미들웨어가 사이트를 죽이지 않음.
 
 const CONTENT_URL = "https://api.tikke.kr/content";
@@ -13,15 +14,32 @@ class TitleSetter {
   constructor(text) { this.text = text; }
   element(el) { el.setInnerContent(this.text); }
 }
+class HeadAppender {
+  constructor(html) { this.html = html; }
+  element(el) { el.append(this.html, { html: true }); }
+}
 
 export async function onRequest(context) {
   const res = await context.next();
   try {
-    // 홈에만 적용 (다른 페이지는 자기 메타 보유)
     const path = new URL(context.request.url).pathname;
+    const ct = res.headers.get("content-type") || "";
+
+    // ── companion: CF 환경변수 → window.__TIKKE_CFG 주입 ──────────────────────
+    if (path === "/companion/" || path === "/companion/index.html") {
+      const key = context.env.GOOGLE_TTS_KEY || "";
+      if (key && ct.includes("text/html")) {
+        const script = `<script>window.__TIKKE_CFG = { googleTtsKey: ${JSON.stringify(key)} };</script>`;
+        return new HTMLRewriter()
+          .on("head", new HeadAppender(script))
+          .transform(res);
+      }
+      return res;
+    }
+
+    // 홈에만 메타 주입 (다른 페이지는 자기 메타 보유)
     if (path !== "/" && path !== "/index.html") return res;
 
-    const ct = res.headers.get("content-type") || "";
     if (!ct.includes("text/html")) return res;
 
     const r = await fetch(CONTENT_URL, { cf: { cacheTtl: 30, cacheEverything: true } });

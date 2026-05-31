@@ -3,7 +3,7 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 const WS_BASE = "wss://api.tikke.kr/overlay/rooms";
-const GOOGLE_TTS_KEY = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw";
+const GOOGLE_TTS_KEY = window.__TIKKE_CFG?.googleTtsKey || "";
 const MAX_EVENTS = 100;
 const RECONNECT_DELAY_MS = 3000;
 
