@@ -1,0 +1,193 @@
+<!doctype html>
+<!-- TikTok LIVE Studio 사용법 총정리 아티클 -->
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060C" />
+  <title>TikTok LIVE Studio 사용법 총정리 — 설치부터 오버레이까지</title>
+  <meta name="description" content="TikTok 공식 PC 방송 프로그램 LIVE Studio 사용법. 설치, 방송 권한, 장면·소스 구성, 브라우저 소스로 오버레이 추가, 화질 설정, 자주 발생하는 문제 해결까지 한국어로 정리했습니다." />
+  <meta name="keywords" content="TikTok LIVE Studio, 틱톡 라이브 스튜디오, 틱톡 PC 방송, TikTok 컴퓨터 방송, 라이브 스튜디오 사용법, 틱톡 브라우저 소스, 틱톡 방송 설정" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tikke.kr/tips/tiktok-live-studio.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "TikTok LIVE Studio 사용법 총정리 — 설치부터 오버레이까지",
+    "description": "TikTok 공식 PC 방송 프로그램 LIVE Studio의 설치, 장면·소스 구성, 오버레이 추가, 문제 해결 가이드.",
+    "datePublished": "2026-06-12",
+    "dateModified": "2026-06-12",
+    "author": { "@type": "Organization", "name": "Tikke" },
+    "publisher": { "@type": "Organization", "name": "Tikke", "url": "https://www.tikke.kr" },
+    "mainEntityOfPage": "https://www.tikke.kr/tips/tiktok-live-studio.html"
+  }
+  </script>
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="TikTok LIVE Studio 사용법 총정리 — 설치부터 오버레이까지" />
+  <meta property="og:description" content="틱톡 공식 PC 방송 프로그램, 처음부터 끝까지 한국어 정리." />
+  <meta property="og:url" content="https://www.tikke.kr/tips/tiktok-live-studio.html" />
+  <meta property="og:image" content="https://www.tikke.kr/og-image.png" />
+  <meta property="og:locale" content="ko_KR" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../page.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1658572145633986" crossorigin="anonymous"></script>
+  <meta name="google-adsense-account" content="ca-pub-1658572145633986">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="v"></div></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="page-nav">
+    <div class="page-nav-inner">
+      <a href="../index.html" class="page-nav-brand">
+        <span class="page-nav-mark"></span>
+        <span class="page-nav-name">TIKKE</span>
+        <span class="page-nav-tag">라이브 팁</span>
+      </a>
+      <nav class="page-nav-links">
+        <a href="../index.html#features">기능</a>
+        <a href="../guide/">가이드</a>
+        <a href="index.html">팁</a>
+        <a href="../contact.html">문의</a>
+      </nav>
+      <a href="../index.html#download" class="page-nav-cta">다운로드</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Setup · 방송 프로그램</div>
+    <h1 class="page-title">TikTok LIVE Studio<br />사용법 총정리</h1>
+    <p class="page-lede">TikTok LIVE Studio는 TikTok이 직접 만든 공식 PC 방송 프로그램입니다. 모바일 방송과 비교할 수 없는 화질과 화면 구성 자유도를 주지만, 한국어 자료가 거의 없어 처음 설치한 방송인 대부분이 헤맵니다. 설치부터 오버레이 추가, 문제 해결까지 순서대로 정리했습니다.</p>
+    <div class="page-meta">
+      <span>작성 <b>2026년 6월 12일</b></span>
+      <span>읽기 시간 <b>12분</b></span>
+      <span>난이도 <b>입문~중급</b></span>
+    </div>
+  </section>
+
+  <main class="page-container">
+    <article class="article">
+
+      <p class="lede">이 글은 TikTok LIVE Studio를 처음 쓰는 방송인을 기준으로 설명합니다. 이미 쓰고 있다면 4장(소스 구성)과 6장(문제 해결)부터 읽어도 됩니다.</p>
+
+      <div class="toc">
+        <div class="toc-label">이 글의 흐름</div>
+        <ol>
+          <li><a href="#s1">LIVE Studio가 뭔가 — 모바일 방송과의 차이</a></li>
+          <li><a href="#s2">설치와 방송 권한</a></li>
+          <li><a href="#s3">첫 방송 전 기본 설정</a></li>
+          <li><a href="#s4">장면과 소스 구성 — 방송 화면 만들기</a></li>
+          <li><a href="#s5">브라우저 소스로 오버레이 추가하기</a></li>
+          <li><a href="#s6">자주 발생하는 문제와 해결</a></li>
+        </ol>
+      </div>
+
+      <h2 id="s1">1. LIVE Studio가 뭔가 — 모바일 방송과의 차이</h2>
+      <p>TikTok 방송은 두 가지 방법으로 할 수 있습니다. 스마트폰 앱에서 바로 켜는 모바일 방송과, PC에 TikTok LIVE Studio를 설치해서 하는 PC 방송입니다. 차이는 생각보다 큽니다.</p>
+      <ul>
+        <li><strong>화질</strong> — 모바일은 폰 카메라와 네트워크 상태에 묶입니다. PC 방송은 고화질 웹캠, 캡처보드, 유선 인터넷을 쓸 수 있어 화질 상한이 다릅니다.</li>
+        <li><strong>화면 구성</strong> — 모바일은 카메라 화면 하나가 전부입니다. LIVE Studio는 게임 화면, 카메라, 이미지, 텍스트, 오버레이를 겹쳐서 방송 화면을 직접 디자인할 수 있습니다.</li>
+        <li><strong>게임 방송</strong> — PC 게임을 방송하려면 사실상 LIVE Studio가 필수입니다.</li>
+        <li><strong>오버레이</strong> — 선물 알림, 채팅창, 후원 메뉴판 같은 방송 위젯은 브라우저 소스를 지원하는 PC 방송에서만 쓸 수 있습니다.</li>
+      </ul>
+      <p>요약하면, 얼굴 보여주며 소통만 하는 방송이라면 모바일로도 충분하지만, 방송을 "운영"하고 싶다면 LIVE Studio로 넘어오는 시점이 반드시 옵니다.</p>
+
+      <h2 id="s2">2. 설치와 방송 권한</h2>
+      <h3>다운로드</h3>
+      <p>LIVE Studio는 TikTok 공식 사이트에서 무료로 내려받습니다. 검색 엔진에서 "TikTok LIVE Studio"를 검색하면 나오는 tiktok.com 공식 다운로드 페이지를 이용하세요. 공식 페이지가 아닌 곳에서 받은 설치 파일은 변조 위험이 있으니 피해야 합니다. Windows를 지원하며, 사양 요건은 공식 페이지에 안내된 최신 기준을 확인하는 것이 정확합니다.</p>
+      <h3>로그인과 방송 권한</h3>
+      <p>설치 후 TikTok 계정으로 로그인합니다. 주의할 점은 <strong>모든 계정이 바로 PC 방송을 켤 수 있는 것은 아니라는 것</strong>입니다. TikTok은 계정 상태, 지역, 팔로워 수 등을 기준으로 LIVE 권한을 부여하며, 기준은 공개적으로 고정되어 있지 않고 계정마다 다를 수 있습니다. LIVE Studio에 로그인했는데 방송 시작 버튼이 비활성이라면 아직 계정에 LIVE 권한이 없는 상태일 가능성이 높습니다. 이 경우 모바일 앱에서 LIVE 탭이 열리는지 먼저 확인해 보세요.</p>
+
+      <h2 id="s3">3. 첫 방송 전 기본 설정</h2>
+      <ul>
+        <li><strong>방송 제목과 카테고리</strong> — 방송 시작 전 제목과 주제 카테고리를 설정합니다. 추천 유입에 영향을 주는 요소이므로 방송 내용과 일치하게 쓰는 것이 좋습니다.</li>
+        <li><strong>화질과 안정성</strong> — 화질을 무조건 최고로 올리는 것보다, 본인 업로드 속도에서 끊기지 않는 설정이 우선입니다. 방송이 자주 버벅이면 해상도나 비트레이트를 한 단계 낮추는 것이 시청 경험에 훨씬 낫습니다. 유선 랜 연결을 강력히 권장합니다.</li>
+        <li><strong>마이크와 카메라 선택</strong> — 설정에서 입력 장치를 확인하세요. 노트북 내장 마이크보다 외장 마이크가 음질 차이를 가장 크게 만듭니다.</li>
+        <li><strong>테스트</strong> — 첫 방송 전에 짧게 테스트 방송을 켜서 화면, 소리, 끊김 여부를 직접 확인하는 것이 가장 확실합니다.</li>
+      </ul>
+
+      <h2 id="s4">4. 장면과 소스 구성 — 방송 화면 만들기</h2>
+      <p>LIVE Studio의 핵심 개념은 <strong>소스(Source)</strong>입니다. 방송 화면은 여러 소스를 겹쳐 만든 캔버스입니다.</p>
+      <ul>
+        <li><strong>카메라</strong> — 웹캠 화면. 게임 방송에서는 보통 구석에 작게 배치합니다.</li>
+        <li><strong>화면/창 캡처</strong> — 모니터 전체나 특정 프로그램 창을 송출합니다. 게임, 그림, 작업 방송의 기본입니다.</li>
+        <li><strong>이미지/텍스트</strong> — 로고, 배경, 공지 문구를 올립니다.</li>
+        <li><strong>브라우저 소스</strong> — 웹 페이지를 방송 화면 위에 띄웁니다. 선물 알림, 채팅 오버레이, 메뉴판 같은 위젯이 전부 이 통로로 들어갑니다. 다음 장에서 자세히 다룹니다.</li>
+      </ul>
+      <p>구성 요령은 단순합니다. 시청자 시선이 가장 오래 머무는 곳(게임 화면, 얼굴)을 크게, 보조 정보(채팅, 알림)는 시선을 방해하지 않는 가장자리에 배치합니다. 처음엔 소스 2~3개로 시작해서 필요할 때 하나씩 늘리는 것이 관리하기 쉽습니다.</p>
+
+      <h2 id="s5">5. 브라우저 소스로 오버레이 추가하기</h2>
+      <p>브라우저 소스는 LIVE Studio에서 가장 강력한 기능입니다. URL만 넣으면 어떤 웹 기반 위젯이든 방송 화면에 올라갑니다. 절차는 어떤 오버레이든 동일합니다.</p>
+      <ol>
+        <li>오버레이 도구(예: Tikke)에서 위젯의 <strong>오버레이 URL을 복사</strong>합니다.</li>
+        <li>LIVE Studio에서 <strong>소스 추가 → 브라우저 소스</strong>를 선택합니다.</li>
+        <li>복사한 URL을 붙여넣고, 위젯 권장 크기에 맞춰 너비·높이를 설정합니다.</li>
+        <li>방송 화면에서 원하는 위치로 드래그해 배치합니다.</li>
+      </ol>
+      <p>이 방식으로 선물 알림, 실시간 채팅창, 후원 메뉴판, 번역 자막, 목표 게이지 등을 자유롭게 조합할 수 있습니다. 오버레이가 화면에 안 보일 때 가장 흔한 원인은 URL 오타, 소스 크기 0, 다른 소스에 가려짐 세 가지입니다.</p>
+      <div class="callout info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <p>Tikke의 선물 사운드·메뉴판·번역 자막도 전부 브라우저 소스로 연결합니다. 구체적인 위젯별 설정은 <a href="../guide/">가이드 목록</a>에서 다룹니다.</p>
+        </div>
+      </div>
+
+      <h2 id="s6">6. 자주 발생하는 문제와 해결</h2>
+      <h3>방송이 자꾸 끊기거나 버벅여요</h3>
+      <ul>
+        <li>와이파이 대신 유선 랜으로 연결하세요. 가장 효과가 큰 단일 조치입니다.</li>
+        <li>화질(해상도·비트레이트)을 한 단계 낮춰보세요. 업로드 속도가 설정을 못 따라가는 경우가 대부분입니다.</li>
+        <li>게임과 방송을 같은 PC로 할 때 사양이 부족하면 게임 그래픽 옵션을 낮추는 것도 방법입니다.</li>
+      </ul>
+      <h3>오버레이(브라우저 소스)가 안 보여요</h3>
+      <ul>
+        <li>URL을 다시 복사해 붙여넣으세요. 끝부분이 잘려 들어가는 경우가 의외로 많습니다.</li>
+        <li>소스 목록에서 해당 브라우저 소스가 다른 소스 아래에 깔려 있지 않은지 순서를 확인하세요.</li>
+        <li>소스의 너비·높이가 0이거나 화면 밖에 배치되어 있지 않은지 확인하세요.</li>
+      </ul>
+      <h3>소리가 시청자에게 안 들려요</h3>
+      <p>마이크 입력 장치가 올바른지, 시스템 소리(데스크톱 오디오) 캡처가 켜져 있는지 확인하세요. 게임 소리나 PC에서 재생되는 효과음은 데스크톱 오디오가 꺼져 있으면 송출되지 않습니다.</p>
+      <h3>방송 시작 버튼이 안 눌려요</h3>
+      <p>계정에 LIVE 권한이 없는 상태일 수 있습니다. 2장에서 설명한 대로 모바일 앱에서 LIVE가 가능한 계정인지 먼저 확인하세요.</p>
+
+      <h2>마치며 — PC 방송은 출발선이다</h2>
+      <p>LIVE Studio 설치는 끝이 아니라 시작입니다. PC 방송의 진짜 장점은 화질이 아니라 <strong>방송을 설계할 수 있다는 것</strong>입니다. 선물 알림과 사운드로 후원에 반응하고, 메뉴판으로 후원을 안내하고, 자막으로 글로벌 시청자를 붙잡는 구조를 하나씩 쌓아가세요. 관련 글에서 각 단계를 자세히 다룹니다.</p>
+
+      <h2>관련 글</h2>
+      <ul>
+        <li><a href="../guide/gift-sound.html">선물 사운드 등록 완전 가이드</a></li>
+        <li><a href="../guide/menu-board.html">후원 메뉴판 설정 완전 가이드</a></li>
+        <li><a href="../guide/translation.html">실시간 번역 자막 설정 완전 가이드</a></li>
+        <li><a href="engagement-tips.html">방송 흥미도를 높이는 10가지 방법</a></li>
+      </ul>
+
+    </article>
+  </main>
+
+  <footer class="page-footer">
+    <div class="page-footer-inner">
+      <div class="page-footer-brand">
+        <a href="../index.html" class="page-nav-brand" style="text-decoration:none">
+          <span class="page-nav-mark"></span>
+          <span class="page-nav-name">TIKKE</span>
+        </a>
+        <p>TikTok LIVE 스트리머를 위한 데스크톱 방송 툴킷.</p>
+      </div>
+      <div class="page-footer-links">
+        <a href="../index.html">홈</a>
+        <a href="index.html">팁 목록</a>
+        <a href="../guide/">가이드</a>
+        <a href="../privacy.html">개인정보처리방침</a>
+        <a href="../terms.html">이용약관</a>
+      </div>
+      <div class="page-footer-copy">© 2026 Tikke. TikTok® 및 TikTok LIVE는 ByteDance Ltd.의 상표입니다. 이 서비스는 TikTok Inc.와 공식적으로 연관되지 않습니다.</div>
+    </div>
+  </footer>
+</body>
+</html>
