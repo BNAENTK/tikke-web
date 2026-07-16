@@ -17,3 +17,31 @@
 /overlay/*.html
   Cache-Control: no-cache, no-store, must-revalidate
   Pragma: no-cache
+
+# 기능성/비콘텐츠 화면 — 검색 색인 제외 (AdSense inventory value 정책 대응)
+/companion/*
+  X-Robots-Tag: noindex, nofollow
+/admin
+  X-Robots-Tag: noindex, nofollow
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+/investors
+  X-Robots-Tag: noindex, nofollow
+/investors.html
+  X-Robots-Tag: noindex, nofollow
+/promo-loop
+  X-Robots-Tag: noindex, nofollow
+/promo-loop.html
+  X-Robots-Tag: noindex, nofollow
+/promo/*
+  X-Robots-Tag: noindex, nofollow
+/onepager/*
+  X-Robots-Tag: noindex, nofollow
+/pitch/*
+  X-Robots-Tag: noindex, nofollow
+/screens/*
+  X-Robots-Tag: noindex, nofollow
+/uploads/*
+  X-Robots-Tag: noindex, nofollow
