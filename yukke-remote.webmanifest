@@ -1,0 +1,15 @@
+{
+  "name": "YUKKE 리모컨",
+  "short_name": "YUKKE",
+  "description": "폰에서 오버레이를 조작합니다.",
+  "start_url": "/remote",
+  "scope": "/remote",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07070F",
+  "theme_color": "#FF0033",
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

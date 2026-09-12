@@ -1,0 +1,167 @@
+<!doctype html>
+<!-- 현재 틱톡에 연결해 앱 사용 중인 온라인 사용자 목록 어드민 페이지 (worker /admin/online 조회) -->
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>TIKKE — 온라인 사용자</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    :root {
+      --bg: #0b0d12; --panel: #131722; --line: #232a3a;
+      --text: #e8ecf4; --dim: #8b93a7; --accent: #25f4ee; --accent2: #fe2c55;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+      padding: 32px 20px;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    h1 .dot { color: var(--accent); }
+    .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+    .meta { color: var(--dim); font-size: 13px; }
+    .meta b { color: var(--text); }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 11px 14px; text-align: left; white-space: nowrap; }
+    thead th { color: var(--dim); font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--line); background: rgba(255,255,255,0.02); }
+    tbody tr + tr td { border-top: 1px solid var(--line); }
+    tbody tr:hover td { background: rgba(255,255,255,0.025); }
+    .tk { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .tk:hover { text-decoration: underline; }
+    .dim { color: var(--dim); }
+    .empty { padding: 40px; text-align: center; color: var(--dim); font-size: 14px; }
+    .err { color: var(--accent2); }
+    .scroll { overflow-x: auto; }
+    /* 로그인 */
+    .login { max-width: 340px; margin: 18vh auto 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 26px; }
+    .login h2 { font-size: 17px; margin-bottom: 6px; }
+    .login p { color: var(--dim); font-size: 13px; margin-bottom: 16px; }
+    .login input {
+      width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+      color: var(--text); padding: 10px 12px; font-size: 14px; margin-bottom: 10px; outline: none;
+    }
+    .login input:focus { border-color: var(--accent); }
+    button {
+      background: var(--accent); color: #04141a; border: 0; border-radius: 8px;
+      padding: 10px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    button:hover { filter: brightness(1.1); }
+    .ghost { background: transparent; color: var(--dim); border: 1px solid var(--line); font-weight: 500; }
+    .login .msg { color: var(--accent2); font-size: 13px; min-height: 18px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div id="login" class="login" style="display:none">
+    <h2>온라인 사용자</h2>
+    <p>어드민 비밀번호(worker ADMIN_SECRET)를 입력하세요.</p>
+    <form id="loginForm">
+      <input id="pwd" type="password" placeholder="관리자 비밀번호" autofocus />
+      <button type="submit" style="width:100%">확인</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+  </div>
+
+  <div id="app" class="wrap" style="display:none">
+    <div class="top">
+      <h1>TIKKE<span class="dot">.</span> 온라인 사용자</h1>
+      <div class="meta">
+        현재 <b id="count">-</b>명 접속 중 · <span id="updated" class="dim">-</span>
+        <button class="ghost" id="refreshBtn" style="margin-left:10px;padding:6px 12px;font-size:12px">새로고침</button>
+      </div>
+    </div>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr><th>#</th><th>이메일</th><th>이름</th><th>틱톡 아이디</th><th>국가</th><th>IP</th><th>마지막 신호</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty" style="display:none">현재 틱톡에 연결 중인 사용자가 없습니다.</div>
+    </div>
+    <p class="meta" style="margin-top:10px">최근 12분 내 하트비트 기준(5분 주기, v1.8.154+ 앱). 30초마다 자동 갱신.</p>
+  </div>
+
+  <script>
+    const API = "https://api.tikke.kr";
+    const SECRET_KEY = "tikke_admin_secret_v1"; // admin.html과 공용 — 이미 로그인했으면 재사용
+
+    const $ = (id) => document.getElementById(id);
+    let timer = null;
+
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function relTime(ts) {
+      const s = Math.max(0, Math.round((Date.now() - Number(ts)) / 1000));
+      if (s < 60) return s + "초 전";
+      return Math.round(s / 60) + "분 전";
+    }
+
+    async function fetchOnline() {
+      const secret = sessionStorage.getItem(SECRET_KEY);
+      if (!secret) return showLogin();
+      try {
+        const res = await fetch(API + "/admin/online", { headers: { "x-admin-secret": secret }, cache: "no-store" });
+        if (res.status === 403) { sessionStorage.removeItem(SECRET_KEY); return showLogin("비밀번호가 서버 ADMIN_SECRET과 일치하지 않습니다."); }
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        render(data);
+      } catch (e) {
+        $("updated").innerHTML = '<span class="err">조회 실패 — ' + esc(e.message) + "</span>";
+      }
+    }
+
+    function render(data) {
+      $("count").textContent = data.count;
+      $("updated").textContent = new Date().toLocaleTimeString("ko-KR") + " 갱신";
+      const rows = data.users.map((u, i) => (
+        "<tr>" +
+        "<td class=\"dim\">" + (i + 1) + "</td>" +
+        "<td>" + esc(u.email || "-") + "</td>" +
+        "<td>" + esc(u.name || "-") + "</td>" +
+        "<td><a class=\"tk\" href=\"https://www.tiktok.com/@" + encodeURIComponent(u.tiktokId) + "/live\" target=\"_blank\" rel=\"noreferrer\">@" + esc(u.tiktokId) + "</a></td>" +
+        "<td>" + esc(u.country || "-") + "</td>" +
+        "<td class=\"dim\">" + esc(u.ip || "-") + "</td>" +
+        "<td class=\"dim\">" + relTime(u.lastSeen) + "</td>" +
+        "</tr>"
+      )).join("");
+      $("rows").innerHTML = rows;
+      $("empty").style.display = data.count === 0 ? "" : "none";
+    }
+
+    function showLogin(msg) {
+      clearInterval(timer);
+      $("app").style.display = "none";
+      $("login").style.display = "";
+      $("loginMsg").textContent = msg || "";
+    }
+
+    function showApp() {
+      $("login").style.display = "none";
+      $("app").style.display = "";
+      fetchOnline();
+      clearInterval(timer);
+      timer = setInterval(fetchOnline, 30_000);
+    }
+
+    $("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const pwd = $("pwd").value.trim();
+      if (!pwd) return;
+      sessionStorage.setItem(SECRET_KEY, pwd);
+      showApp();
+    });
+
+    $("refreshBtn").addEventListener("click", fetchOnline);
+
+    sessionStorage.getItem(SECRET_KEY) ? showApp() : showLogin();
+  </script>
+</body>
+</html>

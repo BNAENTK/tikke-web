@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>YUKKE — 유튜브 라이브 툴킷</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <style>
+    /* tikke 메인과 같은 토큰 체계. 액센트만 시안 → 유튜브 레드로 바꿨다. */
+    :root{
+      --yt:#FF0033; --yt2:#FF4D00; --yt-deep:#B3001F;
+      --bg:#07070F; --s1:#0D0D18; --s2:#121220; --s3:#181826;
+      --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+      --ink:#EEEEF4; --mut:rgba(238,238,244,.45); --dim:rgba(238,238,244,.22);
+      --brand:linear-gradient(100deg,#FF0033 0%,#FF4D00 100%);
+      --display:"Space Grotesk","Pretendard Variable",sans-serif;
+      --mono:"JetBrains Mono",monospace;
+      --kr:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--ink);font-family:var(--kr);min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;
+      -webkit-font-smoothing:antialiased;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    ::selection{background:rgba(255,0,51,.3)}
+
+    /* 배경 — 레드 글로우 두 점. 카드 뒤에서만 은은하게 */
+    .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(52% 42% at 50% 30%, rgba(255,0,51,.16) 0%, transparent 70%),
+        radial-gradient(38% 34% at 78% 78%, rgba(255,77,0,.10) 0%, transparent 72%)}
+    .vig{position:fixed;inset:0;z-index:2;pointer-events:none;
+      background:radial-gradient(130% 100% at 50% 25%,transparent 45%,rgba(0,0,0,.62) 100%)}
+    .scan{position:fixed;inset:0;z-index:25;pointer-events:none;opacity:.42;
+      background:repeating-linear-gradient(0deg,transparent 0,transparent 1px,rgba(0,0,0,.42) 2px,transparent 3px)}
+    .grain{position:fixed;inset:0;z-index:25;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+    /* HUD 프레임 — tikke 메인과 같은 문법, 색만 레드 */
+    .hud{position:fixed;inset:0;z-index:30;pointer-events:none;font-family:var(--mono);
+      font-size:10.5px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase}
+    .hud .c{position:absolute;width:26px;height:26px;border:1px solid rgba(255,0,51,.38)}
+    .hud .tl{top:18px;left:18px;border-right:0;border-bottom:0}
+    .hud .tr{top:18px;right:18px;border-left:0;border-bottom:0}
+    .hud .bl{bottom:18px;left:18px;border-right:0;border-top:0}
+    .hud .br{bottom:18px;right:18px;border-left:0;border-top:0}
+    .hud .lbl{position:absolute;display:flex;align-items:center;gap:7px}
+    .hud .s-bl{bottom:21px;left:54px}
+    .hud .s-br{bottom:21px;right:54px;color:var(--yt)}
+    .dotlive{width:6px;height:6px;border-radius:50%;background:var(--yt);
+      box-shadow:0 0 8px var(--yt);animation:blink 1.4s steps(1) infinite}
+    @keyframes blink{0%,60%{opacity:1}61%,100%{opacity:.25}}
+    @media(max-width:720px){.hud .lbl{display:none}}
+
+    /* 카드 */
+    .card{position:relative;z-index:10;width:min(560px,100%);
+      background:linear-gradient(180deg,rgba(18,18,32,.92),rgba(13,13,24,.92));
+      border:1px solid var(--line2);border-radius:18px;padding:40px 34px 32px;text-align:center;
+      box-shadow:0 30px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(255,0,51,.08) inset,
+                 0 -1px 0 rgba(255,255,255,.05) inset}
+    /* 카드 위쪽 레드 헤어라인 */
+    .card::before{content:"";position:absolute;top:-1px;left:14%;right:14%;height:1px;
+      background:linear-gradient(90deg,transparent,var(--yt),transparent);opacity:.85}
+
+    .tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+      letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+      border:1px solid var(--line2);border-radius:999px;padding:5px 12px;margin-bottom:20px}
+    .tag .play{color:var(--yt)}
+
+    .mark{font-family:var(--display);font-size:48px;font-weight:700;letter-spacing:.14em;line-height:1;
+      background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 0 22px rgba(255,0,51,.35))}
+    .sub{color:var(--mut);font-size:13px;margin-top:12px;line-height:1.75}
+    .rule{height:1px;margin:24px 0 0;
+      background:linear-gradient(90deg,transparent,var(--line2),transparent)}
+
+    /* 암호 게이트 */
+    .gate{margin-top:24px}
+    .gate .glabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+      text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+    .gate input{width:100%;padding:14px 15px;border-radius:10px;border:1px solid var(--line2);
+      background:#050509;color:var(--ink);font-size:15px;font-family:var(--mono);
+      text-align:center;letter-spacing:.34em;transition:border-color .18s,box-shadow .18s}
+    .gate input::placeholder{letter-spacing:.12em;color:var(--dim)}
+    .gate input:focus{outline:none;border-color:var(--yt);box-shadow:0 0 0 3px rgba(255,0,51,.15)}
+    .gate button{width:100%;margin-top:10px;padding:14px;border:0;border-radius:10px;cursor:pointer;
+      background:var(--brand);color:#fff;font-weight:700;font-size:15px;font-family:var(--kr);
+      letter-spacing:.02em;transition:filter .18s,transform .12s}
+    .gate button:hover{filter:brightness(1.1)}
+    .gate button:active{transform:translateY(1px)}
+    .gate button:disabled{opacity:.55;cursor:default}
+    .err{color:#FF6B6B;font-size:12.5px;margin-top:10px;min-height:18px;font-family:var(--mono)}
+
+    /* 다운로드 */
+    .dl{display:none}
+    .dl.on{display:block;animation:rise .34s cubic-bezier(.2,.7,.2,1)}
+    .gate.off{display:none}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}}
+    .dlbtn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;
+      margin-top:24px;padding:18px;border-radius:12px;background:var(--brand);color:#fff;
+      font-weight:800;font-size:17px;overflow:hidden;
+      box-shadow:0 12px 34px rgba(255,0,51,.28);transition:transform .12s,box-shadow .2s}
+    .dlbtn:hover{box-shadow:0 16px 44px rgba(255,0,51,.4)}
+    .dlbtn:active{transform:translateY(1px)}
+    /* 버튼 위를 훑는 광택 */
+    .dlbtn::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-45%;
+      background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);
+      animation:sheen 3.4s ease-in-out infinite}
+    @keyframes sheen{0%,62%{left:-45%}100%{left:115%}}
+    .meta{color:var(--dim);font-size:11px;margin-top:14px;font-family:var(--mono);letter-spacing:.1em}
+
+    .feat{margin-top:26px;text-align:left;display:grid;gap:1px;
+      border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line)}
+    .feat div{color:var(--mut);font-size:13px;line-height:1.6;padding:12px 14px;background:var(--s1)}
+    .feat b{color:var(--ink);font-weight:600}
+    /* 항목 앞 레드 마커 */
+    .feat div::before{content:"▶";color:var(--yt);font-size:9px;margin-right:8px;vertical-align:2px}
+
+    .links{margin-top:26px;display:flex;align-items:center;justify-content:center;gap:8px}
+    /* 한글이 섞여 자간은 최소로. mono 는 라틴에만 의미가 있다. */
+    .back{display:inline-flex;align-items:center;gap:6px;color:var(--mut);font-size:11.5px;
+      font-family:var(--mono);letter-spacing:.02em;text-transform:uppercase;
+      border:1px solid var(--line2);border-radius:8px;padding:7px 12px;transition:.18s}
+    .back:hover{color:var(--ink);border-color:rgba(255,0,51,.45)}
+
+    @media(max-width:520px){
+      .mark{font-size:38px}
+      .card{padding:32px 22px 26px}
+      .scan,.grain{display:none}   /* 작은 화면에선 가독성 우선 */
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="vig"></div>
+
+  <div class="card">
+    <div class="tag"><span class="play">▶</span> YouTube Live Toolkit</div>
+    <div class="mark">YUKKE</div>
+    <div class="sub">유튜브 라이브 방송용 툴킷<br />채팅·슈퍼챗·멤버십을 오버레이와 TTS로</div>
+    <div class="rule"></div>
+
+    <form class="gate" id="gate" autocomplete="off">
+      <div class="glabel">Access Code</div>
+      <input id="pw" type="password" placeholder="암호" aria-label="암호" autofocus />
+      <button type="submit">확인</button>
+      <div class="err" id="err"></div>
+    </form>
+
+    <div class="dl" id="dl">
+      <a class="dlbtn" id="dlbtn" href="#">⬇ Yukke 다운로드 (Windows)</a>
+      <div class="meta" id="meta">WINDOWS 10/11 · 64BIT</div>
+      <div class="feat">
+        <div><b>채팅 TTS</b> — 슈퍼챗·멤버십도 읽어 줍니다</div>
+        <div><b>탑기프트</b> — 슈퍼챗 금액 기준 순위, 등급 색 배지</div>
+        <div><b>오버레이</b> — 자막·타이머·목표치·룰렛 그대로</div>
+        <div><b>게임</b> — 시맨틀·초성퀴즈·그림퀴즈·사과게임</div>
+      </div>
+    </div>
+
+    <div class="links">
+      <!-- 이모지는 mono 폰트에 없어 네모로 깨진다. 도형 문자로 쓴다. -->
+      <a class="back" href="/remote"><span style="color:var(--yt)">▸</span> 리모컨</a>
+      <a class="back" href="/">← tikke.kr</a>
+    </div>
+  </div>
+
+  <div class="hud">
+    <div class="c tl"></div><div class="c tr"></div><div class="c bl"></div><div class="c br"></div>
+    <div class="lbl s-bl"><span class="dotlive"></span> YUKKE · YOUTUBE LIVE</div>
+    <div class="lbl s-br">SECURE CHANNEL</div>
+  </div>
+  <div class="scan"></div>
+  <div class="grain"></div>
+
+  <script>
+    // 암호는 **서버에서** 검사한다. 이 파일에는 암호도 다운로드 주소도 없다 —
+    // 페이지 소스를 봐도 아무것도 안 나온다. 맞을 때에만 서버가 주소를 돌려준다.
+    (function () {
+      var API = "https://api.tikke.kr/yukke/unlock";
+
+      // 최신 버전 표시 — 쓰던 버전보다 새 것인지 눈으로 확인하고 받게 한다.
+      // 실패해도 다운로드는 그대로 되므로 조용히 넘어간다.
+      fetch("https://api.tikke.kr/yukke/version")
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j || !j.version) return;
+          var m = document.getElementById("meta");
+          if (m) m.textContent = "WINDOWS 10/11 · 64BIT · v" + j.version;
+        })
+        .catch(function () {});
+      var gate = document.getElementById("gate");
+      var dl = document.getElementById("dl");
+      var err = document.getElementById("err");
+      var pw = document.getElementById("pw");
+      var btn = gate.querySelector("button");
+      var dlbtn = document.getElementById("dlbtn");
+
+      gate.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var v = pw.value.trim();
+        if (!v) return;
+        btn.disabled = true; err.textContent = "확인 중...";
+        fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: v })
+        }).then(function (r) {
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        }).then(function (res) {
+          if (!res.ok || !res.j.url) {
+            err.textContent = res.j.error || "암호가 맞지 않습니다.";
+            pw.value = ""; pw.focus();
+            return;
+          }
+          err.textContent = "";
+          dlbtn.setAttribute("href", res.j.url);
+          gate.classList.add("off");
+          dl.classList.add("on");
+        }).catch(function () {
+          err.textContent = "연결에 실패했습니다. 잠시 후 다시 시도하세요.";
+        }).finally(function () { btn.disabled = false; });
+      });
+    })();
+  </script>
+</body>
+</html>

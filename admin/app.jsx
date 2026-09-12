@@ -93,6 +93,92 @@ function Toast({ toast }) {
 }
 
 /* ============================== MODALS ============================== */
+/* 차단 계정 관리 — worker /blocked (ADMIN_SECRET). 코드 배포 없이 즉시 적용/해제된다.
+   코드에 하드코딩된 목록은 여기 안 보인다(그건 배포로만 바뀐다). */
+function BlockedPanel() {
+  const [emails, setEmails] = useState(null);   // null = 아직 안 불러옴
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [msg, setMsg] = useState("");
+
+  function auth() {
+    const s = sessionStorage.getItem(ADMIN_SECRET_KEY) || "";
+    return { Authorization: "Bearer " + s, "Content-Type": "application/json" };
+  }
+
+  async function call(method, body) {
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      const res = await fetch(API_BASE + (method === "GET" ? "/blocked/list" : "/blocked"), {
+        method, headers: auth(), body: body ? JSON.stringify(body) : undefined, cache: "no-store",
+      });
+      if (res.status === 403) throw new Error("권한 없음 — 로그인 비밀번호가 서버 ADMIN_SECRET과 달라요.");
+      if (!res.ok) throw new Error("서버 응답 " + res.status);
+      const j = await res.json();
+      setEmails(Array.isArray(j.emails) ? j.emails : []);
+      return true;
+    } catch (e) {
+      setErr(e.message || "알 수 없는 오류");
+      return false;
+    } finally { setBusy(false); }
+  }
+
+  useEffect(() => { call("GET"); }, []);
+
+  async function add() {
+    const email = input.trim().toLowerCase();
+    if (!email) return;
+    // 오타로 엉뚱한 사람을 막는 사고가 제일 흔하다 — 형태만이라도 본다.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr("이메일 형식이 아니에요: " + email); return; }
+    if (emails && emails.includes(email)) { setErr("이미 차단된 계정이에요."); return; }
+    if (await call("POST", { email })) { setInput(""); setMsg(email + " 차단했습니다."); }
+  }
+
+  async function remove(email) {
+    if (await call("DELETE", { email })) setMsg(email + " 차단을 풀었습니다.");
+  }
+
+  return (
+    <React.Fragment>
+      <p className="ad-callout">
+        차단하면 그 계정은 로그인이 필요한 모든 기능에서 거부됩니다. 즉시 적용되고, 배포는 필요 없습니다.
+      </p>
+      <div className="ad-form-row">
+        <label>차단할 이메일</label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input className="ad-input" type="email" value={input} placeholder="someone@example.com"
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") add(); }} disabled={busy} />
+          <button className="ad-btn primary" onClick={add} disabled={busy || !input.trim()}>차단</button>
+        </div>
+      </div>
+
+      {err && <p className="ad-callout warn">{err}</p>}
+      {msg && <p className="ad-callout">{msg}</p>}
+
+      <div className="ad-form-row">
+        <label>차단된 계정 {emails ? "(" + emails.length + "개)" : ""}</label>
+        {emails === null ? (
+          <p className="ad-callout">불러오는 중…</p>
+        ) : emails.length === 0 ? (
+          <p className="ad-callout">차단된 계정이 없습니다.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {emails.map((e) => (
+              <div key={e} style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "space-between",
+                padding: "6px 10px", border: "1px solid var(--ad-line)", borderRadius: 6 }}>
+                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 13 }}>{e}</span>
+                <button className="ad-btn" onClick={() => remove(e)} disabled={busy}>해제</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </React.Fragment>
+  );
+}
+
 function SettingsModal({ onClose }) {
   const [tab, setTab] = useState("password");
 
@@ -134,8 +220,11 @@ function SettingsModal({ onClose }) {
         <div className="ad-modal-body">
           <div className="ad-tabs">
             <button className={"ad-tab" + (tab === "password" ? " active" : "")} onClick={() => setTab("password")}>비밀번호</button>
+            <button className={"ad-tab" + (tab === "blocked" ? " active" : "")} onClick={() => setTab("blocked")}>차단 계정</button>
             <button className={"ad-tab" + (tab === "help" ? " active" : "")} onClick={() => setTab("help")}>도움말</button>
           </div>
+
+          {tab === "blocked" && <BlockedPanel />}
 
           {tab === "password" && (
             <React.Fragment>

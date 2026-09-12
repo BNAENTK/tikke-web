@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- 홈 화면에 추가하면 앱처럼 열린다(주소창 없이). 설치할 앱은 없다 — 이게 전부다. -->
+  <link rel="manifest" href="yukke-remote.webmanifest" />
+  <meta name="theme-color" content="#FF0033" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="YUKKE" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <title>YUKKE 리모컨</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <style>
+    /* tikke 토큰 체계. 액센트만 유튜브 레드.
+       폰에서 쓰는 화면이라 스캔라인·그레인·커스텀 커서는 안 쓴다 —
+       작은 화면에서 가독성만 깎고 배터리를 먹는다. */
+    :root{
+      --yt:#FF0033; --yt2:#FF4D00;
+      --bg:#07070F; --s1:#0D0D18; --panel:#121220; --s3:#181826;
+      --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.15);
+      --txt:#EEEEF4; --mut:rgba(238,238,244,.45); --dim:rgba(238,238,244,.22);
+      --brand:linear-gradient(100deg,#FF0033 0%,#FF4D00 100%);
+      --display:"Space Grotesk","Pretendard Variable",sans-serif;
+      --mono:"JetBrains Mono",monospace;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{background:var(--bg);color:var(--txt);
+      font-family:'Pretendard Variable',Pretendard,sans-serif;
+      padding:18px 14px calc(24px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;
+      -webkit-font-smoothing:antialiased;
+      background-image:radial-gradient(80% 40% at 50% 0%, rgba(255,0,51,.13) 0%, transparent 70%);
+      background-repeat:no-repeat;background-attachment:fixed}
+    ::selection{background:rgba(255,0,51,.3)}
+
+    /* 헤더 */
+    .top{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+    h1{font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:.16em;
+      background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .live{width:7px;height:7px;border-radius:50%;background:var(--yt);
+      box-shadow:0 0 8px var(--yt);animation:blink 1.4s steps(1) infinite}
+    @keyframes blink{0%,60%{opacity:1}61%,100%{opacity:.25}}
+    .sub{font-size:11.5px;color:var(--dim);margin-bottom:16px}
+    /* 라틴 조각만 mono + 자간 */
+    .sub .en{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
+
+    .card{position:relative;background:var(--panel);border:1px solid var(--line);
+      border-radius:14px;padding:14px;margin-bottom:12px}
+    /* 카드 위쪽 레드 헤어라인 — yukke.html 과 같은 장치 */
+    .card::before{content:"";position:absolute;top:-1px;left:16px;right:16px;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,0,51,.7),transparent)}
+    /* 한글 라벨이라 자간을 벌리지 않는다 — mono 자간(.16em)에 걸리면 "점 수"처럼 흩어진다. */
+    .card h2{font-size:11.5px;color:var(--mut);font-weight:600;margin-bottom:11px;letter-spacing:.01em}
+    .card h2::before{content:"";display:inline-block;width:3px;height:11px;margin-right:7px;
+      vertical-align:-1px;border-radius:2px;background:var(--yt);opacity:.85}
+    label{display:block;font-size:12px;color:var(--mut);margin-bottom:5px}
+    input,select,textarea{width:100%;padding:12px;border-radius:9px;border:1px solid var(--line2);
+      background:#050509;color:var(--txt);font-size:15px;font-family:inherit;transition:border-color .18s,box-shadow .18s}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--yt);
+      box-shadow:0 0 0 3px rgba(255,0,51,.15)}
+    textarea{min-height:96px;resize:vertical;font-size:14px}
+
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{flex:1 1 auto;min-width:96px;padding:13px 12px;border:0;border-radius:10px;font-size:15px;
+      font-weight:800;color:#fff;background:var(--s3);cursor:pointer;font-family:inherit;
+      border:1px solid var(--line);transition:transform .1s,filter .18s}
+    button:active{transform:scale(.98)}
+    button.red{background:var(--brand);border-color:transparent;
+      box-shadow:0 8px 22px rgba(255,0,51,.26)}
+    button.blue{background:#0EA5E9;border-color:transparent}
+    button.gold{background:#EAB308;color:#111;border-color:transparent}
+    button.grey{background:var(--s3)}
+    button:hover{filter:brightness(1.12)}
+    button:disabled{opacity:.45}
+
+    .tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+    .tabs button{flex:0 0 auto;min-width:0;padding:9px 15px;font-size:14px;
+      background:var(--s1);font-weight:700;color:var(--mut)}
+    .tabs button.on{background:var(--brand);border-color:transparent;color:#fff;
+      box-shadow:0 6px 18px rgba(255,0,51,.24)}
+    .hide{display:none}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);
+      background:var(--s3);border:1px solid var(--line2);color:var(--txt);padding:11px 20px;
+      border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9;
+      box-shadow:0 10px 30px rgba(0,0,0,.5)}
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+    .note{font-size:11px;color:var(--mut);line-height:1.65;margin-top:8px}
+    code{font-family:var(--mono);color:var(--yt);font-size:11.5px}
+  </style>
+</head>
+<body>
+  <div class="top"><span class="live"></span><h1>YUKKE</h1></div>
+  <div class="sub"><span class="en">Remote</span> · 폰에서 오버레이 조작</div>
+
+  <!-- 룸키 -->
+  <div class="card" id="setup">
+    <h2>연결</h2>
+    <label>룸 키 — 앱의 <b>오버레이 URL 설정</b>에서 주소 끝의 <code>room=</code> 값</label>
+    <input id="room" placeholder="예: a1b2c3d4e5" autocapitalize="off" autocorrect="off" spellcheck="false" />
+    <div class="row"><button class="red" id="save">저장</button></div>
+    <div class="note"><b>설치할 앱은 없습니다.</b> 이 페이지가 리모컨입니다. 브라우저 메뉴에서 <b>홈 화면에 추가</b>하면 아이콘이 생겨 앱처럼 열립니다.<br />이 키를 아는 사람은 오버레이를 조작할 수 있습니다. 공유하지 마세요.<br />매니저에게는 앱의 <b>yukke 스튜디오 → 계정 공유</b>에서 만든 초대 링크를 주세요. 그 링크는 취소할 수 있습니다.</div>
+  </div>
+
+  <div id="main" class="hide">
+    <div class="tabs" id="tabs">
+      <button data-t="score" class="on">스코어</button>
+      <button data-t="bingo">빙고</button>
+      <button data-t="avatar">아바타</button>
+      <button data-t="board">전광판</button>
+    </div>
+
+    <!-- 스코어 -->
+    <section data-p="score">
+      <div class="card">
+        <h2>점수</h2>
+        <div class="row">
+          <button class="red" data-send='{"type":"score-set","payload":{"side":"a","delta":1}}'>A +1</button>
+          <button class="grey" data-send='{"type":"score-set","payload":{"side":"a","delta":-1}}'>A −1</button>
+          <button class="blue" data-send='{"type":"score-set","payload":{"side":"b","delta":1}}'>B +1</button>
+          <button class="grey" data-send='{"type":"score-set","payload":{"side":"b","delta":-1}}'>B −1</button>
+        </div>
+        <div class="row">
+          <button class="grey" data-send='{"type":"score-set","payload":{"side":"a","setDelta":1}}'>A 세트</button>
+          <button class="grey" data-send='{"type":"score-set","payload":{"side":"b","setDelta":1}}'>B 세트</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>타이머</h2>
+        <div class="row">
+          <button class="gold" data-send='{"type":"score-timer","payload":{"action":"start"}}'>시작</button>
+          <button class="grey" data-send='{"type":"score-timer","payload":{"action":"stop"}}'>정지</button>
+          <button class="grey" data-send='{"type":"score-reset"}'>전체 초기화</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 빙고 -->
+    <section data-p="bingo" class="hide">
+      <div class="card">
+        <h2>빙고</h2>
+        <div class="row">
+          <button class="gold" data-send='{"type":"bingo-pick","payload":{"by":""}}'>한 칸 뽑기</button>
+          <button class="grey" data-send='{"type":"bingo-reset"}'>초기화</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 아바타 -->
+    <section data-p="avatar" class="hide">
+      <div class="card">
+        <h2>OX 퀴즈</h2>
+        <label>문제</label>
+        <input id="q" placeholder="예: 고구마는 채소다" />
+        <div class="row">
+          <button class="gold" id="oxO">O 정답으로 시작</button>
+          <button class="gold" id="oxX">X 정답으로 시작</button>
+        </div>
+        <div class="row">
+          <button class="blue" data-send='{"type":"avatar-game","payload":{"game":"ox-end"}}'>정답 공개</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>게임</h2>
+        <div class="row">
+          <button class="red" data-send='{"type":"avatar-game","payload":{"game":"race"}}'>경주</button>
+          <button class="red" data-send='{"type":"avatar-game","payload":{"game":"royale"}}'>배틀로얄</button>
+          <button class="red" data-send='{"type":"avatar-game","payload":{"game":"dodge"}}'>똥피하기</button>
+        </div>
+        <div class="row">
+          <button class="grey" data-send='{"type":"avatar-game","payload":{"game":"stop"}}'>중단</button>
+          <button class="grey" data-send='{"type":"avatar-clear"}'>모두 내보내기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 전광판 -->
+    <section data-p="board" class="hide">
+      <div class="card">
+        <h2>전광판</h2>
+        <div class="row">
+          <button class="grey" data-send='{"type":"led-board-clear"}'>비우기</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="card">
+      <div class="row"><button class="grey" id="forget">연결 해제</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      var API = "https://api.tikke.kr";
+      var KEY = "yukke_remote_room";
+      var TKEY = "yukke_remote_token";
+      var $ = function (id) { return document.getElementById(id); };
+      var room = "";     // 방송인 본인 — 룸 키를 직접 씀
+      var share = "";    // 매니저 — 초대 토큰. 룸 키를 모른다.
+
+      function toast(msg) {
+        var el = $("toast"); el.textContent = msg; el.classList.add("on");
+        clearTimeout(toast._t); toast._t = setTimeout(function () { el.classList.remove("on"); }, 1600);
+      }
+
+      // 오버레이가 듣는 것과 같은 broadcast 엔드포인트로 보낸다.
+      // 앱을 거치지 않으므로 PC 가 꺼져 있어도 오버레이만 살아 있으면 동작한다.
+      function send(msg) {
+        // 초대 토큰이 있으면 그 경로로 — 매니저는 룸 키를 모른 채 조작한다.
+        var url = share
+          ? API + "/share/" + encodeURIComponent(share) + "/broadcast"
+          : (room ? API + "/overlay/rooms/" + encodeURIComponent(room) + "/broadcast" : "");
+        if (!url) { toast("먼저 연결하세요"); return; }
+        fetch(url, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(msg)
+        }).then(function (r) {
+          if (r.status === 403) { toast("링크가 만료되었거나 취소되었습니다"); return; }
+          toast(r.ok ? "보냈습니다" : "실패 " + r.status);
+        }).catch(function () { toast("연결 실패"); });
+      }
+
+      function show() {
+        var on = !!room || !!share;
+        $("setup").classList.toggle("hide", on);
+        $("main").classList.toggle("hide", !on);
+      }
+
+      try { room = localStorage.getItem(KEY) || ""; share = localStorage.getItem(TKEY) || ""; } catch (e) {}
+
+      // 초대 링크(?k=토큰)로 들어온 경우 — 방송인이 준 링크다. 룸 키 입력이 필요 없다.
+      var qk = new URLSearchParams(location.search).get("k");
+      if (qk) {
+        share = qk;
+        try { localStorage.setItem(TKEY, qk); } catch (e) {}
+        // 살아 있는 링크인지 먼저 확인해, 만료된 링크로 조작 화면만 띄우지 않는다.
+        fetch(API + "/share/" + encodeURIComponent(qk)).then(function (r) {
+          if (!r.ok) { share = ""; try { localStorage.removeItem(TKEY); } catch (e) {} show(); toast("링크가 만료되었거나 취소되었습니다"); return; }
+          return r.json().then(function (j) { toast((j.label ? j.label + " " : "") + "권한으로 연결했습니다"); });
+        }).catch(function () {});
+        history.replaceState(null, "", location.pathname);
+      }
+      if (room) $("room").value = room;
+      show();
+
+      $("save").addEventListener("click", function () {
+        var v = $("room").value.trim();
+        if (!v) { toast("룸 키를 입력하세요"); return; }
+        room = v; try { localStorage.setItem(KEY, v); } catch (e) {}
+        show(); toast("연결했습니다");
+      });
+      $("forget").addEventListener("click", function () {
+        room = ""; share = "";
+        try { localStorage.removeItem(KEY); localStorage.removeItem(TKEY); } catch (e) {}
+        show(); toast("해제했습니다");
+      });
+
+      // data-send 버튼 일괄 처리 — 버튼마다 코드를 쓰지 않는다
+      document.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-send]");
+        if (!b) return;
+        try { send(JSON.parse(b.getAttribute("data-send"))); } catch (x) {}
+      });
+
+      $("oxO").addEventListener("click", function () { startOx("O"); });
+      $("oxX").addEventListener("click", function () { startOx("X"); });
+      function startOx(ans) {
+        var q = $("q").value.trim();
+        if (!q) { toast("문제를 입력하세요"); return; }
+        send({ type: "avatar-game", payload: { game: "ox", question: q, answer: ans } });
+      }
+
+      // 탭
+      $("tabs").addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-t]");
+        if (!b) return;
+        var t = b.getAttribute("data-t");
+        [].forEach.call($("tabs").children, function (c) { c.classList.toggle("on", c === b); });
+        [].forEach.call(document.querySelectorAll("section[data-p]"), function (s) {
+          s.classList.toggle("hide", s.getAttribute("data-p") !== t);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ window.I18N = {
     nav_features:"기능", nav_guide:"가이드", nav_cutoffs:"🏆 리그 조각컷",
     h1a:"라이브 방송,", h1b:"완전 장악.",
     sub:"TikTok LIVE에 직결되는 데스크톱 관제 센터. 채팅·번역·선물·오버레이부터 리그 조각컷·흥미도 분석·코호스트 AI까지 — 모든 모듈을 한 화면에서 지휘.",
-    cta_modules:"모듈 탐색", cta_agency:"💬 에이전시 가입 문의",
+    cta_modules:"모듈 탐색", cta_agency:"💬 에이전트, 협업 문의",
     stat1u:"개 언어", stat2u:"오버레이", stat3u:"분",
     foot_tag:"TikTok LIVE 스트리머를 위한 데스크톱 방송 툴킷. 채팅·선물·사운드·TTS·오버레이를 한 화면에서.",
     foot_product:"제품", foot_company:"회사",

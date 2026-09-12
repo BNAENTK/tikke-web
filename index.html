@@ -36,8 +36,7 @@
 <link rel="apple-touch-icon" href="favicon.svg" />
 <link rel="sitemap" type="application/xml" href="sitemap.xml" />
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1658572145633986" crossorigin="anonymous"></script>
+<!-- Google AdSense: 홈은 다운로드 랜딩이라 광고 로더 미탑재(콘텐츠 없는 화면 정책). 계정 검증 meta만 유지 -->
 <meta name="google-adsense-account" content="ca-pub-1658572145633986" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -112,6 +111,9 @@
   /* nav */
   nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
     justify-content:space-between;padding:20px clamp(48px,5vw,72px);transition:.3s}
+  /* 모바일: 좌우 패딩이 48px 씩 고정이라 390px 화면에서 쓸 폭이 294px 밖에 안 됐다.
+     그래서 우측 액션(언어·버튼·햄버거)이 화면 밖으로 밀려 햄버거를 누를 수조차 없었다. */
+  @media(max-width:560px){nav{padding:14px 16px;gap:10px}}
   nav.solid{background:rgba(7,7,15,.6);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
   .brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:700;
     letter-spacing:.2em;font-size:20px}
@@ -124,7 +126,7 @@
   .partner{display:inline-flex;align-items:center;opacity:.82;transition:opacity .2s}
   .partner:hover{opacity:1}
   .partner img{height:36px;width:auto;display:block}
-  @media(max-width:560px){.collab-x,.partner{display:none}}
+  @media(max-width:560px){.collab-x{display:none}.partner img{height:28px}}
   .navlinks{display:flex;gap:28px;font-family:var(--mono);font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
   .navlinks a{transition:color .2s;position:relative}
   .navlinks a:hover{color:var(--primary)}
@@ -135,8 +137,21 @@
   .navbtn.cyan{color:var(--primary);border-color:rgba(0,229,255,.4)}
   .navbtn.cyan:hover{background:rgba(0,229,255,.12);box-shadow:0 0 22px rgba(0,229,255,.35)}
   .navbtn.gold{color:var(--gold);border-color:rgba(255,215,0,.4);text-shadow:0 0 8px rgba(255,215,0,.35)}
+  .navbtn.yt{color:#ff4d5e;border-color:rgba(255,0,51,.45)}
+  .navbtn.yt:hover{background:rgba(255,0,51,.12);border-color:#ff0033}
   .navbtn.gold:hover{color:#fff;background:rgba(255,215,0,.13);box-shadow:0 0 22px rgba(255,215,0,.3)}
   @media(max-width:560px){.navbtn.gold{display:none}}
+  /* 좁은 화면에선 우측에 햄버거만 남긴다 — 나머지는 모바일 메뉴 안에 다 있다.
+     (숨기기 전엔 YUKKE·DOWNLOAD·언어선택이 폭을 다 먹어 햄버거가 화면 밖으로 나갔다) */
+  @media(max-width:560px){
+    .navactions .langsw,
+    .navactions .navbtn{display:none}
+    .navactions{gap:0}
+    /* 브랜드가 길어도 우측 버튼을 밀어내지 않게 — 넘치면 브랜드 쪽이 줄어든다 */
+    .brand{min-width:0;overflow:hidden}
+    .brand .logo{width:34px;height:34px}
+    .navham{flex:0 0 auto}
+  }
   .langsw{display:flex;gap:1px;align-items:center;font-family:var(--mono);font-size:11px;margin-right:4px}
   .langsw button{background:none;border:0;color:var(--mut);cursor:none;padding:4px 5px;letter-spacing:.05em;transition:color .2s}
   .langsw button:hover{color:var(--ink)}
@@ -213,7 +228,7 @@
   .holo{position:relative;width:min(440px,86vw);margin-left:auto;border-radius:16px;
     background:linear-gradient(150deg,rgba(19,19,32,.82),rgba(13,13,24,.7));
     border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(16px);
-    box-shadow:0 30px 80px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06),0 0 40px rgba(0,229,255,.1);
+    box-shadow:0 10px 24px -12px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06);
     transform-style:preserve-3d;will-change:transform;overflow:hidden;padding:18px}
   .holo::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:16px;
     background:radial-gradient(300px circle at var(--mx,50%) var(--my,0%),rgba(0,229,255,.14),transparent 60%)}
@@ -357,7 +372,7 @@
   .sc-tags span{font-family:var(--mono);font-size:10.5px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
   .sc-visual{position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;
     background:linear-gradient(150deg,rgba(20,20,34,.7),rgba(10,10,20,.6));border:1px solid var(--line2);
-    display:grid;place-items:center;box-shadow:0 26px 64px -24px rgba(0,0,0,.75)}
+    display:grid;place-items:center;box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
   .sc-visual .corner{position:absolute;top:12px;right:12px;width:11px;height:11px;
     border-top:1.5px solid rgba(0,229,255,.5);border-right:1.5px solid rgba(0,229,255,.5)}
   .sc-visual .glow{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(60px);opacity:.25}
@@ -525,6 +540,7 @@
         <button data-lang="zh">ZH</button>
       </div>
       <a class="navbtn gold mag" href="/cutoffs">🏆 리그 조각컷</a>
+      <a class="navbtn yt mag" href="/yukke">▶ YUKKE</a>
       <a class="navbtn cyan mag" href="#download">▼ DOWNLOAD</a>
       <button class="navham" id="navham" aria-label="메뉴">☰</button>
     </div>
@@ -535,7 +551,9 @@
     <div class="mobmenu-links">
       <a href="#features">기능</a>
       <a href="/guide">가이드</a>
+      <a href="/tips">팁</a>
       <a href="/cutoffs">🏆 리그 조각컷</a>
+      <a href="/yukke">▶ YUKKE</a>
       <a href="#download">다운로드</a>
     </div>
     <div class="mobmenu-lang">
@@ -558,7 +576,7 @@
       <div class="ctarow">
         <a class="btn prime mag" href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.exe">▼ Download</a>
         <a class="btn ghost mag" href="#features">모듈 탐색</a>
-        <a class="btn agency mag" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener">💬 에이전시 가입 문의</a>
+        <a class="btn agency mag" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener">💬 에이전트, 협업 문의</a>
       </div>
       <div class="stats">
         <div class="stat"><div class="n"><span class="nv">38</span><span class="u">개 언어</span></div><div class="l">Real-time Translate</div></div>
@@ -608,7 +626,6 @@
 
   <section class="mod" id="features">
     <div class="mod-hd">
-      <div class="mod-idx reveal">01</div>
       <div>
         <div class="mod-cat reveal">BROADCAST CONTROL</div>
         <h2 class="mod-title glitch reveal" data-text="라이브 관제">라이브 관제</h2>
@@ -664,7 +681,6 @@
   <!-- ===== 02 INTELLIGENCE ===== -->
   <section class="mod">
     <div class="mod-hd">
-      <div class="mod-idx reveal">02</div>
       <div>
         <div class="mod-cat reveal">INTELLIGENCE</div>
         <h2 class="mod-title glitch reveal" data-text="대화 · 번역 · AI">대화 · 번역 · AI</h2>
@@ -715,7 +731,6 @@
   <!-- ===== 03 ON-SCREEN (one-by-one) ===== -->
   <section class="mod">
     <div class="mod-hd">
-      <div class="mod-idx reveal">03</div>
       <div>
         <div class="mod-cat reveal">ON-SCREEN</div>
         <h2 class="mod-title glitch reveal" data-text="화면 송출">화면 송출</h2>
@@ -801,7 +816,6 @@
   <!-- ===== 04 GIFTS · SOUND ===== -->
   <section class="mod">
     <div class="mod-hd">
-      <div class="mod-idx reveal">04</div>
       <div>
         <div class="mod-cat reveal">GIFTS · SOUND</div>
         <h2 class="mod-title glitch reveal" data-text="선물 · 사운드">선물 · 사운드</h2>
@@ -831,7 +845,6 @@
   <!-- ===== 05 ENGAGE · EXT ===== -->
   <section class="mod">
     <div class="mod-hd">
-      <div class="mod-idx reveal">05</div>
       <div>
         <div class="mod-cat reveal">ENGAGE · EXT</div>
         <h2 class="mod-title glitch reveal" data-text="단골 · 통합">단골 · 통합</h2>
@@ -867,8 +880,16 @@
       <a class="dlbtn mac mag" href="https://github.com/BNAENTK/tikke-download/releases/latest/download/Tikke-Setup.dmg">
         <span class="os">▼ macOS</span><span class="meta">Apple Silicon · Intel</span></a>
     </div>
-    <p class="ver reveal">최신 버전 v1.8.46 · <a href="https://github.com/BNAENTK/tikke-download/releases">변경 사항</a></p>
-    <a class="btn agency mag reveal" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener" style="margin-top:28px">💬 에이전시 가입 문의</a>
+    <p class="ver reveal">최신 버전 <span id="latest-ver">불러오는 중…</span> · <a href="https://github.com/BNAENTK/tikke-download/releases">변경 사항</a></p>
+    <script>
+      // 다운로드 링크는 항상 releases/latest 라 최신을 설치하지만, 버전 표기는 하드코딩이라
+      // 릴리즈마다 어긋난다(구버전으로 오해). GitHub API 에서 최신 태그를 받아 표기를 맞춘다.
+      fetch("https://api.github.com/repos/BNAENTK/tikke-download/releases/latest")
+        .then(function(r){ return r.json(); })
+        .then(function(d){ var el=document.getElementById("latest-ver"); if(el) el.textContent=(d&&d.tag_name)?d.tag_name:"최신"; })
+        .catch(function(){ var el=document.getElementById("latest-ver"); if(el) el.textContent="최신"; });
+    </script>
+    <a class="btn agency mag reveal" href="https://open.kakao.com/o/sbGTDIYh" target="_blank" rel="noopener" style="margin-top:28px">💬 에이전트, 협업 문의</a>
   </section>
 
   <footer>
@@ -923,8 +944,11 @@
       ['.deploy .btn.agency','cta_agency'],
       ['ALL:.mod-title',['m1t','m2t','m3t','m4t','m5t']],
       ['ALL:.mod-desc',['m1d','m2d','m3d','m4d','m5d']],
-      ['.mobmenu-links a:nth-of-type(1)','nav_features'],['.mobmenu-links a:nth-of-type(2)','nav_guide'],
-      ['.mobmenu-links a:nth-of-type(3)','nav_cutoffs'],['.mobmenu-links a:nth-of-type(4)','foot_download']
+      // href 로 집는다. nth-of-type 으로 잡으면 메뉴에 항목 하나만 끼워 넣어도 라벨이 통째로 밀려
+      // 엉뚱한 버튼에 엉뚱한 이름이 붙는다(팁·YUKKE 추가 때 실제로 그렇게 됐다).
+      // 팁·YUKKE 는 번역 키가 없어 매핑에서 뺀다 — 그래야 원문이 그대로 남는다.
+      ['.mobmenu-links a[href="#features"]','nav_features'],['.mobmenu-links a[href="/guide"]','nav_guide'],
+      ['.mobmenu-links a[href="/cutoffs"]','nav_cutoffs'],['.mobmenu-links a[href="#download"]','foot_download']
     ];
     const HTML_KEYS = new Set(['dep_h2','dep_ver']);
     window.applyLang = function(lang){

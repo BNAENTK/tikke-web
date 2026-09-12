@@ -2249,7 +2249,7 @@ html[lang="zh"] .platform-recommended::before { content: "推荐"; }
   font-weight: 500;
 }
 
-/* === Scene 4: OBS Overlay === */
+/* === Scene 4: TikTok LIVE Studio Overlay === */
 .demo-obs {
   width: 100%;
   background: #111111;

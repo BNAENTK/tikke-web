@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>리그 조각컷 — Tikke</title>
+<meta name="robots" content="noindex,follow" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -30,18 +31,38 @@ h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
 .loading{text-align:center;padding:60px;color:var(--muted)}
 .tier-section{display:flex;flex-direction:column;gap:8px}
 .tier-label{font-size:12px;font-weight:700;letter-spacing:0.6px;padding-left:2px}
-.tier-table{background:var(--surface);border-radius:12px;overflow:hidden}
+.tier-table{background:var(--surface);border-radius:12px;overflow:hidden;--tier-col:70px}
 .tier-row{display:grid;padding:8px 16px;gap:8px;align-items:start}
 .tier-head{font-size:11px;font-weight:700;border-bottom-width:1px;border-bottom-style:solid}
 .tier-data{border-bottom-width:1px;border-bottom-style:solid}
 .tier-data:last-child{border-bottom:none!important}
 .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-weight:800;font-size:13px}
-.score-main{font-weight:700;font-size:14px}
-.score-diff{font-size:11px;font-weight:600}
-.score-yd{font-size:10px;color:rgba(255,255,255,0.4)}
-.score-yd span{color:rgba(255,255,255,0.45)}
-.score-yd small{font-size:9px}
+/* 앱 ScoreCell과 동일한 치수 — 본값 13px, 보조줄 10px, 라벨 폭 52px 고정 */
+.score-main{font-weight:700;font-size:13px}
+.score-diff{font-size:10px;font-weight:600}
+.score-sub{display:flex;align-items:center;gap:3px}
+.score-sub-label{font-size:10px;color:rgba(255,255,255,0.3);min-width:62px;white-space:nowrap;flex-shrink:0}
+.score-sub-val{font-size:10px;color:rgba(255,255,255,0.45)}
+.score-sub small{font-size:9px}
+.score-est{font-size:9px;font-weight:700;color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:0 4px;line-height:14px;flex-shrink:0;cursor:help}
 .footer-note{font-size:11px;color:var(--muted);text-align:center;padding-bottom:16px}
+
+/* 모바일 — 마지막 열(유지)이 잘려 안 보이던 문제.
+   원인은 셀 안 보조줄 라벨이 62px 고정 + 셀 좌우 여백 16px 이라 4열이 화면 폭을 넘고,
+   .tier-table 이 overflow:hidden 이라 넘친 부분이 그대로 잘린 것.
+   라벨을 값 위로 접고(고정폭 해제) 여백·글자를 줄여 4열이 들어오게 한다.
+   그래도 넘치면 잘리지 말고 가로 스크롤되게 둔다. */
+@media (max-width:560px){
+  .tier-table{--tier-col:40px;overflow-x:auto}
+  .tier-row{padding:10px 8px!important;gap:4px}
+  .score-sub{flex-direction:column;align-items:flex-start;gap:0}
+  .score-sub-label{min-width:0;font-size:9px;line-height:1.25}
+  .score-sub-val{font-size:9px;line-height:1.25}
+  .score-main{font-size:12px}
+  .score-diff{font-size:9px}
+  .badge{padding:2px 5px;font-size:11px}
+  .tier-head{font-size:10px}
+}
 
 /* password gate */
 #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
@@ -96,7 +117,8 @@ h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
   <div id="errBox" class="err" style="display:none"></div>
   <div id="loadingBox" class="loading">데이터 로딩 중...</div>
   <div id="dataBox" style="display:none;flex-direction:column;gap:20px"></div>
-  <p class="footer-note">5분마다 자동 갱신</p>
+  <p class="footer-note">5분마다 자동 갱신<br />
+    표시된 수치는 실시간 관측을 모아 산출한 값으로, 실제 컷과 다를 수 있습니다. 참고용으로만 사용하세요.</p>
 </div>
 
 <script>
@@ -104,39 +126,73 @@ const WORKER = "https://api.tikke.kr";
 const PW_B64 = "MzY5MzY5";
 const SESSION_KEY = "tikke_cutoffs_auth";
 
+// class_type → 리그 이름 고정 맵. API가 라벨을 못 채워도 숫자가 노출되지 않게 한다.
+const TIER_NAMES = {
+  2000:"A1", 1900:"A2", 1800:"A3",
+  1500:"B1", 1400:"B2", 1300:"B3", 1200:"B4", 1100:"B5",
+  1000:"C1", 900:"C2", 800:"C3", 700:"C4", 600:"C5",
+  500:"D1", 400:"D2", 300:"D3", 200:"D4", 100:"D5",
+};
 const GROUPS = [
-  { name:"A리그", color:"#FFD700", bg:"rgba(255,215,0,0.06)",   border:"rgba(255,215,0,0.2)",   classTypes:[2000,1900,1800],           cols:[{p:1,label:"상위 1% (+3)",c:"#FFD700"},{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:60,label:"상위 60% (유지)",c:"#F97316"}] },
+  { name:"A리그", color:"#FFD700", bg:"rgba(255,215,0,0.06)",   border:"rgba(255,215,0,0.2)",   classTypes:[2000,1900,1800],           cols:[{p:1,label:"상위 1% (+3)",c:"#FFD700"},{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:50,alt:60,label:"상위 50% (유지)",c:"#F97316"}] },
   { name:"B리그", color:"#A78BFA", bg:"rgba(167,139,250,0.06)", border:"rgba(167,139,250,0.2)", classTypes:[1500,1400,1300,1200,1100], cols:[{p:1,label:"상위 1% (+3)",c:"#FFD700"},{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:70,label:"상위 70% (유지)",c:"#F97316"}] },
   { name:"C리그", color:"#60A5FA", bg:"rgba(96,165,250,0.06)",  border:"rgba(96,165,250,0.2)",  classTypes:[1000,900,800,700,600],     cols:[{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"},{p:80,label:"상위 80% (유지)",c:"#F97316"}] },
   { name:"D리그", color:"#34D399", bg:"rgba(52,211,153,0.06)",  border:"rgba(52,211,153,0.2)",  classTypes:[500,400,300,200,100],      cols:[{p:10,label:"상위 10% (+2)",c:"#A78BFA"},{p:20,label:"상위 20% (+1)",c:"#60A5FA"}] },
 ];
 
+// 앱(LeagueCutoffs.tsx formatScore)과 동일 — 1000 미만은 구분자 없이 그대로 쓴다
 function fmt(score) {
   if (score === null || score === undefined) return "—";
   if (score >= 1000000) return (score/1000000).toFixed(1)+"M";
   if (score >= 1000) return (score/1000).toFixed(1)+"K";
-  return score.toLocaleString();
+  return String(score);
 }
-function getScore(entries, p) {
-  return entries.find(e => e.percentile === p)?.cutoff_score ?? null;
+function getEntry(entries, p) {
+  return entries.find(e => e.percentile === p) ?? null;
 }
-function scoreCell(today, st, yd, color) {
-  if (today === null) return `<div style="color:rgba(255,255,255,0.3);font-size:13px">—</div>`;
+// 앱(LeagueCutoffs.tsx ScoreCell)과 동일한 3단 구성:
+// 실시간 + 전날 동시간 대비 ▲▼ / 전날 동시간 절대값 / 어제 최종 절대값 + 차이
+/**
+ * 잰 지 얼마나 됐는지.
+ *
+ * 강등방어선(60·70·80%)은 순위표에 안 잡혀 앵커 계정이 틱톡에서 직접 받는 안내로만 얻는다.
+ * 칸마다 10~20분씩 비는데 피크 시간대엔 그사이 분당 1% 넘게 오른다
+ * (실측 2026-08-26 B리그 70%: 5분에 +8.1%). 숫자만 두면 지금 값으로 착각한다.
+ */
+function agoText(iso) {
+  if (!iso) return null;
+  const min = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (!isFinite(min) || min < 0) return null;
+  if (min < 1) return "방금";
+  if (min < 60) return min + "분 전";
+  return Math.floor(min / 60) + "시간 전";
+}
+
+function scoreCell(today, st, yd, color, isEst, at, showAgo) {
+  if (today === null) return `<div style="color:rgba(255,255,255,0.3);font-size:12px">—</div>`;
   const stDiff = st !== null ? today - st : null;
   const ydDiff = yd !== null ? today - yd : null;
   let html = `<div style="display:flex;flex-direction:column;gap:2px">`;
-  html += `<div style="display:flex;align-items:center;gap:5px">`;
+  html += `<div style="display:flex;align-items:center;gap:4px">`;
   html += `<span class="score-main" style="color:${color}">${fmt(today)}</span>`;
+  if (isEst) html += `<span class="score-est" title="실측이 없어 어제 곡선과 리그 진행률로 계산한 값입니다. 실측값보다 오차가 큽니다.">추정</span>`;
   if (stDiff !== null && stDiff !== 0) {
     const sc = stDiff > 0 ? "#f87171" : "#34D399";
     html += `<span class="score-diff" style="color:${sc}">${stDiff>0?"▲":"▼"}${fmt(Math.abs(stDiff))}</span>`;
   }
   html += `</div>`;
+  const ago = showAgo ? agoText(at) : null;
+  if (ago) {
+    html += `<div class="score-sub" title="강등방어선은 앵커 계정이 받은 안내로만 잽니다. 그사이 컷이 오를 수 있습니다."><span class="score-sub-label">${ago} 기준</span></div>`;
+  }
+  if (st !== null) {
+    html += `<div class="score-sub"><span class="score-sub-label">전날 동시간</span><span class="score-sub-val">${fmt(st)}</span></div>`;
+  }
   if (yd !== null) {
-    html += `<div class="score-yd"><span>어제 </span><span>${fmt(yd)}</span>`;
+    html += `<div class="score-sub"><span class="score-sub-label">어제 최종</span><span class="score-sub-val">${fmt(yd)}</span>`;
     if (ydDiff !== null && ydDiff !== 0) {
       const sc = ydDiff > 0 ? "#f87171" : "#34D399";
-      html += `<small style="color:${sc}"> (${ydDiff>0?"+":""}${fmt(ydDiff)})</small>`;
+      html += `<small style="color:${sc}">(${ydDiff>0?"+":"-"}${fmt(Math.abs(ydDiff))})</small>`;
     }
     html += `</div>`;
   }
@@ -148,7 +204,8 @@ function renderData(data) {
   const box = document.getElementById("dataBox");
   let html = "";
   for (const g of GROUPS) {
-    const colW = `70px ${g.cols.map(()=>"1fr").join(" ")}`;
+    // 리그 배지 열 폭은 CSS 변수로 둔다 — 좁은 화면에서 미디어쿼리로 줄여 마지막 열(유지)이 잘리지 않게.
+    const colW = `var(--tier-col) ${g.cols.map(()=>"minmax(0,1fr)").join(" ")}`;
     html += `<div class="tier-section">`;
     html += `<div class="tier-label" style="color:${g.color}">${g.name}</div>`;
     html += `<div class="tier-table" style="border:1px solid ${g.border}">`;
@@ -165,12 +222,16 @@ function renderData(data) {
       const entry = data[String(ct)];
       if (!entry) continue;
       const {today, yesterday, yesterdaySameTime} = entry;
-      const tierId = today[0]?.league_tier_id ?? String(ct);
+      // 라벨은 고정 맵 우선 — 수집 라벨이 비면 예전엔 String(ct)로 떨어져 "500"이 노출됐다
+      const tierId = TIER_NAMES[ct] ?? entry.tier ?? today[0]?.league_tier_id ?? "";
       const isLast = i === g.classTypes.length - 1;
       html += `<div class="tier-row tier-data" style="grid-template-columns:${colW};border-bottom-color:var(--border)${isLast?";border-bottom:none":""};padding:12px 16px">`;
       html += `<div><span class="badge" style="background:${g.bg};border:1px solid ${g.border};color:${g.color}">${tierId}</span></div>`;
       for (const col of g.cols) {
-        html += `<div>${scoreCell(getScore(today,col.p), getScore(yesterdaySameTime,col.p), getScore(yesterday,col.p), col.c)}</div>`;
+        // A 유지컷이 2026-08-27 에 60% → 50% 로 바뀌었다. 서버는 한쪽만 내보내므로 어느 쪽이 와도 칸이 채워져야 한다.
+        const pick = (arr) => getEntry(arr, col.p) ?? (col.alt != null ? getEntry(arr, col.alt) : null);
+        const tEntry = pick(today);
+        html += `<div>${scoreCell(tEntry?.cutoff_score ?? null, pick(yesterdaySameTime)?.cutoff_score ?? null, pick(yesterday)?.cutoff_score ?? null, col.c, !!tEntry?.estimated, tEntry?.measured_at ?? null, col.p >= 50)}</div>`;
       }
       html += `</div>`;
     }

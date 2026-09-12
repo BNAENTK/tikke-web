@@ -1,0 +1,101 @@
+/* 유케 가이드 전용 스킨 — 앱 실물(밝은 배경 + 레드) 팔레트를 그대로 쓴다.
+   Tikke 가이드는 다크 네온이라 같은 CSS 를 쓰면 앱과 톤이 어긋난다. 색 값은
+   yukke/apps/desktop/src/styles.css 의 CSS 변수를 옮긴 것이다. */
+:root {
+  --y-bg: #FAF7F8;
+  --y-panel: #FFFFFF;
+  --y-line: #EFE7E9;
+  --y-line-2: #E2D6D9;
+  --y-ink: #1A1418;
+  --y-muted: #8A7C81;
+  --y-dim: #B6A9AE;
+  --y-brand: #FF0F3D;
+  --y-brand-2: #FF5A00;
+  --y-brand-grad: linear-gradient(100deg, #FF0F3D 0%, #FF5A00 100%);
+  --y-brand-soft: #FFF0F2;
+  --y-brand-line: #FFC9D1;
+}
+
+/* 다크 전제인 공용 배경 연출을 덮는다 */
+html, body { background: var(--y-bg); color: var(--y-ink); }
+.ambient, .grain { display: none; }
+
+/* 상단 바 */
+.page-nav {
+  background: rgba(255, 255, 255, 0.86);
+  border-bottom: 1px solid var(--y-line);
+  backdrop-filter: saturate(1.2) blur(8px);
+}
+.page-nav-name { color: var(--y-brand); letter-spacing: 0.04em; }
+.page-nav-mark { background: var(--y-brand-grad); }
+.page-nav-tag { color: var(--y-muted); }
+.page-nav-links a { color: var(--y-muted); }
+.page-nav-links a:hover { color: var(--y-ink); }
+.page-nav-cta {
+  background: var(--y-brand-grad);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(255, 15, 61, 0.24);
+}
+
+/* 히어로 */
+.page-hero { background: var(--y-panel); border-bottom: 1px solid var(--y-line); }
+.page-eyebrow { color: var(--y-brand); }
+.page-title { color: var(--y-ink); }
+.page-lede { color: var(--y-muted); }
+.page-meta { color: var(--y-muted); }
+.page-meta b { color: var(--y-ink); }
+
+/* 본문 */
+.article { color: var(--y-ink); }
+.article p, .article li { color: #3A2E33; }
+.article h2 {
+  color: var(--y-ink);
+  border-top: 1px solid var(--y-line);
+}
+.article h3 { color: var(--y-ink); }
+.article b { color: var(--y-ink); }
+.article a { color: var(--y-brand); }
+.article code {
+  background: var(--y-brand-soft);
+  border: 1px solid var(--y-brand-line);
+  color: #B00027;
+}
+/* page.css 는 .article p.lede 에 다크용 밝은 글자색을 준다.
+   밝은 배경에서는 그대로 두면 묻혀서 안 읽힌다 — 선택자 무게를 맞춰 덮는다. */
+.article p.lede { color: #3A2E33; }
+
+/* 목차 */
+.toc {
+  background: var(--y-panel);
+  border: 1px solid var(--y-line);
+  border-radius: 14px;
+}
+.toc-label { color: var(--y-brand); }
+.toc a { color: #3A2E33; }
+.toc a:hover { color: var(--y-brand); }
+
+/* 안내 박스 */
+.callout {
+  background: var(--y-panel);
+  border: 1px solid var(--y-line);
+  border-radius: 14px;
+}
+.callout .callout-icon {
+  background: var(--y-brand-soft);
+  border: 1px solid var(--y-brand-line);
+  color: var(--y-brand);
+}
+.callout.warn {
+  background: #FFF7F2;
+  border-color: #FFD9C2;
+}
+.callout.warn .callout-icon {
+  background: #FFE9DC;
+  border-color: #FFC7A5;
+  color: #C24A00;
+}
+.callout p { color: #3A2E33; }
+
+/* 표처럼 읽히는 목록에 여백을 조금 더 준다 */
+.article ul li, .article ol li { margin: 6px 0; }
